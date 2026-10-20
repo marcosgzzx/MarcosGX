@@ -1,4 +1,7 @@
-// ---------- Accounts (demo: everything is stored only in this browser) ----------
+// ---------- Accounts (demo) ----------
+// Accounts live in memory and are saved to this browser's localStorage. When the page runs inside the
+// claude.ai viewer they are also saved to the artifact's private per-viewer database, so they follow the
+// viewer across browsers and devices. Nothing is sent anywhere else.
 // Card numbers are never stored in full: only brand, last 4 digits and expiry. CVVs are never stored.
 const USERS_KEY = "gymbros-users";
 const SESSION_KEY = "gymbros-session";
@@ -19,20 +22,105 @@ const MX_STATES = ["Aguascalientes", "Baja California", "Baja California Sur", "
 const PREF_SIZES = ["S", "M", "L", "XL", "XXL"];
 
 // ---------- Storage ----------
-function readJSON(key, fallback) {
+const DELETED_KEY = "gymbros-deleted";
+const clone = (v) => (v == null ? v : JSON.parse(JSON.stringify(v)));
+function readLocal(key, fallback) {
   try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; }
 }
+const localStorageWorks = (() => {
+  try { localStorage.setItem("gymbros-test", "1"); localStorage.removeItem("gymbros-test"); return true; } catch { return false; }
+})();
+
+// The in-memory copy is the source of truth for this page load
+const store = { users: readLocal(USERS_KEY, {}), session: readLocal(SESSION_KEY, null), deleted: readLocal(DELETED_KEY, {}) };
+let remote = null; // { ref } once the viewer's private database is connected
+
+function readJSON(key, fallback) {
+  const v = key === USERS_KEY ? store.users : key === SESSION_KEY ? store.session : readLocal(key, fallback);
+  return clone(v) ?? fallback;
+}
 function writeJSON(key, value) {
+  if (key === USERS_KEY) store.users = clone(value);
+  else if (key === SESSION_KEY) store.session = value;
   try { localStorage.setItem(key, JSON.stringify(value)); } catch { /* storage unavailable */ }
+  if (key === USERS_KEY || key === SESSION_KEY) saveRemote();
 }
 const getUsers = () => readJSON(USERS_KEY, {});
-const sessionEmail = () => readJSON(SESSION_KEY, null);
+const sessionEmail = () => store.session;
+
+function markDeleted(email) {
+  store.deleted[email] = Date.now();
+  try { localStorage.setItem(DELETED_KEY, JSON.stringify(store.deleted)); } catch { /* storage unavailable */ }
+}
+
+// Writes to the database go one at a time; a burst of changes becomes one write
+let remoteBusy = false, remoteDirty = false;
+async function saveRemote() {
+  if (!remote) return;
+  if (remoteBusy) { remoteDirty = true; return; }
+  remoteBusy = true;
+  try {
+    do {
+      remoteDirty = false;
+      await remote.ref.set({ users: store.users, session: store.session, deleted: store.deleted, savedAt: Date.now() });
+    } while (remoteDirty);
+  } catch (e) {
+    console.warn("No se pudo guardar la cuenta en la base de datos", e?.code || e);
+  } finally { remoteBusy = false; }
+}
+
+// Merge two copies of the accounts: the newer copy of each account wins, deletions win over older copies
+function mergeAccounts(a, b) {
+  const deleted = { ...a.deleted };
+  for (const [k, t] of Object.entries(b.deleted || {})) deleted[k] = Math.max(deleted[k] || 0, t);
+  const users = {};
+  for (const src of [a.users || {}, b.users || {}]) {
+    for (const [email, u] of Object.entries(src)) {
+      const have = users[email];
+      if (!have || (u.updatedAt || 0) > (have.updatedAt || 0)) users[email] = u;
+    }
+  }
+  for (const [email, t] of Object.entries(deleted)) {
+    if (users[email] && (users[email].updatedAt || 0) <= t) delete users[email];
+  }
+  return { users, deleted };
+}
+
+async function connectRemote() {
+  if (!window.claude?.use) return;
+  try {
+    const [db, viewer] = await Promise.all([window.claude.use("db"), window.claude.use("user")]);
+    const uid = db && viewer ? await viewer.id() : null;
+    if (!uid) return;
+    const ref = db.doc(`data/users/${uid}/gymbros`);
+    const snap = await ref.get();
+    const saved = snap.exists ? snap.data() : {};
+    const merged = mergeAccounts(store, saved);
+    store.users = merged.users;
+    store.deleted = merged.deleted;
+    if (!store.session && saved.session && store.users[saved.session]) store.session = saved.session;
+    if (store.session && !store.users[store.session]) store.session = null;
+    try {
+      localStorage.setItem(USERS_KEY, JSON.stringify(store.users));
+      localStorage.setItem(SESSION_KEY, JSON.stringify(store.session));
+      localStorage.setItem(DELETED_KEY, JSON.stringify(store.deleted));
+    } catch { /* storage unavailable */ }
+    remote = { ref };
+    if (JSON.stringify(saved.users || {}) !== JSON.stringify(store.users) || saved.session !== store.session) saveRemote();
+    notifyAccountChange();
+    if (accountDialog.open) renderAccount();
+  } catch (e) {
+    console.warn("Base de datos de cuentas no disponible", e?.code || e);
+  }
+}
+const accountsSync = () => (remote ? "remote" : localStorageWorks ? "local" : "memory");
 
 function getCurrentUser() {
   const email = sessionEmail();
   return email ? getUsers()[email] || null : null;
 }
 function saveCurrentUser(user) {
+  user.updatedAt = Date.now();
   const users = getUsers();
   users[user.email] = user;
   writeJSON(USERS_KEY, users);
@@ -56,16 +144,25 @@ const normEmail = (e) => e.trim().toLowerCase();
 const isEmail = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e);
 const digits = (s) => s.replace(/\D/g, "");
 
+function djb2(text) {
+  let h = 5381;
+  for (const ch of text) h = ((h << 5) + h + ch.charCodeAt(0)) >>> 0;
+  return `djb2-${h.toString(16)}`;
+}
+// SHA-256 where SubtleCrypto exists; a simple hash otherwise (it is marked so it can be checked later)
 async function hashPassword(email, pw) {
   const text = `gymbros:${email}:${pw}`;
   try {
     const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
     return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
   } catch {
-    let h = 5381; // fallback where SubtleCrypto is unavailable
-    for (const ch of text) h = ((h << 5) + h + ch.charCodeAt(0)) >>> 0;
-    return `djb2-${h.toString(16)}`;
+    return djb2(text);
   }
+}
+// Check a password with the same method that created its hash
+async function checkPassword(user, pw) {
+  if (user.passHash.startsWith("djb2-")) return user.passHash === djb2(`gymbros:${user.email}:${pw}`);
+  return user.passHash === await hashPassword(user.email, pw);
 }
 
 // ---------- Cards ----------
@@ -229,11 +326,19 @@ function renderAccount() {
     <div class="tab-panel">${{ profile: profileHtml, payments: paymentsHtml, orders: ordersHtml, settings: settingsHtml }[accountView](user)}</div>`;
 }
 
+function storageNotice() {
+  const mode = accountsSync();
+  if (mode === "remote") return `<p class="hint sync-ok">Tu cuenta se guarda en tu perfil de claude.ai y funciona en cualquier dispositivo.</p>`;
+  if (mode === "local") return `<p class="hint">Demo: tu cuenta se guarda solo en este navegador.</p>`;
+  return `<p class="notice warn">Este navegador no permite que la página guarde datos, así que tu cuenta solo durará mientras la página esté abierta.</p>`;
+}
+
 const loginHtml = () => `
   <form class="stack" id="loginForm" novalidate>
     <p class="muted">Entra para ver tus pedidos, tus métodos de pago guardados y tu perfil.</p>
+    ${storageNotice()}
     <label class="field"><span>Correo electrónico</span><input name="email" id="loginEmail" type="email" autocomplete="email" required></label>
-    <label class="field"><span>Contraseña</span><input name="password" id="loginPassword" type="password" autocomplete="current-password" required></label>
+    <label class="field"><span>Contraseña</span><span class="pw-wrap"><input name="password" id="loginPassword" type="password" autocomplete="current-password" required><button type="button" class="pw-toggle" data-pw aria-label="Mostrar contraseña">Mostrar</button></span></label>
     <div class="form-actions"><button class="btn btn-primary btn-block" type="submit">Iniciar sesión</button></div>
     <p class="switch">¿No tienes cuenta? <button type="button" class="link-btn" data-view="register">Crear cuenta</button></p>
   </form>`;
@@ -241,10 +346,11 @@ const loginHtml = () => `
 const registerHtml = () => `
   <form class="stack" id="registerForm" novalidate>
     <p class="muted">Guarda tu dirección, tus métodos de pago, tu talla favorita y el historial de tus pedidos.</p>
+    ${storageNotice()}
     <label class="field"><span>Nombre completo</span><input name="name" id="regName" autocomplete="name" required></label>
     <label class="field"><span>Correo electrónico</span><input name="email" id="regEmail" type="email" autocomplete="email" required></label>
     <div class="form-grid">
-      <label class="field"><span>Contraseña</span><input name="password" id="regPassword" type="password" autocomplete="new-password" minlength="8" required></label>
+      <label class="field"><span>Contraseña</span><span class="pw-wrap"><input name="password" id="regPassword" type="password" autocomplete="new-password" minlength="8" required><button type="button" class="pw-toggle" data-pw aria-label="Mostrar contraseña">Mostrar</button></span></label>
       <label class="field"><span>Confirmar contraseña</span><input name="confirm" id="regConfirm" type="password" autocomplete="new-password" required></label>
     </div>
     <p class="hint">Mínimo 8 caracteres.</p>
@@ -350,6 +456,15 @@ function settingsHtml(u) {
 
 // ---------- Account events ----------
 accountBody.addEventListener("click", (e) => {
+  const pw = e.target.closest("[data-pw]");
+  if (pw) {
+    const input = pw.previousElementSibling;
+    const show = input.type === "password";
+    input.type = show ? "text" : "password";
+    pw.textContent = show ? "Ocultar" : "Mostrar";
+    pw.setAttribute("aria-label", show ? "Ocultar contraseña" : "Mostrar contraseña");
+    return;
+  }
   const viewBtn = e.target.closest("[data-view]");
   if (viewBtn) { accountView = viewBtn.dataset.view; confirmingDelete = false; renderAccount(); return; }
 
@@ -378,6 +493,7 @@ accountBody.addEventListener("click", (e) => {
   else if (action === "delete-cancel") { confirmingDelete = false; renderAccount(); }
   else if (action === "delete-confirm") {
     const users = getUsers();
+    markDeleted(sessionEmail());
     delete users[sessionEmail()];
     writeJSON(USERS_KEY, users);
     writeJSON(SESSION_KEY, null);
@@ -398,11 +514,19 @@ accountBody.addEventListener("submit", async (e) => {
   const form = e.target;
   const data = formData(form);
 
+  if (form.id === "loginForm" || form.id === "registerForm") await waitForAccounts();
+
   if (form.id === "loginForm") {
     const email = normEmail(data.email || "");
+    if (!isEmail(email)) return setFormError(form, "Escribe un correo válido.");
     const user = getUsers()[email];
-    if (!user || user.passHash !== await hashPassword(email, data.password || "")) {
-      return setFormError(form, "El correo o la contraseña no coinciden.");
+    if (!user) {
+      return setFormError(form, accountsSync() === "remote"
+        ? "No hay una cuenta con ese correo. Revisa que esté bien escrito o crea una cuenta."
+        : "No hay una cuenta con ese correo en este navegador. Las cuentas de esta demo se guardan en el navegador donde las creaste: si la creaste en otro navegador, otro dispositivo o abriendo la página de otra forma, entra desde ahí o crea una nueva.");
+    }
+    if (!(await checkPassword(user, data.password || ""))) {
+      return setFormError(form, "La contraseña no es correcta. Toca \"Mostrar\" para revisar lo que escribiste.");
     }
     writeJSON(SESSION_KEY, email);
     notifyAccountChange();
@@ -421,8 +545,9 @@ accountBody.addEventListener("submit", async (e) => {
     const user = {
       name: data.name.trim(), email, passHash: await hashPassword(email, data.password), phone: "", address: {},
       prefSize: "", prefs: { newsletter: !!data.newsletter, restock: false, seasonal: !!data.newsletter },
-      payments: [], defaultPayment: null, orders: [], createdAt: new Date().toISOString(),
+      payments: [], defaultPayment: null, orders: [], createdAt: new Date().toISOString(), updatedAt: Date.now(),
     };
+    delete store.deleted[email];
     const users = getUsers();
     users[email] = user;
     writeJSON(USERS_KEY, users);
@@ -468,7 +593,7 @@ accountBody.addEventListener("submit", async (e) => {
 
   if (form.id === "passwordForm") {
     const user = getCurrentUser();
-    if (user.passHash !== await hashPassword(user.email, data.current || "")) return setFormError(form, "La contraseña actual no es correcta.");
+    if (!(await checkPassword(user, data.current || ""))) return setFormError(form, "La contraseña actual no es correcta.");
     if ((data.next || "").length < 8) return setFormError(form, "La nueva contraseña debe tener al menos 8 caracteres.");
     if (data.next !== data.confirm) return setFormError(form, "Las contraseñas nuevas no coinciden.");
     user.passHash = await hashPassword(user.email, data.next);
@@ -486,3 +611,6 @@ document.addEventListener("click", (e) => {
 });
 
 notifyAccountChange();
+// Login and sign-up wait (briefly) for the saved accounts to arrive from the database
+const remoteReady = connectRemote();
+const waitForAccounts = () => Promise.race([remoteReady, new Promise((r) => setTimeout(r, 4000))]);
