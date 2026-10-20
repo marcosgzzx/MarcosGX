@@ -105,9 +105,9 @@ h2 { font-size: clamp(2.2rem, 5vw, 3.6rem); }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 20px; }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column; animation: fadeUp .4s both; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } }
-.card-media { position: relative; flex-shrink: 0; aspect-ratio: 1; display: grid; place-items: center; background: radial-gradient(circle at 50% 45%, #3a3a3a, var(--surface-2) 70%); }
+.card-media { position: relative; flex-shrink: 0; aspect-ratio: 1; min-height: 0; overflow: hidden; display: grid; place-items: center; background: radial-gradient(circle at 50% 45%, #3a3a3a, var(--surface-2) 70%); }
 .card-media .media { width: 62%; height: 62%; transition: transform .3s; }
-.card-media .photo { width: 74%; height: 74%; margin-top: 18px; object-fit: contain; filter: drop-shadow(0 12px 18px rgba(0,0,0,.5)); }
+.card-media .photo { position: absolute; top: 15%; left: 13%; width: 74%; height: 76%; object-fit: contain; filter: drop-shadow(0 12px 18px rgba(0,0,0,.5)); }
 .card:hover .card-media .media { transform: scale(1.06) rotate(-2deg); }
 .tag { position: absolute; top: 12px; left: 12px; background: var(--accent); color: var(--accent-ink); font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; padding: 4px 9px; border-radius: 999px; }
 .card-body { padding: 18px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
