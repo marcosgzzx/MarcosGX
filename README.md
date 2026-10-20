@@ -14,10 +14,12 @@ python3 -m http.server 8000
 
 ## Files
 
-- `index.html`: page structure (hero, categories, shop, brands, FAQ, newsletter, cart drawer)
+- `index.html`: page structure (hero, categories, shop, brands, about, FAQ, newsletter, cart drawer, search/account/checkout dialogs)
 - `assets/products/`: Birdman Falcon product photos with the background removed
 - `assets/logo-light.png`: the GYM BRO'S logo, recolored for the dark background
 - `styles.css`: styling and responsive layout
-- `script.js`: brands, product catalog, filtering by category or brand, variant selection and a cart saved in `localStorage`
+- `script.js`: brands, product catalog, filtering, sorting, search, variant selection and the cart (max 10 items), saved in `localStorage`
+- `account.js`: demo accounts: sign up, log in, profile and address, favorite size, saved payment methods (credit, debit, Amex, PayPal, Mercado Pago, gift card), order history and settings
+- `checkout.js`: three-step checkout (summary with discount code, shipping, payment) and the order confirmation. Demo discount codes live in `DISCOUNTS`
 
-Checkout and newsletter signup are demo-only; nothing is sent anywhere.
+Accounts, payments, orders and the newsletter signup are demo-only: everything is stored in the visitor's browser and nothing is sent anywhere or charged. Passwords are stored hashed, card numbers only as brand + last 4 digits, and CVVs are never stored. A real store needs a backend and a payment provider (for example Stripe, Mercado Pago or PayPal) before taking real orders.

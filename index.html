@@ -20,10 +20,18 @@
         <a href="#shop" data-filter="apparel">Ropa</a>
         <a href="#shop" data-filter="supplements">Suplementos</a>
         <a href="#brands">Marcas</a>
+        <a href="#about">Nosotros</a>
         <a href="#faq">Preguntas</a>
       </nav>
       <div class="header-actions">
-        <button class="cart-btn" id="cartBtn" aria-label="Abrir carrito">
+        <button class="icon-action" id="searchBtn" aria-label="Buscar productos" title="Buscar (/)">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <button class="icon-action account-btn" id="accountBtn" aria-label="Mi cuenta">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <span class="account-initial" id="accountInitial" hidden></span>
+        </button>
+        <button class="icon-action cart-btn" id="cartBtn" aria-label="Abrir carrito">
           <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 7h12l-1 13H7L6 7zm3 0V5a3 3 0 0 1 6 0v2"/></svg>
           <span class="cart-count" id="cartCount">0</span>
         </button>
@@ -40,7 +48,7 @@
         <div class="hero-copy">
           <p class="eyebrow">Ropa de gym · Suplementos</p>
           <h1>Las marcas<br>con las que<br><em>entrenas.</em><br>Una tienda.</h1>
-          <p class="lede">En GYM BRO'S encuentras playeras, shorts y calcetas de las marcas que de verdad usan los que entrenan, más proteína Falcon y creatina Birdman. Un carrito, un solo pago.</p>
+          <p class="lede">En GYM BRO'S encuentras ropa de Gymshark y de las marcas que de verdad usan los que entrenan, más proteína Falcon y creatina Birdman. Un carrito, un solo pago.</p>
           <div class="hero-ctas">
             <a href="#shop" class="btn btn-primary" data-filter="apparel">Ver ropa</a>
             <a href="#shop" class="btn btn-ghost" data-filter="supplements">Ver suplementos</a>
@@ -69,13 +77,24 @@
           <h2>La tienda</h2>
           <p class="shop-status" id="shopStatus" role="status"></p>
         </div>
-        <div class="filters" aria-label="Filtrar productos" id="filters">
-          <button class="chip active" data-filter="all">Todo</button>
-          <button class="chip" data-filter="tees">Playeras</button>
-          <button class="chip" data-filter="shorts">Shorts</button>
-          <button class="chip" data-filter="socks">Calcetas</button>
-          <button class="chip" data-filter="protein">Proteína</button>
-          <button class="chip" data-filter="creatine">Creatina</button>
+        <div class="shop-tools">
+          <div class="filters" aria-label="Filtrar productos" id="filters">
+            <button class="chip active" data-filter="all">Todo</button>
+            <button class="chip" data-filter="tees">Playeras</button>
+            <button class="chip" data-filter="shorts">Shorts</button>
+            <button class="chip" data-filter="socks">Calcetas</button>
+            <button class="chip" data-filter="protein">Proteína</button>
+            <button class="chip" data-filter="creatine">Creatina</button>
+          </div>
+          <label class="sort">
+            <span class="sr-only">Ordenar productos</span>
+            <select id="sortSelect">
+              <option value="featured">Destacados</option>
+              <option value="price-asc">Precio: menor a mayor</option>
+              <option value="price-desc">Precio: mayor a menor</option>
+              <option value="name">Nombre (A–Z)</option>
+            </select>
+          </label>
         </div>
       </div>
       <div class="grid" id="productGrid"></div>
@@ -105,6 +124,57 @@
       <div class="brand-list" id="brandList"></div>
     </section>
 
+    <section class="about" id="about">
+      <div class="container">
+        <div class="about-intro">
+          <div>
+            <p class="eyebrow">Nosotros</p>
+            <h2>Hecho por gente<br>que <em>entrena.</em></h2>
+          </div>
+          <div class="about-copy">
+            <p>GYM BRO'S nació de una idea simple: conseguir buena ropa de gym y suplementos confiables no debería obligarte a comprar en cinco tiendas distintas.</p>
+            <p>Por eso juntamos en un solo lugar las marcas que usamos en el gym, con precios claros en pesos, un solo carrito y las formas de pago que ya usas.</p>
+          </div>
+        </div>
+
+        <ul class="values">
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/></svg>
+            <h3>Marcas que conocemos</h3>
+            <p>Solo vendemos lo que usaríamos nosotros, como Gymshark en ropa y Birdman en suplementos.</p>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h13v9H3zM16 10h3l2 3v3h-5z"/><circle cx="7" cy="18" r="1.8"/><circle cx="18" cy="18" r="1.8"/></svg>
+            <h3>Envío gratis desde $1,000</h3>
+            <p>Arma tu pedido con ropa y suplementos y llega todo junto.</p>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4h4"/></svg>
+            <h3>30 días para devoluciones</h3>
+            <p>Ropa sin usar y suplementos sin abrir, de cualquier marca.</p>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18M7 15h4"/></svg>
+            <h3>Paga como prefieras</h3>
+            <p>Tarjeta de crédito o débito, American Express, PayPal, Mercado Pago, OXXO o tarjeta de regalo.</p>
+          </li>
+        </ul>
+
+        <div class="how">
+          <h3 class="how-title">Cómo comprar</h3>
+          <ol class="steps">
+            <li><span class="step-n">1</span><div><strong>Elige</strong><p>Busca por marca, categoría o sabor y agrega hasta 10 productos a tu carrito.</p></div></li>
+            <li><span class="step-n">2</span><div><strong>Paga</strong><p>Usa un código de descuento si tienes uno y elige tu método de pago.</p></div></li>
+            <li><span class="step-n">3</span><div><strong>Recibe</strong><p>Sigue tu pedido desde tu cuenta, en la sección Pedidos.</p></div></li>
+          </ol>
+        </div>
+
+        <div class="pay-strip" aria-label="Métodos de pago aceptados">
+          <span>Visa</span><span>Mastercard</span><span>American Express</span><span>PayPal</span><span>Mercado Pago</span><span>OXXO</span><span>Tarjeta de regalo</span>
+        </div>
+      </div>
+    </section>
+
     <section class="faq container" id="faq">
       <h2>Preguntas frecuentes</h2>
       <details>
@@ -113,7 +183,23 @@
       </details>
       <details>
         <summary>¿Cómo quedan las tallas?</summary>
-        <p>Depende de la marca. Cada ficha indica si es talla normal u oversized. Si tienes duda con un corte oversized, pide una talla más chica.</p>
+        <p>Depende de la marca. Cada ficha indica si es talla normal, oversized o muscle fit (entallada). Puedes guardar tu talla favorita en tu perfil y la tienda la elegirá por ti.</p>
+      </details>
+      <details>
+        <summary>¿Qué formas de pago aceptan?</summary>
+        <p>Tarjeta de crédito, tarjeta de débito, American Express, PayPal, Mercado Pago, pago en efectivo en OXXO y tarjetas de regalo GYM BRO'S. Si tienes cuenta, puedes guardar tus métodos de pago para la próxima vez.</p>
+      </details>
+      <details>
+        <summary>¿Cómo uso un código de descuento?</summary>
+        <p>Al pagar, en el primer paso (Resumen) escribe tu código en "Código de descuento" y presiona Aplicar. El descuento se ve antes de confirmar.</p>
+      </details>
+      <details>
+        <summary>¿Hay un límite de productos por pedido?</summary>
+        <p>Sí, hasta 10 productos por pedido. Si necesitas más, haz un segundo pedido.</p>
+      </details>
+      <details>
+        <summary>¿Necesito una cuenta para comprar?</summary>
+        <p>No, puedes comprar como invitado. Con una cuenta guardas tu dirección, tus métodos de pago, tu talla favorita y el historial de tus pedidos.</p>
       </details>
       <details>
         <summary>¿La proteína es vegetal?</summary>
@@ -145,9 +231,32 @@
 
   <footer class="site-footer">
     <div class="container footer-inner">
-      <a href="#" class="logo" aria-label="Inicio de GYM BRO'S"><img src="assets/logo-light.png" alt="GYM BRO'S"></a>
+      <div class="footer-top">
+        <a href="#" class="logo" aria-label="Inicio de GYM BRO'S"><img src="assets/logo-light.png" alt="GYM BRO'S"></a>
+        <div class="footer-cols">
+          <div>
+            <h4>Tienda</h4>
+            <a href="#shop" data-filter="apparel">Ropa</a>
+            <a href="#shop" data-filter="supplements">Suplementos</a>
+            <a href="#brands">Marcas</a>
+          </div>
+          <div>
+            <h4>Ayuda</h4>
+            <a href="#faq">Preguntas frecuentes</a>
+            <a href="#about">Nosotros</a>
+            <a href="#about">Cómo comprar</a>
+          </div>
+          <div>
+            <h4>Cuenta</h4>
+            <button class="footer-link" data-account="profile">Mi perfil</button>
+            <button class="footer-link" data-account="orders">Mis pedidos</button>
+            <button class="footer-link" data-account="payments">Métodos de pago</button>
+          </div>
+        </div>
+      </div>
       <p class="fine">Los nombres de marca y marcas registradas pertenecen a sus respectivos dueños. GYM BRO'S es una tienda independiente.</p>
       <p class="fine">Los suplementos no son medicamentos. El consumo de estos productos es responsabilidad de quien los recomienda y de quien los usa.</p>
+      <p class="fine">Versión de demostración: las cuentas, los pagos y los pedidos se guardan solo en este navegador y no se cobra nada. No ingreses datos reales de tarjetas.</p>
       <p class="fine">© 2026 GYM BRO'S. Todos los derechos reservados.</p>
     </div>
   </footer>
@@ -162,13 +271,55 @@
     <div class="cart-foot">
       <div class="ship-meter"><div class="ship-bar" id="shipBar"></div></div>
       <p class="ship-msg" id="shipMsg"></p>
+      <p class="cart-limit" id="cartLimit"></p>
       <div class="cart-total"><span>Subtotal (MXN)</span><span id="cartTotal">$0.00</span></div>
       <button class="btn btn-primary btn-block" id="checkoutBtn">Pagar</button>
     </div>
   </aside>
 
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <dialog class="modal search-modal" id="searchDialog" aria-label="Buscar productos">
+    <form class="search-bar" id="searchForm">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <label for="searchInput" class="sr-only">Buscar</label>
+      <input id="searchInput" type="search" placeholder="Busca playeras, proteína, sabores…" autocomplete="off">
+      <button type="button" class="icon-btn" data-close aria-label="Cerrar búsqueda">✕</button>
+    </form>
+    <div class="search-suggest" id="searchSuggest">
+      <span>Prueba con:</span>
+      <button type="button" class="chip" data-q="Gymshark">Gymshark</button>
+      <button type="button" class="chip" data-q="Proteína">Proteína</button>
+      <button type="button" class="chip" data-q="Creatina">Creatina</button>
+      <button type="button" class="chip" data-q="Pumpkin Spice">Pumpkin Spice</button>
+      <button type="button" class="chip" data-q="Manga larga">Manga larga</button>
+    </div>
+    <ul class="search-results" id="searchResults"></ul>
+  </dialog>
 
+  <dialog class="modal account-modal" id="accountDialog" aria-labelledby="accountTitle">
+    <div class="modal-head">
+      <h3 id="accountTitle">Mi cuenta</h3>
+      <button type="button" class="icon-btn" data-close aria-label="Cerrar">✕</button>
+    </div>
+    <div class="modal-body" id="accountBody"></div>
+  </dialog>
+
+  <dialog class="modal checkout-modal" id="checkoutDialog" aria-labelledby="checkoutTitle">
+    <div class="modal-head">
+      <h3 id="checkoutTitle">Pagar</h3>
+      <button type="button" class="icon-btn" data-close aria-label="Cerrar">✕</button>
+    </div>
+    <ol class="stepper" id="stepper">
+      <li data-step="summary">Resumen</li>
+      <li data-step="shipping">Envío</li>
+      <li data-step="payment">Pago</li>
+    </ol>
+    <div class="modal-body" id="checkoutBody"></div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" popover="manual"></div>
+
+  <script src="account.js"></script>
   <script src="script.js"></script>
+  <script src="checkout.js"></script>
 </body>
 </html>

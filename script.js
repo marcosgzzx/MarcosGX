@@ -92,6 +92,7 @@ const products = [
 
 const GROUPS = { apparel: ["tees", "shorts", "socks"], supplements: ["protein", "creatine"] };
 const FREE_SHIP = 1000;
+const MAX_ITEMS = 10; // most products allowed in one order
 const mxn = new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" });
 const money = (n) => mxn.format(n);
 const packOf = (p, sel) => p.packs && (p.packs.find((k) => k.name === sel.pack) || p.packs[0]);
@@ -100,6 +101,8 @@ const priceOf = (p, sel) => (p.flavors && flavorOf(p, sel).price) || packOf(p, s
 // ---------- State ----------
 const selection = {}; // product id -> { color, size, flavor }
 let cart = load();
+let currentFilter = "all";
+let currentSort = "featured";
 
 function load() {
   try {
@@ -147,8 +150,22 @@ function matches(p, filter) {
   return [p.category, ...(p.alsoIn || [])].some((c) => cats.includes(c));
 }
 
-function renderGrid(filter = "all") {
-  const list = products.filter((p) => matches(p, filter));
+function defaultSize(p) {
+  if (!p.sizes) return undefined;
+  const fav = getCurrentUser()?.prefSize;
+  return p.sizes.includes(fav) ? fav : p.sizes[Math.min(1, p.sizes.length - 1)];
+}
+
+const SORTS = {
+  featured: () => 0,
+  "price-asc": (a, b) => priceOf(a, selection[a.id] || {}) - priceOf(b, selection[b.id] || {}),
+  "price-desc": (a, b) => priceOf(b, selection[b.id] || {}) - priceOf(a, selection[a.id] || {}),
+  name: (a, b) => a.name.localeCompare(b.name, "es"),
+};
+
+function renderGrid(filter = currentFilter) {
+  currentFilter = filter;
+  const list = products.filter((p) => matches(p, filter)).sort(SORTS[currentSort]);
   const status = document.getElementById("shopStatus");
   status.textContent = filter.startsWith("brand:")
     ? `${list.length} de ${BRANDS[filter.slice(6)].name} · `
@@ -157,7 +174,7 @@ function renderGrid(filter = "all") {
 
   grid.innerHTML = list.map((p, i) => {
     const sel = selection[p.id] ||= {
-      color: p.colors?.[0], size: p.sizes?.[Math.min(1, p.sizes.length - 1)], flavor: p.flavors?.[0].name, pack: p.packs?.[0].name,
+      color: p.colors?.[0], size: defaultSize(p), flavor: p.flavors?.[0].name, pack: p.packs?.[0].name,
     };
     const colorRow = p.colors ? `<div class="option-row" aria-label="Color">${p.colors.map((c) =>
       `<button class="swatch ${c === sel.color ? "active" : ""}" style="background:${COLORS[c].hex}" data-color="${c}" title="${COLORS[c].name}" aria-label="${COLORS[c].name}"></button>`).join("")}</div>` : "";
@@ -205,6 +222,11 @@ grid.addEventListener("click", (e) => {
 });
 
 // ---------- Filters ----------
+document.getElementById("sortSelect").addEventListener("change", (e) => {
+  currentSort = e.target.value;
+  renderGrid();
+});
+
 function setFilter(filter) {
   document.querySelectorAll("#filters .chip, .brand-card").forEach((c) =>
     c.classList.toggle("active", c.dataset.filter === filter));
@@ -228,7 +250,19 @@ function variantLabel(item) {
   return [item.color && COLORS[item.color].name, item.size, item.pack, item.flavor].filter(Boolean).join(" · ");
 }
 
+const cartCount = () => cart.reduce((n, i) => n + i.qty, 0);
+const cartSubtotal = () => cart.reduce((s, i) => s + i.qty * priceOf(products.find((p) => p.id === i.id), i), 0);
+function clearCart() {
+  cart = [];
+  save();
+  renderCart();
+}
+
 function addToCart(p, sel) {
+  if (cartCount() >= MAX_ITEMS) {
+    toast(`Máximo ${MAX_ITEMS} productos por pedido`);
+    return;
+  }
   const variant = { color: sel.color, size: sel.size, pack: sel.pack, flavor: sel.flavor };
   const key = [p.id, variant.color, variant.size, variant.pack, variant.flavor].join("|");
   const existing = cart.find((i) => i.key === key);
@@ -242,8 +276,9 @@ function addToCart(p, sel) {
 
 function renderCart() {
   const items = document.getElementById("cartItems");
-  const count = cart.reduce((n, i) => n + i.qty, 0);
-  const total = cart.reduce((s, i) => s + i.qty * priceOf(products.find((p) => p.id === i.id), i), 0);
+  const count = cartCount();
+  const total = cartSubtotal();
+  const full = count >= MAX_ITEMS;
   countEl.textContent = count;
 
   items.innerHTML = cart.length ? cart.map((i) => {
@@ -255,7 +290,7 @@ function renderCart() {
           <h4>${p.name}</h4>
           <div class="meta">${BRANDS[p.brand].name}</div>
           <div class="meta">${variantLabel(i)}</div>
-          <div class="qty"><button data-act="dec" aria-label="Quitar uno">−</button><span>${i.qty}</span><button data-act="inc" aria-label="Agregar uno">+</button></div>
+          <div class="qty"><button data-act="dec" aria-label="Quitar uno">−</button><span>${i.qty}</span><button data-act="inc" aria-label="Agregar uno" ${full ? "disabled" : ""}>+</button></div>
         </div>
         <div><div class="line-price">${money(priceOf(p, i) * i.qty)}</div><button class="remove" data-act="rm">Eliminar</button></div>
       </div>`;
@@ -266,6 +301,9 @@ function renderCart() {
   document.getElementById("shipMsg").textContent = total >= FREE_SHIP
     ? "¡Ya tienes envío gratis! 💪"
     : `Te faltan ${money(FREE_SHIP - total)} para el envío gratis`;
+  const limit = document.getElementById("cartLimit");
+  limit.textContent = full ? `Llegaste al máximo de ${MAX_ITEMS} productos por pedido.` : `${count} de ${MAX_ITEMS} productos`;
+  limit.classList.toggle("full", full);
   document.getElementById("checkoutBtn").disabled = !cart.length;
 }
 
@@ -273,7 +311,10 @@ document.getElementById("cartItems").addEventListener("click", (e) => {
   const act = e.target.dataset.act;
   if (!act) return;
   const item = cart.find((i) => i.key === e.target.closest(".cart-item").dataset.key);
-  if (act === "inc") item.qty++;
+  if (act === "inc") {
+    if (cartCount() >= MAX_ITEMS) return toast(`Máximo ${MAX_ITEMS} productos por pedido`);
+    item.qty++;
+  }
   if (act === "dec") item.qty--;
   if (act === "rm" || item.qty < 1) cart = cart.filter((i) => i !== item);
   save();
@@ -295,13 +336,6 @@ document.getElementById("cartClose").addEventListener("click", closeCart);
 overlay.addEventListener("click", closeCart);
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeCart(); });
 
-document.getElementById("checkoutBtn").addEventListener("click", () => {
-  cart = [];
-  save();
-  renderCart();
-  closeCart();
-  toast("¡Pedido realizado, gracias bro! (pago de prueba)");
-});
 
 // ---------- Mobile menu ----------
 const menuBtn = document.getElementById("menuBtn");
@@ -316,7 +350,7 @@ nav.addEventListener("click", (e) => { if (e.target.tagName === "A") closeMenu()
 // ---------- Newsletter ----------
 document.getElementById("newsletterForm").addEventListener("submit", (e) => {
   e.preventDefault();
-  document.getElementById("formMsg").textContent = "¡Listo! Revisa tu correo para tu 10% de descuento.";
+  document.getElementById("formMsg").textContent = "¡Listo! Tu código de 10% de descuento es BROS10. Úsalo al pagar.";
   e.target.reset();
 });
 
@@ -325,9 +359,16 @@ let toastTimer;
 function toast(msg) {
   const t = document.getElementById("toast");
   t.textContent = msg;
-  t.classList.add("show");
+  // As a popover the toast sits in the top layer, above any open dialog
+  if (t.showPopover) {
+    try { if (t.matches(":popover-open")) t.hidePopover(); t.showPopover(); } catch { /* popover unsupported */ }
+  }
+  requestAnimationFrame(() => t.classList.add("show"));
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove("show"), 2200);
+  toastTimer = setTimeout(() => {
+    t.classList.remove("show");
+    setTimeout(() => { if (!t.classList.contains("show") && t.matches?.(":popover-open")) t.hidePopover(); }, 300);
+  }, 2400);
 }
 
 // ---------- Brand sections ----------
@@ -347,6 +388,95 @@ document.getElementById("supplementBrand").textContent = BRANDS.birdman.name;
 document.querySelectorAll("[data-count]").forEach((el) => {
   const n = products.filter((p) => matches(p, el.dataset.count)).length;
   el.textContent = `${n} producto${n === 1 ? "" : "s"}`;
+});
+
+// ---------- Search ----------
+const searchDialog = document.getElementById("searchDialog");
+const searchInput = document.getElementById("searchInput");
+const searchResults = document.getElementById("searchResults");
+const CATEGORY_WORDS = { tees: "playera playeras camiseta", shorts: "short shorts", socks: "calcetas calcetines",
+  protein: "proteína proteina", creatine: "creatina" };
+const fold = (s) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+
+function searchText(p) {
+  return fold([p.name, BRANDS[p.brand].name, BRANDS[p.brand].kind, p.desc, p.tag, CATEGORY_WORDS[p.category],
+    ...(p.alsoIn || []).map((c) => CATEGORY_WORDS[c]), ...(p.colors || []).map((c) => COLORS[c].name),
+    ...(p.packs || []).map((k) => k.name), ...(p.flavors || []).map((f) => f.name)].filter(Boolean).join(" "));
+}
+
+function runSearch() {
+  const terms = fold(searchInput.value.trim()).split(/\s+/).filter(Boolean);
+  document.getElementById("searchSuggest").hidden = terms.length > 0;
+  if (!terms.length) { searchResults.innerHTML = ""; return; }
+  const hits = products.filter((p) => { const t = searchText(p); return terms.every((w) => t.includes(w)); });
+  searchResults.innerHTML = hits.length ? hits.map((p) => {
+    const sel = selection[p.id] || {};
+    // If the query names a flavor or size/sleeve, show (and open) the product with that option
+    // The option matching the most query words wins; a tie picks nothing
+    const pick = (opts) => {
+      if (!opts || opts.length < 2) return undefined;
+      const scored = opts.map((o) => [o, terms.filter((t) => fold(o.name).includes(t)).length]).sort((a, b) => b[1] - a[1]);
+      return scored[0][1] > 0 && scored[0][1] > scored[1][1] ? scored[0][0] : undefined;
+    };
+    const flavor = pick(p.flavors), pack = pick(p.packs), color = pick(p.colors?.map((c) => ({ key: c, name: COLORS[c].name })));
+    const view = { ...sel, color: color?.key || sel.color || p.colors?.[0], ...(flavor && { flavor: flavor.name }), ...(pack && { pack: pack.name }) };
+    const extra = [color?.name, flavor?.name, pack?.name].filter(Boolean).join(" · ");
+    return `<li><button type="button" class="result" data-id="${p.id}"${flavor ? ` data-flavor="${flavor.name}"` : ""}${pack ? ` data-pack="${pack.name}"` : ""}${color ? ` data-color="${color.key}"` : ""}>
+      <span class="result-thumb">${media(p, view)}</span>
+      <span class="result-text"><strong>${p.name}</strong><span>${BRANDS[p.brand].name}${extra ? ` · ${extra}` : ""}</span></span>
+      <span class="result-price">${money(priceOf(p, view))}</span>
+    </button></li>`;
+  }).join("") : `<li class="no-results">No encontramos "${searchInput.value.replace(/[<>&"]/g, "")}". Prueba con una marca, categoría o sabor.</li>`;
+}
+
+function openSearch() {
+  searchDialog.showModal();
+  searchInput.select();
+  runSearch();
+}
+
+function goToProduct(id, flavor, pack, color) {
+  searchDialog.close();
+  setFilter("all");
+  if (flavor) selection[id].flavor = flavor;
+  if (pack) selection[id].pack = pack;
+  if (color) selection[id].color = color;
+  renderGrid();
+  const card = grid.querySelector(`.card[data-id="${id}"]`);
+  card.scrollIntoView({ block: "center" });
+  card.classList.remove("flash"); void card.offsetWidth; card.classList.add("flash");
+}
+
+document.getElementById("searchBtn").addEventListener("click", openSearch);
+searchInput.addEventListener("input", runSearch);
+// In a search input, Escape would only clear the text; close the search instead
+searchInput.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") { e.preventDefault(); searchDialog.close(); }
+});
+document.getElementById("searchForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const first = searchResults.querySelector(".result");
+  if (first) goToProduct(first.dataset.id, first.dataset.flavor, first.dataset.pack, first.dataset.color);
+});
+searchDialog.addEventListener("click", (e) => {
+  const chip = e.target.closest("[data-q]");
+  if (chip) { searchInput.value = chip.dataset.q; runSearch(); searchInput.focus(); }
+  const result = e.target.closest(".result");
+  if (result) goToProduct(result.dataset.id, result.dataset.flavor, result.dataset.pack, result.dataset.color);
+});
+document.addEventListener("keydown", (e) => {
+  const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName);
+  if (e.key === "/" && !typing && !document.querySelector("dialog[open]")) { e.preventDefault(); openSearch(); }
+});
+
+// A new favourite size (or logging in/out) changes the default size on apparel cards
+let sizeKey = `${getCurrentUser()?.email}|${getCurrentUser()?.prefSize}`;
+onAccountChange((user) => {
+  const key = `${user?.email}|${user?.prefSize}`;
+  if (key === sizeKey) return;
+  sizeKey = key;
+  products.forEach((p) => { if (p.sizes && selection[p.id]) selection[p.id].size = defaultSize(p); });
+  if (grid.children.length) renderGrid();
 });
 
 renderGrid();
