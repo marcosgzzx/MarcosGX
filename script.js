@@ -16,6 +16,7 @@ const COLORS = {
   white: { name: "Blanco", hex: "#f7f7f5" },
   "negro-azul": { name: "Negro/Azul", hex: "linear-gradient(135deg, #111 50%, #1d9c95 50%)" },
   "negro-rojo": { name: "Negro/Rojo", hex: "linear-gradient(135deg, #111 50%, #b3141e 50%)" },
+  "negro-gris": { name: "Negro/Gris", hex: "linear-gradient(135deg, #111 50%, #8a8a8a 50%)" },
 };
 const APPAREL_SIZES = ["S", "M", "L", "XL", "XXL"];
 
@@ -32,7 +33,7 @@ const BRANDS = {
 const products = [
   { id: "gymshark-onyx-5", brand: "gymshark", name: "Onyx 5.0 Seamless Muscle Fit", category: "tees", price: 1450, tag: "Nuevo",
     desc: "Playera sin costuras de corte muscle fit, entallada al cuerpo.",
-    colors: ["negro-azul", "negro-rojo"], sizes: APPAREL_SIZES,
+    colors: ["negro-azul", "negro-rojo", "negro-gris"], sizes: APPAREL_SIZES,
     packLabel: "Manga", defaultPack: "Manga corta",
     packs: [{ name: "Sin mangas", price: 1300 }, { name: "Manga corta", price: 1450 }, { name: "Manga larga", price: 1600 }],
     // Pack prices are for size M; each size below M costs $100 less, each size above $100 more
@@ -45,6 +46,9 @@ const products = [
       "negro-rojo": { "Sin mangas": "assets/products/gymshark-onyx-negro-rojo-sinmangas.webp",
                       "Manga corta": "assets/products/gymshark-onyx-negro-rojo-corta.webp",
                       "Manga larga": "assets/products/gymshark-onyx-negro-rojo-larga.webp" },
+      "negro-gris": { "Sin mangas": "assets/products/gymshark-onyx-negro-gris-sinmangas.webp",
+                      "Manga corta": "assets/products/gymshark-onyx-negro-gris-corta.webp",
+                      "Manga larga": "assets/products/gymshark-onyx-negro-gris-larga.webp" },
     } },
   { id: "ironclad-essential-tee", brand: "ironclad", name: "Playera Essential", category: "tees", price: 599, art: "tee", tag: "Más vendido",
     desc: "Algodón grueso de 240 g/m². Corte atlético, talla normal.",
