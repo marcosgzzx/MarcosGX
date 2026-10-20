@@ -34,6 +34,8 @@ const products = [
     desc: "Playera sin costuras de corte muscle fit, entallada al cuerpo.",
     colors: ["negro-azul", "negro-rojo"], sizes: APPAREL_SIZES,
     packLabel: "Manga", packs: [{ name: "Manga corta", price: 1450 }, { name: "Manga larga", price: 1600 }],
+    // Pack prices are for size M; each size below M costs $100 less, each size above $100 more
+    sizePricing: { base: "M", step: 100 },
     // Photo per color and sleeve length
     photos: {
       "negro-azul": { "Manga corta": "assets/products/gymshark-onyx-negro-azul-corta.webp",
@@ -96,7 +98,11 @@ const MAX_ITEMS = 10; // most products allowed in one order
 const mxn = new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" });
 const money = (n) => mxn.format(n);
 const packOf = (p, sel) => p.packs && (p.packs.find((k) => k.name === sel.pack) || p.packs[0]);
-const priceOf = (p, sel) => (p.flavors && flavorOf(p, sel).price) || packOf(p, sel)?.price || p.price;
+const sizeAdjust = (p, sel) => {
+  if (!p.sizePricing || !sel.size) return 0;
+  return (p.sizes.indexOf(sel.size) - p.sizes.indexOf(p.sizePricing.base)) * p.sizePricing.step;
+};
+const priceOf = (p, sel) => ((p.flavors && flavorOf(p, sel).price) || packOf(p, sel)?.price || p.price) + sizeAdjust(p, sel);
 
 // ---------- State ----------
 const selection = {}; // product id -> { color, size, flavor }
