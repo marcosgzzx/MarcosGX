@@ -33,14 +33,17 @@ const products = [
   { id: "gymshark-onyx-5", brand: "gymshark", name: "Onyx 5.0 Seamless Muscle Fit", category: "tees", price: 1450, tag: "Nuevo",
     desc: "Playera sin costuras de corte muscle fit, entallada al cuerpo.",
     colors: ["negro-azul", "negro-rojo"], sizes: APPAREL_SIZES,
-    packLabel: "Manga", packs: [{ name: "Manga corta", price: 1450 }, { name: "Manga larga", price: 1600 }],
+    packLabel: "Manga", defaultPack: "Manga corta",
+    packs: [{ name: "Sin mangas", price: 1300 }, { name: "Manga corta", price: 1450 }, { name: "Manga larga", price: 1600 }],
     // Pack prices are for size M; each size below M costs $100 less, each size above $100 more
     sizePricing: { base: "M", step: 100 },
     // Photo per color and sleeve length
     photos: {
-      "negro-azul": { "Manga corta": "assets/products/gymshark-onyx-negro-azul-corta.webp",
+      "negro-azul": { "Sin mangas": "assets/products/gymshark-onyx-negro-azul-sinmangas.webp",
+                      "Manga corta": "assets/products/gymshark-onyx-negro-azul-corta.webp",
                       "Manga larga": "assets/products/gymshark-onyx-negro-azul-larga.webp" },
-      "negro-rojo": { "Manga corta": "assets/products/gymshark-onyx-negro-rojo-corta.webp",
+      "negro-rojo": { "Sin mangas": "assets/products/gymshark-onyx-negro-rojo-sinmangas.webp",
+                      "Manga corta": "assets/products/gymshark-onyx-negro-rojo-corta.webp",
                       "Manga larga": "assets/products/gymshark-onyx-negro-rojo-larga.webp" },
     } },
   { id: "ironclad-essential-tee", brand: "ironclad", name: "Playera Essential", category: "tees", price: 599, art: "tee", tag: "Más vendido",
@@ -97,7 +100,7 @@ const FREE_SHIP = 1000;
 const MAX_ITEMS = 10; // most products allowed in one order
 const mxn = new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" });
 const money = (n) => mxn.format(n);
-const packOf = (p, sel) => p.packs && (p.packs.find((k) => k.name === sel.pack) || p.packs[0]);
+const packOf = (p, sel) => p.packs && (p.packs.find((k) => k.name === (sel.pack || p.defaultPack)) || p.packs[0]);
 const sizeAdjust = (p, sel) => {
   if (!p.sizePricing || !sel.size) return 0;
   return (p.sizes.indexOf(sel.size) - p.sizes.indexOf(p.sizePricing.base)) * p.sizePricing.step;
@@ -180,7 +183,7 @@ function renderGrid(filter = currentFilter) {
 
   grid.innerHTML = list.map((p, i) => {
     const sel = selection[p.id] ||= {
-      color: p.colors?.[0], size: defaultSize(p), flavor: p.flavors?.[0].name, pack: p.packs?.[0].name,
+      color: p.colors?.[0], size: defaultSize(p), flavor: p.flavors?.[0].name, pack: p.defaultPack || p.packs?.[0].name,
     };
     const colorRow = p.colors ? `<div class="option-row" aria-label="Color">${p.colors.map((c) =>
       `<button class="swatch ${c === sel.color ? "active" : ""}" style="background:${COLORS[c].hex}" data-color="${c}" title="${COLORS[c].name}" aria-label="${COLORS[c].name}"></button>`).join("")}</div>` : "";
