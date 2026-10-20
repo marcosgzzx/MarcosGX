@@ -6,6 +6,10 @@ Static storefront prototype (in Spanish) for GYM BRO'S, an online shop that sell
 
 Prices are in Mexican pesos (MXN). Products and brands live in `products` and `BRANDS` in `script.js`; a category with no products shows "No hay productos disponibles".
 
+## Live demo
+
+https://marcosgzzx.github.io/WebsitePrototype/ (GitHub Pages, served from the repository root; `.nojekyll` turns off Jekyll processing). Outside the claude.ai viewer, GymBro answers with quick built-in replies and accounts, reviews and discount codes are kept in each visitor's browser.
+
 ## Run
 
 No build step. Open `index.html` in a browser, or serve the folder:
