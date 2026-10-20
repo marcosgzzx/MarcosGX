@@ -59,7 +59,7 @@ function summaryHtml() {
   return `
     <ul class="co-items">${cart.map((i) => {
       const p = products.find((x) => x.id === i.id);
-      return `<li><span class="co-thumb">${media(p, i)}</span>
+      return `<li><span class="co-thumb">${media(p, { ...i, slide: 0 })}</span>
         <span class="co-name"><strong>${p.name}</strong><span class="muted">${variantLabel(i)} · ${i.qty} ${i.qty === 1 ? "pieza" : "piezas"}</span></span>
         <span class="co-price">${money(priceOf(p, i) * i.qty)}</span></li>`;
     }).join("")}</ul>

@@ -19,11 +19,15 @@ const COLORS = {
   "negro-gris": { name: "Negro/Gris", hex: "linear-gradient(135deg, #111 50%, #8a8a8a 50%)" },
 };
 const APPAREL_SIZES = ["S", "M", "L", "XL", "XXL"];
+const SHOE_SIZES = ["25", "25.5", "26", "26.5", "27", "27.5", "28", "28.5", "29", "29.5", "30"]; // cm
+// Approximate US men's equivalents for the size guide
+const SHOE_US = { 25: "7", 25.5: "7.5", 26: "8", 26.5: "8.5", 27: "9", 27.5: "9.5", 28: "10", 28.5: "10.5", 29: "11", 29.5: "11.5", 30: "12" };
 
 // Apparel brand names and prices are placeholders: swap in the real brands GYM BRO'S stocks.
 // Prices are in Mexican pesos (MXN). A flavor can override its product's price.
 const BRANDS = {
   gymshark: { name: "Gymshark", kind: "Ropa", blurb: "Playeras de entrenamiento sin costuras, corte muscle fit." },
+  on: { name: "On", kind: "Tenis", blurb: "Tenis de entrenamiento con suela CloudTec." },
   ironclad: { name: "Ironclad Athletics", kind: "Ropa", blurb: "Playeras de algodón grueso hechas para el gym." },
   northlift: { name: "Northlift", kind: "Ropa", blurb: "Shorts elásticos y playeras de entrenamiento." },
   repsupply: { name: "Rep Supply Co.", kind: "Ropa", blurb: "Calcetas acolchadas que no se bajan." },
@@ -50,6 +54,14 @@ const products = [
                       "Manga corta": "assets/products/gymshark-onyx-negro-gris-corta.webp",
                       "Manga larga": "assets/products/gymshark-onyx-negro-gris-larga.webp" },
     } },
+  { id: "on-cloud-x5", brand: "on", name: "Cloud X 5", category: "shoes", price: 3300, tag: "Nuevo",
+    desc: "Tenis de entrenamiento en blanco con agujetas negras. Tallas en centímetros.",
+    colors: ["white"], sizes: SHOE_SIZES, sizeLabel: "Talla (cm)",
+    // Price is for 27.5 cm; each half size below is $100 less, each half size above $100 more
+    sizePricing: { base: "27.5", step: 100 },
+    gallery: ["assets/products/on-cloud-x5-blanco-lado.webp", "assets/products/on-cloud-x5-blanco-par.webp",
+              "assets/products/on-cloud-x5-blanco-interior.webp"],
+    sizeGuide: true },
   { id: "ironclad-essential-tee", brand: "ironclad", name: "Playera Essential", category: "tees", price: 599, art: "tee", tag: "Más vendido",
     desc: "Algodón grueso de 240 g/m². Corte atlético, talla normal.",
     colors: ["black", "bone", "grey", "lime"], sizes: APPAREL_SIZES },
@@ -99,7 +111,7 @@ const products = [
       facts: ["Micronizada", "Alta pureza", "CreaClean®"] }] },
 ];
 
-const GROUPS = { apparel: ["tees", "shorts", "socks"], supplements: ["protein", "creatine"] };
+const GROUPS = { apparel: ["tees", "shorts", "socks", "shoes"], supplements: ["protein", "creatine"] };
 const FREE_SHIP = 1000;
 const MAX_ITEMS = 10; // most products allowed in one order
 const mxn = new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" });
@@ -130,7 +142,37 @@ function save() {
 // ---------- Product grid ----------
 const grid = document.getElementById("productGrid");
 
+const slideCount = (p) => p.gallery ? p.gallery.length + (p.sizeGuide ? 1 : 0) : 1;
+
+function sizeGuideHtml() {
+  const rows = (list) => list.map((cm) => `<tr><td>${cm}</td><td>${SHOE_US[cm]}</td></tr>`).join("");
+  return `<div class="media size-guide">
+    <strong>Guía de tallas</strong>
+    <p>Mide tu pie del talón a la punta del dedo más largo. Esa medida en centímetros es tu talla.</p>
+    <div class="sg-tables">
+      <table><thead><tr><th>cm</th><th>US</th></tr></thead><tbody>${rows(SHOE_SIZES.slice(0, 6))}</tbody></table>
+      <table><thead><tr><th>cm</th><th>US</th></tr></thead><tbody>${rows(SHOE_SIZES.slice(6))}</tbody></table>
+    </div>
+    <small>US hombre, aproximado. Si estás entre dos tallas, elige la mayor.</small>
+  </div>`;
+}
+
+function galleryControls(p, sel) {
+  const n = slideCount(p), cur = sel.slide || 0;
+  return `<button type="button" class="gal-btn prev" data-slide="prev" aria-label="Foto anterior">‹</button>
+    <button type="button" class="gal-btn next" data-slide="next" aria-label="Foto siguiente">›</button>
+    <div class="gal-dots">${Array.from({ length: n }, (_, k) => {
+      const guide = p.sizeGuide && k === n - 1;
+      return `<button type="button" class="gal-dot ${k === cur ? "active" : ""}${guide ? " guide" : ""}" data-slide="${k}" aria-label="${guide ? "Guía de tallas" : `Foto ${k + 1}`}">${guide ? "cm" : ""}</button>`;
+    }).join("")}</div>`;
+}
+
 function media(p, sel) {
+  if (p.gallery) {
+    const k = sel.slide || 0;
+    if (k >= p.gallery.length) return sizeGuideHtml();
+    return `<img class="media photo" src="${p.gallery[k]}" alt="${p.name}, foto ${k + 1} de ${p.gallery.length}">`;
+  }
   if (p.photos) {
     const pack = packOf(p, sel);
     return `<img class="media photo" src="${p.photos[sel.color][pack.name]}" alt="${p.name}, ${COLORS[sel.color].name}, ${pack.name}">`;
@@ -166,7 +208,8 @@ function matches(p, filter) {
 function defaultSize(p) {
   if (!p.sizes) return undefined;
   const fav = getCurrentUser()?.prefSize;
-  return p.sizes.includes(fav) ? fav : p.sizes[Math.min(1, p.sizes.length - 1)];
+  if (p.sizes.includes(fav)) return fav;
+  return p.sizePricing?.base || p.sizes[Math.min(1, p.sizes.length - 1)];
 }
 
 const SORTS = {
@@ -191,7 +234,8 @@ function renderGrid(filter = currentFilter) {
     };
     const colorRow = p.colors ? `<div class="option-row" aria-label="Color">${p.colors.map((c) =>
       `<button class="swatch ${c === sel.color ? "active" : ""}" style="background:${COLORS[c].hex}" data-color="${c}" title="${COLORS[c].name}" aria-label="${COLORS[c].name}"></button>`).join("")}</div>` : "";
-    const sizeRow = p.sizes ? `<div class="option-row" aria-label="Talla">${p.sizes.map((s) =>
+    const sizeLabel = p.sizeLabel ? `<p class="option-label">${p.sizeLabel}${p.sizeGuide ? ` · <button type="button" class="link-btn" data-slide="guide">Guía de tallas</button>` : ""}</p>` : "";
+    const sizeRow = p.sizes ? `${sizeLabel}<div class="option-row" aria-label="${p.sizeLabel || "Talla"}">${p.sizes.map((s) =>
       `<button class="size ${s === sel.size ? "active" : ""}" data-size="${s}">${s}</button>`).join("")}</div>` : "";
     const packRow = p.packs ? `<div class="option-row" aria-label="${p.packLabel || "Tamaño"}">${p.packs.map((k) =>
       `<button class="size ${k.name === sel.pack ? "active" : ""}" data-pack="${k.name}">${k.name}</button>`).join("")}</div>` : "";
@@ -201,7 +245,7 @@ function renderGrid(filter = currentFilter) {
 
     return `
       <article class="card" data-id="${p.id}" style="animation-delay:${i * 40}ms">
-        <div class="card-media">${p.tag ? `<span class="tag">${p.tag}</span>` : ""}${media(p, sel)}</div>
+        <div class="card-media${p.sizeGuide && (sel.slide || 0) === slideCount(p) - 1 ? " on-guide" : ""}">${p.tag ? `<span class="tag">${p.tag}</span>` : ""}${media(p, sel)}${p.gallery ? galleryControls(p, sel) : ""}</div>
         <div class="card-body">
           <p class="card-brand">${BRANDS[p.brand].name}</p>
           <div class="card-top"><h3 class="card-title">${p.name}</h3><span class="price">${money(priceOf(p, sel))}</span></div>
@@ -222,6 +266,14 @@ grid.addEventListener("click", (e) => {
   const b = e.target.closest("button");
   if (!b) return;
 
+  if (b.dataset.slide) {
+    const n = slideCount(p), cur = sel.slide || 0, v = b.dataset.slide;
+    sel.slide = v === "prev" ? (cur - 1 + n) % n : v === "next" ? (cur + 1) % n : v === "guide" ? n - 1 : +v;
+    card.querySelector(".card-media .media").outerHTML = media(p, sel);
+    card.querySelectorAll(".gal-dot").forEach((d, k) => d.classList.toggle("active", k === sel.slide));
+    card.querySelector(".card-media").classList.toggle("on-guide", p.sizeGuide && sel.slide === n - 1);
+    return;
+  }
   const key = ["color", "size", "pack", "flavor"].find((k) => b.dataset[k]);
   if (key) {
     sel[key] = b.dataset[key];
@@ -260,7 +312,9 @@ const overlay = document.getElementById("overlay");
 const countEl = document.getElementById("cartCount");
 
 function variantLabel(item) {
-  return [item.color && COLORS[item.color].name, item.size, item.pack, item.flavor].filter(Boolean).join(" · ");
+  const p = products.find((x) => x.id === item.id);
+  const size = item.size && (p?.sizes === SHOE_SIZES ? `${item.size} cm` : item.size);
+  return [item.color && COLORS[item.color].name, size, item.pack, item.flavor].filter(Boolean).join(" · ");
 }
 
 const cartCount = () => cart.reduce((n, i) => n + i.qty, 0);
@@ -298,7 +352,7 @@ function renderCart() {
     const p = products.find((x) => x.id === i.id);
     return `
       <div class="cart-item" data-key="${i.key}">
-        <div class="cart-thumb">${media(p, i)}</div>
+        <div class="cart-thumb">${media(p, { ...i, slide: 0 })}</div>
         <div>
           <h4>${p.name}</h4>
           <div class="meta">${BRANDS[p.brand].name}</div>
@@ -451,6 +505,7 @@ const searchDialog = document.getElementById("searchDialog");
 const searchInput = document.getElementById("searchInput");
 const searchResults = document.getElementById("searchResults");
 const CATEGORY_WORDS = { tees: "playera playeras camiseta", shorts: "short shorts", socks: "calcetas calcetines",
+  shoes: "tenis zapatos zapatillas calzado sneakers",
   protein: "proteína proteina", creatine: "creatina" };
 const fold = (s) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
@@ -475,7 +530,7 @@ function runSearch() {
       return scored[0][1] > 0 && scored[0][1] > scored[1][1] ? scored[0][0] : undefined;
     };
     const flavor = pick(p.flavors), pack = pick(p.packs), color = pick(p.colors?.map((c) => ({ key: c, name: COLORS[c].name })));
-    const view = { ...sel, color: color?.key || sel.color || p.colors?.[0], ...(flavor && { flavor: flavor.name }), ...(pack && { pack: pack.name }) };
+    const view = { ...sel, slide: 0, color: color?.key || sel.color || p.colors?.[0], ...(flavor && { flavor: flavor.name }), ...(pack && { pack: pack.name }) };
     const extra = [color?.name, flavor?.name, pack?.name].filter(Boolean).join(" · ");
     return `<li><button type="button" class="result" data-id="${p.id}"${flavor ? ` data-flavor="${flavor.name}"` : ""}${pack ? ` data-pack="${pack.name}"` : ""}${color ? ` data-color="${color.key}"` : ""}>
       <span class="result-thumb">${media(p, view)}</span>
