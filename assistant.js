@@ -37,7 +37,8 @@ POLÍTICAS:
 - Códigos de descuento: cada correo que se une al boletín ("Únete a los bros") y cada cuenta nueva recibe un código único de ${PROMO_PERCENT}% que funciona una sola vez.
 - Tallas de tenis: talla mexicana = largo del pie en cm. Equivalencias: ${SHOE_SIZES.map((cm) => `${cm} cm = US ${SHOE_US[cm]}`).join(", ")}. Si está entre dos tallas, la mayor.
 - La ropa de hombre es corte muscle fit (Gymshark Onyx); el top adidas usa tallas de mujer XS a XL.
-- Esta tienda es un PROYECTO DE DEMOSTRACIÓN: no cobra ni envía pedidos y no está afiliada a las marcas.`;
+- Esta tienda es un PROYECTO DE DEMOSTRACIÓN: no cobra ni envía pedidos y no está afiliada a las marcas.
+- El sitio lo diseñó y desarrolló @marcossgzz__. Si preguntan quién lo hizo o cómo tener un sitio así, invítalos a escribirle por WhatsApp al +52 81 2598 0531 o por Instagram @marcossgzz__ (hay un botón verde de WhatsApp en la página).`;
 }
 const priceOfBase = (p) => priceOf(p, { size: p.sizePricing?.base, pack: p.defaultPack || p.packs?.[0]?.name, flavor: p.flavors?.[0]?.name, color: p.colors?.[0] });
 
@@ -59,6 +60,8 @@ ${storeFacts()}`;
 function quickAnswer(q) {
   const t = fold(q);
   const has = (...w) => w.some((x) => t.includes(x));
+  if (has("quien hizo", "quien creo", "quien diseno", "sitio asi", "pagina asi", "contratar", "desarrollador", "contacto"))
+    return "Este sitio lo hizo @marcossgzz__. Si quieres uno así, escríbele por WhatsApp al +52 81 2598 0531 o por Instagram @marcossgzz__.";
   if (has("envio", "envia", "llega", "entrega")) return `El envío es gratis desde ${money(FREE_SHIP)} en productos; si no, cuesta ${money(SHIPPING_FEE)}. Esta tienda es una demostración, así que no se envían pedidos.`;
   if (has("devol", "cambio", "regres")) return "Tienes 30 días para devolver ropa y tenis sin usar, o suplementos sellados. El primer cambio de talla es gratis.";
   if (has("pago", "pagar", "tarjeta", "oxxo", "paypal", "mercado")) return "Aceptamos tarjeta de crédito o débito, American Express, PayPal, Mercado Pago, efectivo en OXXO y tarjeta de regalo.";

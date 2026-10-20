@@ -26,7 +26,14 @@ const INFO_PAGES = {
         <li>Dominio propio, inicio de sesión con Google o Apple y base de datos en línea.</li>
         <li>Panel para que el dueño administre productos, precios, inventario y pedidos.</li>
         <li>Fotos, textos y páginas legales propias del negocio.</li>
-      </ul>`,
+      </ul>
+      <h4>¿Quieres un sitio así para tu negocio?</h4>
+      <p>Diseño y desarrollo web por <strong>@marcossgzz__</strong>. Escríbeme y platicamos tu proyecto:</p>
+      <div class="contact-row">
+        <a class="btn btn-primary" href="https://wa.me/528125980531?text=Hola%2C%20vi%20la%20tienda%20de%20demostraci%C3%B3n%20GYM%20BRO%27S%20y%20me%20interesa%20un%20sitio%20web." target="_blank" rel="noopener">WhatsApp</a>
+        <a class="btn btn-ghost" href="https://www.instagram.com/marcossgzz__/" target="_blank" rel="noopener">Instagram</a>
+      </div>
+      <p class="hint">WhatsApp: <span class="selectable">+52 81 2598 0531</span> · Instagram: <span class="selectable">@marcossgzz__</span></p>`,
   },
   privacy: {
     title: "Aviso de privacidad",
