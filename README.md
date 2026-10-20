@@ -1,6 +1,8 @@
-# GYM bros
+# GYM BRO'S
 
-Static storefront prototype for GYM bros, a gym clothing and supplements brand selling tees, shorts, socks, organic protein powder and creatine.
+Static storefront prototype for GYM BRO'S, an online shop that sells gym clothes (tees, shorts, socks) from several brands and organic protein and creatine from one supplement brand.
+
+The brand names in `script.js` (`BRANDS`) are placeholders. Replace them with the real brands the shop stocks.
 
 ## Run
 
@@ -12,8 +14,9 @@ python3 -m http.server 8000
 
 ## Files
 
-- `index.html`: page structure (hero, categories, shop, about, FAQ, newsletter, cart drawer)
+- `index.html`: page structure (hero, categories, shop, brands, FAQ, newsletter, cart drawer)
+- `assets/logo-light.png`: the GYM BRO'S logo, recolored for the dark background
 - `styles.css`: styling and responsive layout
-- `script.js`: product catalog, filtering, variant selection and a cart saved in `localStorage`
+- `script.js`: brands, product catalog, filtering by category or brand, variant selection and a cart saved in `localStorage`
 
 Checkout and newsletter signup are demo-only; nothing is sent anywhere.

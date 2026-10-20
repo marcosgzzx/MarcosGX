@@ -1,6 +1,6 @@
 // ---------- Product art (inline SVG, no image assets needed) ----------
 const art = {
-  tee: (c) => `<svg viewBox="0 0 100 100"><path fill="${c}" stroke="rgba(0,0,0,.35)" stroke-width="1.5" stroke-linejoin="round" d="M36 14l-20 9-10 20 13 6 6-9v46h50V40l6 9 13-6-10-20-20-9c-2 6-8 10-14 10s-12-4-14-10z"/><text x="50" y="58" text-anchor="middle" font-family="Anton,Impact,sans-serif" font-size="11" fill="rgba(0,0,0,.55)">GYM</text></svg>`,
+  tee: (c) => `<svg viewBox="0 0 100 100"><path fill="${c}" stroke="rgba(0,0,0,.35)" stroke-width="1.5" stroke-linejoin="round" d="M36 14l-20 9-10 20 13 6 6-9v46h50V40l6 9 13-6-10-20-20-9c-2 6-8 10-14 10s-12-4-14-10z"/></svg>`,
   shorts: (c) => `<svg viewBox="0 0 100 100"><path fill="${c}" stroke="rgba(0,0,0,.35)" stroke-width="1.5" stroke-linejoin="round" d="M18 18h64l8 62-32 4-8-34-8 34-32-4z"/><path d="M18 26h64" stroke="rgba(0,0,0,.35)" stroke-width="2"/><path d="M47 30l3 4 3-4" fill="none" stroke="rgba(0,0,0,.4)" stroke-width="1.5"/></svg>`,
   socks: (c) => `<svg viewBox="0 0 100 100"><g stroke="rgba(0,0,0,.35)" stroke-width="1.5" stroke-linejoin="round"><path fill="${c}" opacity=".7" d="M44 10h22v44c0 10 2 14 10 18s8 18-4 20-30-6-34-14-2-14 6-20z"/><path fill="${c}" d="M30 14h22v44c0 10 2 14 10 18s8 18-4 20-30-6-34-14-2-14 6-20z"/><path fill="rgba(0,0,0,.25)" d="M30 14h22v8H30z"/></g></svg>`,
   tub: (c) => `<svg viewBox="0 0 100 100"><rect x="22" y="12" width="56" height="12" rx="3" fill="#111" stroke="rgba(255,255,255,.2)"/><path fill="${c}" stroke="rgba(0,0,0,.35)" stroke-width="1.5" d="M20 24h60l-3 64H23z"/><rect x="26" y="38" width="48" height="34" rx="3" fill="#f4f1ea"/><text x="50" y="52" text-anchor="middle" font-family="Anton,Impact,sans-serif" font-size="10" fill="#111">PROTEIN</text><text x="50" y="64" text-anchor="middle" font-family="Inter,sans-serif" font-weight="700" font-size="6" fill="#4a7a00">ORGANIC</text></svg>`,
@@ -19,29 +19,40 @@ const COLORS = {
 };
 const APPAREL_SIZES = ["S", "M", "L", "XL", "XXL"];
 
+// Placeholder brand names: swap in the real brands GYM BRO'S stocks.
+const BRANDS = {
+  ironclad: { name: "Ironclad Athletics", kind: "Apparel", blurb: "Heavyweight cotton tees built for the weight room." },
+  northlift: { name: "Northlift", kind: "Apparel", blurb: "Stretch training shorts and performance tees." },
+  repsupply: { name: "Rep Supply Co.", kind: "Apparel", blurb: "Cushioned training socks that stay up." },
+  verdant: { name: "Verdant Labs", kind: "Supplements", blurb: "Organic protein and pure creatine, third-party tested." },
+};
+
 const products = [
-  { id: "essential-tee", name: "Essential Tee", category: "tees", price: 32, art: "tee", tag: "Bestseller",
-    desc: "240gsm heavyweight cotton. Athletic fit that holds its shape.",
+  { id: "ironclad-essential-tee", brand: "ironclad", name: "Essential Tee", category: "tees", price: 32, art: "tee", tag: "Bestseller",
+    desc: "240gsm heavyweight cotton. Athletic fit, true to size.",
     colors: ["black", "bone", "grey", "lime"], sizes: APPAREL_SIZES },
-  { id: "pump-cover", name: "Pump Cover Oversized Tee", category: "tees", price: 38, art: "tee",
-    desc: "Boxy, dropped-shoulder fit for warm-ups. Comes off when the pump hits.",
+  { id: "ironclad-pump-cover", brand: "ironclad", name: "Pump Cover Oversized Tee", category: "tees", price: 38, art: "tee",
+    desc: "Boxy, dropped-shoulder fit for warm-ups. Runs oversized.",
     colors: ["grey", "black", "olive"], sizes: APPAREL_SIZES },
-  { id: "training-short-5", name: '5" Training Short', category: "shorts", price: 42, art: "shorts", tag: "New",
+  { id: "northlift-dry-tee", brand: "northlift", name: "DryLift Training Tee", category: "tees", price: 34, art: "tee", tag: "New",
+    desc: "Lightweight sweat-wicking knit. Slim fit, true to size.",
+    colors: ["navy", "black", "white"], sizes: APPAREL_SIZES },
+  { id: "northlift-short-5", brand: "northlift", name: '5" Training Short', category: "shorts", price: 42, art: "shorts",
     desc: "4-way stretch with a built-in liner and zip phone pocket.",
     colors: ["black", "navy", "olive"], sizes: APPAREL_SIZES },
-  { id: "lift-short-7", name: '7" Lift Short', category: "shorts", price: 45, art: "shorts",
+  { id: "northlift-short-7", brand: "northlift", name: '7" Lift Short', category: "shorts", price: 45, art: "shorts",
     desc: "Squat-proof gusset, sweat-wicking fabric, room for your quads.",
     colors: ["grey", "black", "lime"], sizes: APPAREL_SIZES },
-  { id: "crew-sock-3", name: "Crew Sock 3-Pack", category: "socks", price: 18, art: "socks",
+  { id: "repsupply-crew-3", brand: "repsupply", name: "Crew Sock 3-Pack", category: "socks", price: 18, art: "socks",
     desc: "Cushioned sole, arch support and a cuff that stays up mid-set.",
     colors: ["white", "black", "lime"], sizes: ["S/M", "L/XL"] },
-  { id: "organic-whey", name: "Organic Whey Protein · 2lb", category: "protein", price: 54, art: "tub", tag: "Organic",
+  { id: "verdant-whey", brand: "verdant", name: "Organic Whey Protein · 2lb", category: "protein", price: 54, art: "tub", tag: "Organic",
     desc: "Grass-fed organic whey. 25g protein per scoop, no artificial sweeteners.",
     flavors: [{ name: "Chocolate", hex: "#6b4226" }, { name: "Vanilla", hex: "#efe0b9" }, { name: "Unflavored", hex: "#cfcfcf" }] },
-  { id: "organic-plant", name: "Organic Plant Protein · 2lb", category: "protein", price: 49, art: "tub", tag: "Vegan",
+  { id: "verdant-plant", brand: "verdant", name: "Organic Plant Protein · 2lb", category: "protein", price: 49, art: "tub", tag: "Vegan",
     desc: "Organic pea and pumpkin seed blend. 22g protein, smooth texture.",
     flavors: [{ name: "Chocolate", hex: "#6b4226" }, { name: "Vanilla", hex: "#efe0b9" }] },
-  { id: "creatine", name: "Creatine Monohydrate · 300g", category: "creatine", price: 29, art: "jar", tag: "Pure",
+  { id: "verdant-creatine", brand: "verdant", name: "Creatine Monohydrate · 300g", category: "creatine", price: 29, art: "jar", tag: "Pure",
     desc: "100% micronized creatine monohydrate. 60 servings, unflavored.",
     flavors: [{ name: "Unflavored", hex: "#d4ff3a" }] },
 ];
@@ -55,7 +66,10 @@ const selection = {}; // product id -> { color, size, flavor }
 let cart = load();
 
 function load() {
-  try { return JSON.parse(localStorage.getItem("gymbros-cart")) || []; } catch { return []; }
+  try {
+    const saved = JSON.parse(localStorage.getItem("gymbros-cart")) || [];
+    return saved.filter((i) => products.some((p) => p.id === i.id));
+  } catch { return []; }
 }
 function save() {
   try { localStorage.setItem("gymbros-cart", JSON.stringify(cart)); } catch { /* storage unavailable */ }
@@ -69,9 +83,19 @@ function variantHex(p, sel) {
   return p.flavors.find((f) => f.name === sel.flavor).hex;
 }
 
+function matches(p, filter) {
+  if (filter === "all") return true;
+  if (filter.startsWith("brand:")) return p.brand === filter.slice(6);
+  return (GROUPS[filter] || [filter]).includes(p.category);
+}
+
 function renderGrid(filter = "all") {
-  const cats = GROUPS[filter] || (filter === "all" ? null : [filter]);
-  const list = cats ? products.filter((p) => cats.includes(p.category)) : products;
+  const list = products.filter((p) => matches(p, filter));
+  const status = document.getElementById("shopStatus");
+  status.textContent = filter.startsWith("brand:")
+    ? `Showing ${list.length} from ${BRANDS[filter.slice(6)].name} · `
+    : `${list.length} products`;
+  if (filter.startsWith("brand:")) status.insertAdjacentHTML("beforeend", `<button class="link-btn" data-filter="all">Show all</button>`);
 
   grid.innerHTML = list.map((p, i) => {
     const sel = selection[p.id] ||= {
@@ -88,6 +112,7 @@ function renderGrid(filter = "all") {
       <article class="card" data-id="${p.id}" style="animation-delay:${i * 40}ms">
         <div class="card-media">${p.tag ? `<span class="tag">${p.tag}</span>` : ""}${art[p.art](variantHex(p, sel))}</div>
         <div class="card-body">
+          <p class="card-brand">${BRANDS[p.brand].name}</p>
           <div class="card-top"><h3 class="card-title">${p.name}</h3><span class="price">${money(p.price)}</span></div>
           <p class="card-desc">${p.desc}</p>
           ${colorRow}${sizeRow}${flavorRow}
@@ -117,7 +142,7 @@ grid.addEventListener("click", (e) => {
 
 // ---------- Filters ----------
 function setFilter(filter) {
-  document.querySelectorAll("#filters .chip").forEach((c) =>
+  document.querySelectorAll("#filters .chip, .brand-card").forEach((c) =>
     c.classList.toggle("active", c.dataset.filter === filter));
   renderGrid(filter);
 }
@@ -164,6 +189,7 @@ function renderCart() {
         <div class="cart-thumb">${art[p.art](variantHex(p, i))}</div>
         <div>
           <h4>${p.name}</h4>
+          <div class="meta">${BRANDS[p.brand].name}</div>
           <div class="meta">${variantLabel(i)}</div>
           <div class="qty"><button data-act="dec" aria-label="Decrease">−</button><span>${i.qty}</span><button data-act="inc" aria-label="Increase">+</button></div>
         </div>
@@ -239,6 +265,25 @@ function toast(msg) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove("show"), 2200);
 }
+
+// ---------- Brand sections ----------
+const brandIds = Object.keys(BRANDS);
+document.getElementById("brandList").innerHTML = brandIds.map((id) => {
+  const n = products.filter((p) => p.brand === id).length;
+  return `<button class="brand-card" data-filter="brand:${id}">
+    <span class="brand-kind">${BRANDS[id].kind}</span>
+    <span class="brand-name">${BRANDS[id].name}</span>
+    <span class="brand-blurb">${BRANDS[id].blurb}</span>
+    <span class="brand-link">Shop ${n} product${n === 1 ? "" : "s"} →</span>
+  </button>`;
+}).join("");
+const tickerItems = brandIds.map((id) => `<span>${BRANDS[id].name.toUpperCase()}</span><span>★</span>`).join("");
+document.getElementById("tickerTrack").innerHTML = tickerItems.repeat(4);
+document.getElementById("supplementBrand").textContent = BRANDS.verdant.name;
+document.querySelectorAll("[data-count]").forEach((el) => {
+  const n = products.filter((p) => p.category === el.dataset.count).length;
+  el.textContent = `${n} product${n === 1 ? "" : "s"}`;
+});
 
 renderGrid();
 renderCart();
