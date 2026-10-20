@@ -396,6 +396,9 @@ function profileHtml(u) {
           MX_STATES.map((s) => `<option ${s === a.state ? "selected" : ""}>${s}</option>`).join("")}</select></label>
       </div>
     </fieldset>
+    <label class="field"><span>Sexo</span><select name="gender" id="profGender">${
+      [["", "Prefiero no decir"], ["hombre", "Hombre"], ["mujer", "Mujer"]].map(([v, l]) => `<option value="${v}" ${v === (u.gender || "") ? "selected" : ""}>${l}</option>`).join("")}</select></label>
+    <p class="hint">Opcional. En la tienda puedes filtrar por Hombre o Mujer en "Comprar para".</p>
     <label class="field"><span>Talla favorita</span><select name="prefSize" id="profSize"><option value="">Sin preferencia</option>${
       PREF_SIZES.map((s) => `<option ${s === u.prefSize ? "selected" : ""}>${s}</option>`).join("")}</select></label>
     <p class="hint">La tienda elegirá esta talla por ti en la ropa.</p>
@@ -586,6 +589,7 @@ accountBody.addEventListener("submit", async (e) => {
     user.phone = data.phone;
     user.address = { street: data.street.trim(), colonia: data.colonia.trim(), cp: data.cp, city: data.city.trim(), state: data.state };
     user.prefSize = data.prefSize;
+    user.gender = data.gender;
     saveCurrentUser(user);
     setFormError(form, "");
     toast("Perfil guardado");

@@ -2,6 +2,8 @@
 const COLORS = {
   black: { name: "Negro", hex: "#1c1c1c" },
   white: { name: "Blanco", hex: "#f7f7f5" },
+  "negro-blanco": { name: "Negro/Blanco", hex: "linear-gradient(135deg, #111 50%, #f7f7f5 50%)" },
+  "azul-marino": { name: "Azul marino", hex: "#262a63" },
   "negro-azul": { name: "Negro/Azul", hex: "linear-gradient(135deg, #111 50%, #1d9c95 50%)" },
   "negro-rojo": { name: "Negro/Rojo", hex: "linear-gradient(135deg, #111 50%, #b3141e 50%)" },
   "negro-gris": { name: "Negro/Gris", hex: "linear-gradient(135deg, #111 50%, #8a8a8a 50%)" },
@@ -20,7 +22,7 @@ const BRANDS = {
 };
 
 const products = [
-  { id: "gymshark-onyx-5", brand: "gymshark", name: "Onyx 5.0 Seamless Muscle Fit", category: "tees", price: 1450, tag: "Nuevo",
+  { id: "gymshark-onyx-5", brand: "gymshark", gender: "hombre", name: "Onyx 5.0 Seamless Muscle Fit", category: "tees", price: 1450, tag: "Nuevo",
     desc: "Playera sin costuras de corte muscle fit, entallada al cuerpo.",
     colors: ["negro-azul", "negro-rojo", "negro-gris"], sizes: APPAREL_SIZES,
     packLabel: "Manga", defaultPack: "Manga corta",
@@ -39,17 +41,26 @@ const products = [
                       "Manga corta": "assets/products/gymshark-onyx-negro-gris-corta.webp",
                       "Manga larga": "assets/products/gymshark-onyx-negro-gris-larga.webp" },
     } },
-  { id: "on-cloud-x5", brand: "on", name: "Cloud X 5", category: "shoes", price: 3300, tag: "Nuevo",
+  { id: "on-cloud-x5", brand: "on", gender: "hombre", name: "Cloud X 5", category: "shoes", price: 3300, tag: "Nuevo",
     desc: "Tenis de entrenamiento. Tallas mexicanas (cm), de US 7 a US 11.",
     colors: ["white", "black"], sizes: SHOE_SIZES, sizeLabel: "Talla MX (cm)",
-    // Price is for 27.5 cm; each half size below is $100 less, each half size above $100 more
-    sizePricing: { base: "27.5", step: 100 },
+    // Price is for US 8 (26 cm); each half size below is $100 less, each half size above $100 more
+    sizePricing: { base: "26", step: 100 },
     // Photos per color; the size guide is always the last slide
     gallery: {
       white: ["assets/products/on-cloud-x5-blanco-lado.webp", "assets/products/on-cloud-x5-blanco-par.webp",
               "assets/products/on-cloud-x5-blanco-interior.webp"],
       black: ["assets/products/on-cloud-x5-negro-interior.webp", "assets/products/on-cloud-x5-negro-par.webp",
               "assets/products/on-cloud-x5-negro-lado.webp"],
+    },
+    sizeGuide: true },
+  { id: "on-cloud-6", brand: "on", gender: "hombre", name: "Cloud 6", category: "shoes", price: 2700, tag: "Nuevo",
+    desc: "Tenis para el día a día y el gym. Tallas mexicanas (cm), de US 7 a US 11.",
+    colors: ["negro-blanco", "azul-marino"], sizes: SHOE_SIZES, sizeLabel: "Talla MX (cm)",
+    sizePricing: { base: "26", step: 100 }, // price is for US 8 (26 cm)
+    gallery: {
+      "negro-blanco": ["assets/products/on-cloud-6-negro-lado.webp"],
+      "azul-marino": ["assets/products/on-cloud-6-azul-lado.webp", { src: "assets/products/on-cloud-6-azul-puesto.webp", full: true }],
     },
     sizeGuide: true },
   { id: "birdman-falcon-performance", brand: "birdman", name: "Falcon Performance", category: "protein", alsoIn: ["creatine"],
@@ -83,6 +94,7 @@ const products = [
       facts: ["Micronizada", "Alta pureza", "CreaClean®"] }] },
 ];
 
+const GENDERS = { hombre: "Hombre", mujer: "Mujer" };
 const GROUPS = { apparel: ["tees", "shorts", "socks", "shoes"], supplements: ["protein", "creatine"] };
 const FREE_SHIP = 1200; // free shipping from this product subtotal (MXN)
 const MAX_ITEMS = 10; // most products allowed in one order
@@ -146,7 +158,8 @@ function media(p, sel) {
     const photos = photosOf(p, sel), k = sel.slide || 0;
     if (k >= photos.length) return sizeGuideHtml();
     const color = sel.color && COLORS[sel.color] ? `, ${COLORS[sel.color].name}` : "";
-    return `<img class="media photo" src="${photos[k]}" alt="${p.name}${color}, foto ${k + 1} de ${photos.length}">`;
+    const shot = typeof photos[k] === "string" ? { src: photos[k] } : photos[k]; // { full: true } = photo with its own background
+    return `<img class="media ${shot.full ? "photo-full" : "photo"}" src="${shot.src}" alt="${p.name}${color}, foto ${k + 1} de ${photos.length}">`;
   }
   if (p.photos) {
     const pack = packOf(p, sel);
@@ -176,6 +189,7 @@ function factsHtml(p, sel) {
 function matches(p, filter) {
   if (filter === "all") return true;
   if (filter.startsWith("brand:")) return p.brand === filter.slice(6);
+  if (filter.startsWith("gender:")) return p.gender === filter.slice(7);
   const cats = GROUPS[filter] || [filter];
   return [p.category, ...(p.alsoIn || [])].some((c) => cats.includes(c));
 }
@@ -200,6 +214,7 @@ function renderGrid(filter = currentFilter) {
   const status = document.getElementById("shopStatus");
   status.textContent = filter.startsWith("brand:")
     ? `${list.length} de ${BRANDS[filter.slice(6)].name} · `
+    : filter.startsWith("gender:") ? `${list.length} producto${list.length === 1 ? "" : "s"} de ${GENDERS[filter.slice(7)].toLowerCase()}`
     : `${list.length} productos`;
   if (filter.startsWith("brand:")) status.insertAdjacentHTML("beforeend", `<button class="link-btn" data-filter="all">Ver todo</button>`);
 
@@ -230,7 +245,7 @@ function renderGrid(filter = currentFilter) {
       <article class="card" data-id="${p.id}" style="animation-delay:${i * 40}ms">
         <div class="card-media${p.sizeGuide && (sel.slide || 0) === slideCount(p, sel) - 1 ? " on-guide" : ""}">${p.tag ? `<span class="tag">${p.tag}</span>` : ""}${media(p, sel)}${p.gallery ? galleryControls(p, sel) : ""}</div>
         <div class="card-body">
-          <p class="card-brand">${BRANDS[p.brand].name}</p>
+          <p class="card-brand">${BRANDS[p.brand].name}${p.gender ? ` · ${GENDERS[p.gender]}` : ""}</p>
           <div class="card-top"><h3 class="card-title">${p.name}</h3><span class="price">${money(priceOf(p, sel))}</span></div>
           <p class="card-desc">${p.desc}</p>
           ${factsHtml(p, sel)}
@@ -259,9 +274,17 @@ grid.addEventListener("click", (e) => {
   }
   const key = ["color", "size", "pack", "flavor"].find((k) => b.dataset[k]);
   if (key) {
+    const wasOnGuide = p.sizeGuide && (sel.slide || 0) === slideCount(p, sel) - 1;
     sel[key] = b.dataset[key];
     b.parentElement.querySelectorAll("button").forEach((x) => x.classList.toggle("active", x === b));
-    card.querySelector(".card-media .media").outerHTML = media(p, sel);
+    if (p.gallery) {
+      // Colors can have different numbers of photos: stay on the guide if it was open, else on a photo of this color
+      const photos = photosOf(p, sel).length;
+      sel.slide = wasOnGuide ? photos : Math.min(sel.slide || 0, photos - 1);
+      const box = card.querySelector(".card-media");
+      box.innerHTML = `${p.tag ? `<span class="tag">${p.tag}</span>` : ""}${media(p, sel)}${galleryControls(p, sel)}`;
+      box.classList.toggle("on-guide", p.sizeGuide && (sel.slide || 0) === slideCount(p, sel) - 1);
+    } else card.querySelector(".card-media .media").outerHTML = media(p, sel);
     if (p.flavors) card.querySelector(".card-facts-wrap").outerHTML = factsHtml(p, sel);
     card.querySelector(".price").textContent = money(priceOf(p, sel));
   } else if (b.classList.contains("add")) {
@@ -276,7 +299,7 @@ document.getElementById("sortSelect").addEventListener("change", (e) => {
 });
 
 function setFilter(filter) {
-  document.querySelectorAll("#filters .chip, .brand-card").forEach((c) =>
+  document.querySelectorAll("#filters .chip, #audience .chip, .brand-card").forEach((c) =>
     c.classList.toggle("active", c.dataset.filter === filter));
   renderGrid(filter);
 }
@@ -551,12 +574,13 @@ const searchInput = document.getElementById("searchInput");
 const searchResults = document.getElementById("searchResults");
 const CATEGORY_WORDS = { tees: "playera playeras camiseta", shorts: "short shorts", socks: "calcetas calcetines",
   shoes: "tenis zapatos zapatillas calzado sneakers",
+  hombre: "hombre caballero", mujer: "mujer dama",
   protein: "proteína proteina", creatine: "creatina" };
 const fold = (s) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
 function searchText(p) {
   return fold([p.name, BRANDS[p.brand].name, BRANDS[p.brand].kind, p.desc, p.tag, CATEGORY_WORDS[p.category],
-    ...(p.alsoIn || []).map((c) => CATEGORY_WORDS[c]), ...(p.colors || []).map((c) => COLORS[c].name),
+    ...(p.alsoIn || []).map((c) => CATEGORY_WORDS[c]), CATEGORY_WORDS[p.gender], ...(p.colors || []).map((c) => COLORS[c].name),
     ...(p.packs || []).map((k) => k.name), ...(p.flavors || []).map((f) => f.name)].filter(Boolean).join(" "));
 }
 
