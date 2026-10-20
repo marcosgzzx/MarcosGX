@@ -147,6 +147,7 @@ h2 { font-size: clamp(2.2rem, 5vw, 3.6rem); }
   text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
   padding: 22px; display: flex; flex-direction: column; gap: 6px; transition: border-color .2s, transform .2s;
 }
+.brand-card:last-child:nth-child(odd) { grid-column: 1 / -1; }
 .brand-card:hover, .brand-card.active { border-color: var(--accent); transform: translateY(-2px); }
 .brand-kind { color: var(--muted); font-size: .72rem; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; }
 .brand-name { font-family: var(--display); font-size: 1.6rem; text-transform: uppercase; line-height: 1.1; }

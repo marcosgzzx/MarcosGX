@@ -14,12 +14,15 @@ const COLORS = {
   navy: { name: "Azul marino", hex: "#22304f" },
   olive: { name: "Olivo", hex: "#5d6340" },
   white: { name: "Blanco", hex: "#f7f7f5" },
+  "negro-azul": { name: "Negro/Azul", hex: "linear-gradient(135deg, #111 50%, #1d9c95 50%)" },
+  "negro-rojo": { name: "Negro/Rojo", hex: "linear-gradient(135deg, #111 50%, #b3141e 50%)" },
 };
 const APPAREL_SIZES = ["S", "M", "L", "XL", "XXL"];
 
 // Apparel brand names and prices are placeholders: swap in the real brands GYM BRO'S stocks.
 // Prices are in Mexican pesos (MXN). A flavor can override its product's price.
 const BRANDS = {
+  gymshark: { name: "Gymshark", kind: "Ropa", blurb: "Playeras de entrenamiento sin costuras, corte muscle fit." },
   ironclad: { name: "Ironclad Athletics", kind: "Ropa", blurb: "Playeras de algodón grueso hechas para el gym." },
   northlift: { name: "Northlift", kind: "Ropa", blurb: "Shorts elásticos y playeras de entrenamiento." },
   repsupply: { name: "Rep Supply Co.", kind: "Ropa", blurb: "Calcetas acolchadas que no se bajan." },
@@ -27,6 +30,17 @@ const BRANDS = {
 };
 
 const products = [
+  { id: "gymshark-onyx-5", brand: "gymshark", name: "Onyx 5.0 Seamless Muscle Fit", category: "tees", price: 1450, tag: "Nuevo",
+    desc: "Playera sin costuras de corte muscle fit, entallada al cuerpo.",
+    colors: ["negro-azul", "negro-rojo"], sizes: APPAREL_SIZES,
+    packLabel: "Manga", packs: [{ name: "Manga corta", price: 1450 }, { name: "Manga larga", price: 1600 }],
+    // Photo per color and sleeve length
+    photos: {
+      "negro-azul": { "Manga corta": "assets/products/gymshark-onyx-negro-azul-corta.webp",
+                      "Manga larga": "assets/products/gymshark-onyx-negro-azul-larga.webp" },
+      "negro-rojo": { "Manga corta": "assets/products/gymshark-onyx-negro-rojo-corta.webp",
+                      "Manga larga": "assets/products/gymshark-onyx-negro-rojo-larga.webp" },
+    } },
   { id: "ironclad-essential-tee", brand: "ironclad", name: "Playera Essential", category: "tees", price: 599, art: "tee", tag: "Más vendido",
     desc: "Algodón grueso de 240 g/m². Corte atlético, talla normal.",
     colors: ["black", "bone", "grey", "lime"], sizes: APPAREL_SIZES },
@@ -101,6 +115,10 @@ function save() {
 const grid = document.getElementById("productGrid");
 
 function media(p, sel) {
+  if (p.photos) {
+    const pack = packOf(p, sel);
+    return `<img class="media photo" src="${p.photos[sel.color][pack.name]}" alt="${p.name}, ${COLORS[sel.color].name}, ${pack.name}">`;
+  }
   if (!p.colors) {
     const f = flavorOf(p, sel);
     const pack = packOf(p, sel);
@@ -145,7 +163,7 @@ function renderGrid(filter = "all") {
       `<button class="swatch ${c === sel.color ? "active" : ""}" style="background:${COLORS[c].hex}" data-color="${c}" title="${COLORS[c].name}" aria-label="${COLORS[c].name}"></button>`).join("")}</div>` : "";
     const sizeRow = p.sizes ? `<div class="option-row" aria-label="Talla">${p.sizes.map((s) =>
       `<button class="size ${s === sel.size ? "active" : ""}" data-size="${s}">${s}</button>`).join("")}</div>` : "";
-    const packRow = p.packs ? `<div class="option-row" aria-label="Tamaño">${p.packs.map((k) =>
+    const packRow = p.packs ? `<div class="option-row" aria-label="${p.packLabel || "Tamaño"}">${p.packs.map((k) =>
       `<button class="size ${k.name === sel.pack ? "active" : ""}" data-pack="${k.name}">${k.name}</button>`).join("")}</div>` : "";
     const flavorRow = p.flavors ? `<div class="option-row" aria-label="Sabor">${p.flavors.map((f) =>
       `<button class="size ${f.name === sel.flavor ? "active" : ""}${f.limited ? " limited" : ""}" data-flavor="${f.name}"${
