@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GYM bros — Train Hard. Wear Better.</title>
+  <meta name="description" content="GYM bros: gym tees, shorts, socks, organic protein powder and creatine.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="announce">Free shipping on orders over $75 · 30-day returns</div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#" class="logo" aria-label="GYM bros home">GYM<span>bros</span></a>
+      <nav class="nav" id="nav">
+        <a href="#shop" data-filter="apparel">Apparel</a>
+        <a href="#shop" data-filter="supplements">Supplements</a>
+        <a href="#about">About</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <div class="header-actions">
+        <button class="cart-btn" id="cartBtn" aria-label="Open cart">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 7h12l-1 13H7L6 7zm3 0V5a3 3 0 0 1 6 0v2"/></svg>
+          <span class="cart-count" id="cartCount">0</span>
+        </button>
+        <button class="menu-btn" id="menuBtn" aria-label="Toggle menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <p class="eyebrow">New drop · Fall 2026</p>
+          <h1>Lift heavy.<br><em>Look good</em> doing it.</h1>
+          <p class="lede">Training gear built to survive the rack, and clean organic fuel for when you're done with it. Made for bros, by bros.</p>
+          <div class="hero-ctas">
+            <a href="#shop" class="btn btn-primary" data-filter="apparel">Shop apparel</a>
+            <a href="#shop" class="btn btn-ghost" data-filter="supplements">Shop supplements</a>
+          </div>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <div class="hero-badge">EST.<br>2026</div>
+          <svg viewBox="0 0 400 400" class="hero-svg">
+            <circle cx="200" cy="200" r="170" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="6 10" opacity=".35"/>
+            <g transform="translate(200 200) rotate(-20)">
+              <rect x="-150" y="-10" width="300" height="20" rx="4" fill="currentColor"/>
+              <rect x="-130" y="-60" width="28" height="120" rx="6" fill="var(--accent)"/>
+              <rect x="-98" y="-45" width="20" height="90" rx="5" fill="var(--accent)"/>
+              <rect x="102" y="-60" width="28" height="120" rx="6" fill="var(--accent)"/>
+              <rect x="78" y="-45" width="20" height="90" rx="5" fill="var(--accent)"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+      <div class="ticker" aria-hidden="true">
+        <div class="ticker-track">
+          <span>TEES</span><span>★</span><span>SHORTS</span><span>★</span><span>SOCKS</span><span>★</span><span>ORGANIC PROTEIN</span><span>★</span><span>CREATINE</span><span>★</span>
+          <span>TEES</span><span>★</span><span>SHORTS</span><span>★</span><span>SOCKS</span><span>★</span><span>ORGANIC PROTEIN</span><span>★</span><span>CREATINE</span><span>★</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="categories container" aria-label="Shop by category">
+      <button class="cat-card" data-filter="tees"><span class="cat-num">01</span><span class="cat-name">Tees</span></button>
+      <button class="cat-card" data-filter="shorts"><span class="cat-num">02</span><span class="cat-name">Shorts</span></button>
+      <button class="cat-card" data-filter="socks"><span class="cat-num">03</span><span class="cat-name">Socks</span></button>
+      <button class="cat-card" data-filter="protein"><span class="cat-num">04</span><span class="cat-name">Protein</span></button>
+      <button class="cat-card" data-filter="creatine"><span class="cat-num">05</span><span class="cat-name">Creatine</span></button>
+    </section>
+
+    <section class="shop container" id="shop">
+      <div class="section-head">
+        <h2>The Shop</h2>
+        <div class="filters" role="tablist" aria-label="Filter products" id="filters">
+          <button class="chip active" data-filter="all">All</button>
+          <button class="chip" data-filter="tees">Tees</button>
+          <button class="chip" data-filter="shorts">Shorts</button>
+          <button class="chip" data-filter="socks">Socks</button>
+          <button class="chip" data-filter="protein">Protein</button>
+          <button class="chip" data-filter="creatine">Creatine</button>
+        </div>
+      </div>
+      <div class="grid" id="productGrid"></div>
+    </section>
+
+    <section class="fuel" id="fuel">
+      <div class="container fuel-inner">
+        <div>
+          <p class="eyebrow">The fuel</p>
+          <h2>Organic protein.<br>Pure creatine.<br>Nothing weird.</h2>
+        </div>
+        <ul class="fuel-points">
+          <li><strong>Certified organic</strong> Our protein comes from grass-fed dairy and organic peas. No artificial sweeteners, colors or fillers.</li>
+          <li><strong>One ingredient creatine</strong> 100% creatine monohydrate. Unflavored, micronized, mixes into anything.</li>
+          <li><strong>Third-party tested</strong> Every batch is lab tested for purity and banned substances.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="about container" id="about">
+      <div class="about-copy">
+        <p class="eyebrow">About</p>
+        <h2>Started in a garage gym.<br>Still smells like one.</h2>
+        <p>GYM bros began with a few friends, a squat rack and a shared hatred of shirts that fall apart after ten washes. We make heavyweight, no-nonsense training gear and keep the supplement shelf short: protein you can pronounce and creatine that's just creatine.</p>
+      </div>
+      <dl class="stats">
+        <div><dt>240gsm</dt><dd>Heavyweight cotton tees</dd></div>
+        <div><dt>4-way</dt><dd>Stretch training shorts</dd></div>
+        <div><dt>25g</dt><dd>Protein per scoop</dd></div>
+        <div><dt>5g</dt><dd>Creatine per serving</dd></div>
+      </dl>
+    </section>
+
+    <section class="faq container" id="faq">
+      <h2>FAQ</h2>
+      <details>
+        <summary>How do your tees fit?</summary>
+        <p>The Essential Tee is a true-to-size athletic fit. The Pump Cover is oversized — size down if you want it closer to the body.</p>
+      </details>
+      <details>
+        <summary>Is the protein really organic?</summary>
+        <p>Yes. Both the whey and plant protein use certified organic ingredients, sweetened only with organic cane sugar or stevia.</p>
+      </details>
+      <details>
+        <summary>How should I take creatine?</summary>
+        <p>Most people take one 5g scoop a day mixed into water, a shake or coffee. Timing matters less than consistency. Check with your doctor if you have a medical condition.</p>
+      </details>
+      <details>
+        <summary>What's your return policy?</summary>
+        <p>Unworn apparel can be returned within 30 days. Unopened supplements can be returned within 30 days.</p>
+      </details>
+    </section>
+
+    <section class="newsletter">
+      <div class="container newsletter-inner">
+        <h2>Join the bros.</h2>
+        <p>Drops, restocks and 10% off your first order.</p>
+        <form id="newsletterForm" class="newsletter-form">
+          <label for="email" class="sr-only">Email address</label>
+          <input id="email" type="email" placeholder="you@email.com" required>
+          <button class="btn btn-primary" type="submit">Sign up</button>
+        </form>
+        <p class="form-msg" id="formMsg" role="status"></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <a href="#" class="logo">GYM<span>bros</span></a>
+      <p class="fine">These statements have not been evaluated by the Food and Drug Administration. Supplements are not intended to diagnose, treat, cure or prevent any disease.</p>
+      <p class="fine">© 2026 GYM bros. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <div class="overlay" id="overlay" hidden></div>
+  <aside class="cart" id="cart" aria-label="Shopping cart" aria-hidden="true">
+    <div class="cart-head">
+      <h3>Your cart</h3>
+      <button class="icon-btn" id="cartClose" aria-label="Close cart">✕</button>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-foot">
+      <div class="ship-meter"><div class="ship-bar" id="shipBar"></div></div>
+      <p class="ship-msg" id="shipMsg"></p>
+      <div class="cart-total"><span>Subtotal</span><span id="cartTotal">$0.00</span></div>
+      <button class="btn btn-primary btn-block" id="checkoutBtn">Checkout</button>
+    </div>
+  </aside>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>

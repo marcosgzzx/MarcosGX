@@ -1,0 +1,244 @@
+// ---------- Product art (inline SVG, no image assets needed) ----------
+const art = {
+  tee: (c) => `<svg viewBox="0 0 100 100"><path fill="${c}" stroke="rgba(0,0,0,.35)" stroke-width="1.5" stroke-linejoin="round" d="M36 14l-20 9-10 20 13 6 6-9v46h50V40l6 9 13-6-10-20-20-9c-2 6-8 10-14 10s-12-4-14-10z"/><text x="50" y="58" text-anchor="middle" font-family="Anton,Impact,sans-serif" font-size="11" fill="rgba(0,0,0,.55)">GYM</text></svg>`,
+  shorts: (c) => `<svg viewBox="0 0 100 100"><path fill="${c}" stroke="rgba(0,0,0,.35)" stroke-width="1.5" stroke-linejoin="round" d="M18 18h64l8 62-32 4-8-34-8 34-32-4z"/><path d="M18 26h64" stroke="rgba(0,0,0,.35)" stroke-width="2"/><path d="M47 30l3 4 3-4" fill="none" stroke="rgba(0,0,0,.4)" stroke-width="1.5"/></svg>`,
+  socks: (c) => `<svg viewBox="0 0 100 100"><g stroke="rgba(0,0,0,.35)" stroke-width="1.5" stroke-linejoin="round"><path fill="${c}" opacity=".7" d="M44 10h22v44c0 10 2 14 10 18s8 18-4 20-30-6-34-14-2-14 6-20z"/><path fill="${c}" d="M30 14h22v44c0 10 2 14 10 18s8 18-4 20-30-6-34-14-2-14 6-20z"/><path fill="rgba(0,0,0,.25)" d="M30 14h22v8H30z"/></g></svg>`,
+  tub: (c) => `<svg viewBox="0 0 100 100"><rect x="22" y="12" width="56" height="12" rx="3" fill="#111" stroke="rgba(255,255,255,.2)"/><path fill="${c}" stroke="rgba(0,0,0,.35)" stroke-width="1.5" d="M20 24h60l-3 64H23z"/><rect x="26" y="38" width="48" height="34" rx="3" fill="#f4f1ea"/><text x="50" y="52" text-anchor="middle" font-family="Anton,Impact,sans-serif" font-size="10" fill="#111">PROTEIN</text><text x="50" y="64" text-anchor="middle" font-family="Inter,sans-serif" font-weight="700" font-size="6" fill="#4a7a00">ORGANIC</text></svg>`,
+  jar: (c) => `<svg viewBox="0 0 100 100"><rect x="30" y="18" width="40" height="12" rx="3" fill="#111" stroke="rgba(255,255,255,.2)"/><rect x="26" y="30" width="48" height="58" rx="6" fill="${c}" stroke="rgba(0,0,0,.35)" stroke-width="1.5"/><rect x="30" y="44" width="40" height="28" rx="3" fill="#111"/><text x="50" y="57" text-anchor="middle" font-family="Anton,Impact,sans-serif" font-size="8" fill="#d4ff3a">CREATINE</text><text x="50" y="66" text-anchor="middle" font-family="Inter,sans-serif" font-weight="700" font-size="5" fill="#f4f1ea">MONOHYDRATE</text></svg>`,
+};
+
+// ---------- Catalog ----------
+const COLORS = {
+  black: { name: "Black", hex: "#1c1c1c" },
+  bone: { name: "Bone", hex: "#e9e3d5" },
+  lime: { name: "Volt", hex: "#d4ff3a" },
+  grey: { name: "Heather", hex: "#8d8d8d" },
+  navy: { name: "Navy", hex: "#22304f" },
+  olive: { name: "Olive", hex: "#5d6340" },
+  white: { name: "White", hex: "#f7f7f5" },
+};
+const APPAREL_SIZES = ["S", "M", "L", "XL", "XXL"];
+
+const products = [
+  { id: "essential-tee", name: "Essential Tee", category: "tees", price: 32, art: "tee", tag: "Bestseller",
+    desc: "240gsm heavyweight cotton. Athletic fit that holds its shape.",
+    colors: ["black", "bone", "grey", "lime"], sizes: APPAREL_SIZES },
+  { id: "pump-cover", name: "Pump Cover Oversized Tee", category: "tees", price: 38, art: "tee",
+    desc: "Boxy, dropped-shoulder fit for warm-ups. Comes off when the pump hits.",
+    colors: ["grey", "black", "olive"], sizes: APPAREL_SIZES },
+  { id: "training-short-5", name: '5" Training Short', category: "shorts", price: 42, art: "shorts", tag: "New",
+    desc: "4-way stretch with a built-in liner and zip phone pocket.",
+    colors: ["black", "navy", "olive"], sizes: APPAREL_SIZES },
+  { id: "lift-short-7", name: '7" Lift Short', category: "shorts", price: 45, art: "shorts",
+    desc: "Squat-proof gusset, sweat-wicking fabric, room for your quads.",
+    colors: ["grey", "black", "lime"], sizes: APPAREL_SIZES },
+  { id: "crew-sock-3", name: "Crew Sock 3-Pack", category: "socks", price: 18, art: "socks",
+    desc: "Cushioned sole, arch support and a cuff that stays up mid-set.",
+    colors: ["white", "black", "lime"], sizes: ["S/M", "L/XL"] },
+  { id: "organic-whey", name: "Organic Whey Protein · 2lb", category: "protein", price: 54, art: "tub", tag: "Organic",
+    desc: "Grass-fed organic whey. 25g protein per scoop, no artificial sweeteners.",
+    flavors: [{ name: "Chocolate", hex: "#6b4226" }, { name: "Vanilla", hex: "#efe0b9" }, { name: "Unflavored", hex: "#cfcfcf" }] },
+  { id: "organic-plant", name: "Organic Plant Protein · 2lb", category: "protein", price: 49, art: "tub", tag: "Vegan",
+    desc: "Organic pea and pumpkin seed blend. 22g protein, smooth texture.",
+    flavors: [{ name: "Chocolate", hex: "#6b4226" }, { name: "Vanilla", hex: "#efe0b9" }] },
+  { id: "creatine", name: "Creatine Monohydrate · 300g", category: "creatine", price: 29, art: "jar", tag: "Pure",
+    desc: "100% micronized creatine monohydrate. 60 servings, unflavored.",
+    flavors: [{ name: "Unflavored", hex: "#d4ff3a" }] },
+];
+
+const GROUPS = { apparel: ["tees", "shorts", "socks"], supplements: ["protein", "creatine"] };
+const FREE_SHIP = 75;
+const money = (n) => `$${n.toFixed(2)}`;
+
+// ---------- State ----------
+const selection = {}; // product id -> { color, size, flavor }
+let cart = load();
+
+function load() {
+  try { return JSON.parse(localStorage.getItem("gymbros-cart")) || []; } catch { return []; }
+}
+function save() {
+  try { localStorage.setItem("gymbros-cart", JSON.stringify(cart)); } catch { /* storage unavailable */ }
+}
+
+// ---------- Product grid ----------
+const grid = document.getElementById("productGrid");
+
+function variantHex(p, sel) {
+  if (p.colors) return COLORS[sel.color].hex;
+  return p.flavors.find((f) => f.name === sel.flavor).hex;
+}
+
+function renderGrid(filter = "all") {
+  const cats = GROUPS[filter] || (filter === "all" ? null : [filter]);
+  const list = cats ? products.filter((p) => cats.includes(p.category)) : products;
+
+  grid.innerHTML = list.map((p, i) => {
+    const sel = selection[p.id] ||= {
+      color: p.colors?.[0], size: p.sizes?.[Math.min(1, p.sizes.length - 1)], flavor: p.flavors?.[0].name,
+    };
+    const colorRow = p.colors ? `<div class="option-row" aria-label="Color">${p.colors.map((c) =>
+      `<button class="swatch ${c === sel.color ? "active" : ""}" style="background:${COLORS[c].hex}" data-color="${c}" title="${COLORS[c].name}" aria-label="${COLORS[c].name}"></button>`).join("")}</div>` : "";
+    const sizeRow = p.sizes ? `<div class="option-row" aria-label="Size">${p.sizes.map((s) =>
+      `<button class="size ${s === sel.size ? "active" : ""}" data-size="${s}">${s}</button>`).join("")}</div>` : "";
+    const flavorRow = p.flavors && p.flavors.length > 1 ? `<div class="option-row" aria-label="Flavor">${p.flavors.map((f) =>
+      `<button class="size ${f.name === sel.flavor ? "active" : ""}" data-flavor="${f.name}">${f.name}</button>`).join("")}</div>` : "";
+
+    return `
+      <article class="card" data-id="${p.id}" style="animation-delay:${i * 40}ms">
+        <div class="card-media">${p.tag ? `<span class="tag">${p.tag}</span>` : ""}${art[p.art](variantHex(p, sel))}</div>
+        <div class="card-body">
+          <div class="card-top"><h3 class="card-title">${p.name}</h3><span class="price">${money(p.price)}</span></div>
+          <p class="card-desc">${p.desc}</p>
+          ${colorRow}${sizeRow}${flavorRow}
+          <button class="btn btn-primary add">Add to cart</button>
+        </div>
+      </article>`;
+  }).join("");
+}
+
+grid.addEventListener("click", (e) => {
+  const card = e.target.closest(".card");
+  if (!card) return;
+  const p = products.find((x) => x.id === card.dataset.id);
+  const sel = selection[p.id];
+  const b = e.target.closest("button");
+  if (!b) return;
+
+  if (b.dataset.color || b.dataset.size || b.dataset.flavor) {
+    const key = b.dataset.color ? "color" : b.dataset.size ? "size" : "flavor";
+    sel[key] = b.dataset[key];
+    b.parentElement.querySelectorAll("button").forEach((x) => x.classList.toggle("active", x === b));
+    card.querySelector(".card-media svg").outerHTML = art[p.art](variantHex(p, sel));
+  } else if (b.classList.contains("add")) {
+    addToCart(p, sel);
+  }
+});
+
+// ---------- Filters ----------
+function setFilter(filter) {
+  document.querySelectorAll("#filters .chip").forEach((c) =>
+    c.classList.toggle("active", c.dataset.filter === filter));
+  renderGrid(filter);
+}
+
+document.addEventListener("click", (e) => {
+  const el = e.target.closest("[data-filter]");
+  if (!el) return;
+  setFilter(el.dataset.filter);
+  if (!el.closest("#filters")) document.getElementById("shop").scrollIntoView();
+  closeMenu();
+});
+
+// ---------- Cart ----------
+const cartEl = document.getElementById("cart");
+const overlay = document.getElementById("overlay");
+const countEl = document.getElementById("cartCount");
+
+function variantLabel(item) {
+  return [item.color && COLORS[item.color].name, item.size, item.flavor].filter(Boolean).join(" · ");
+}
+
+function addToCart(p, sel) {
+  const variant = { color: sel.color, size: sel.size, flavor: sel.flavor };
+  const key = [p.id, variant.color, variant.size, variant.flavor].join("|");
+  const existing = cart.find((i) => i.key === key);
+  if (existing) existing.qty++;
+  else cart.push({ key, id: p.id, qty: 1, ...variant });
+  save();
+  renderCart();
+  countEl.classList.remove("bump"); void countEl.offsetWidth; countEl.classList.add("bump");
+  toast(`Added ${p.name}`);
+}
+
+function renderCart() {
+  const items = document.getElementById("cartItems");
+  const count = cart.reduce((n, i) => n + i.qty, 0);
+  const total = cart.reduce((s, i) => s + i.qty * products.find((p) => p.id === i.id).price, 0);
+  countEl.textContent = count;
+
+  items.innerHTML = cart.length ? cart.map((i) => {
+    const p = products.find((x) => x.id === i.id);
+    return `
+      <div class="cart-item" data-key="${i.key}">
+        <div class="cart-thumb">${art[p.art](variantHex(p, i))}</div>
+        <div>
+          <h4>${p.name}</h4>
+          <div class="meta">${variantLabel(i)}</div>
+          <div class="qty"><button data-act="dec" aria-label="Decrease">−</button><span>${i.qty}</span><button data-act="inc" aria-label="Increase">+</button></div>
+        </div>
+        <div><div class="line-price">${money(p.price * i.qty)}</div><button class="remove" data-act="rm">Remove</button></div>
+      </div>`;
+  }).join("") : `<p class="cart-empty">Your cart is empty.<br>Time to gear up.</p>`;
+
+  document.getElementById("cartTotal").textContent = money(total);
+  document.getElementById("shipBar").style.width = `${Math.min(100, (total / FREE_SHIP) * 100)}%`;
+  document.getElementById("shipMsg").textContent = total >= FREE_SHIP
+    ? "You've unlocked free shipping 💪"
+    : `${money(FREE_SHIP - total)} away from free shipping`;
+  document.getElementById("checkoutBtn").disabled = !cart.length;
+}
+
+document.getElementById("cartItems").addEventListener("click", (e) => {
+  const act = e.target.dataset.act;
+  if (!act) return;
+  const item = cart.find((i) => i.key === e.target.closest(".cart-item").dataset.key);
+  if (act === "inc") item.qty++;
+  if (act === "dec") item.qty--;
+  if (act === "rm" || item.qty < 1) cart = cart.filter((i) => i !== item);
+  save();
+  renderCart();
+});
+
+function openCart() {
+  cartEl.classList.add("open");
+  cartEl.setAttribute("aria-hidden", "false");
+  overlay.hidden = false;
+}
+function closeCart() {
+  cartEl.classList.remove("open");
+  cartEl.setAttribute("aria-hidden", "true");
+  overlay.hidden = true;
+}
+document.getElementById("cartBtn").addEventListener("click", openCart);
+document.getElementById("cartClose").addEventListener("click", closeCart);
+overlay.addEventListener("click", closeCart);
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeCart(); });
+
+document.getElementById("checkoutBtn").addEventListener("click", () => {
+  cart = [];
+  save();
+  renderCart();
+  closeCart();
+  toast("Order placed — thanks, bro! (demo checkout)");
+});
+
+// ---------- Mobile menu ----------
+const menuBtn = document.getElementById("menuBtn");
+const nav = document.getElementById("nav");
+function closeMenu() { nav.classList.remove("open"); menuBtn.setAttribute("aria-expanded", "false"); }
+menuBtn.addEventListener("click", () => {
+  const open = nav.classList.toggle("open");
+  menuBtn.setAttribute("aria-expanded", String(open));
+});
+nav.addEventListener("click", (e) => { if (e.target.tagName === "A") closeMenu(); });
+
+// ---------- Newsletter ----------
+document.getElementById("newsletterForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  document.getElementById("formMsg").textContent = "You're in. Check your inbox for 10% off.";
+  e.target.reset();
+});
+
+// ---------- Toast ----------
+let toastTimer;
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+renderGrid();
+renderCart();
