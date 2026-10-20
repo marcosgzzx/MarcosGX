@@ -45,13 +45,19 @@ const products = [
   { id: "repsupply-crew-3", brand: "repsupply", name: "Calcetas Crew, paquete de 3", category: "socks", price: 349, art: "socks",
     desc: "Planta acolchada, soporte en el arco y puño que no se baja.",
     colors: ["white", "black", "lime"], sizes: ["S/M", "L/XL"] },
-  { id: "birdman-falcon-performance", brand: "birdman", name: "Falcon Performance · 1140 g", category: "protein", alsoIn: ["creatine"],
+  { id: "birdman-falcon-performance", brand: "birdman", name: "Falcon Performance", category: "protein", alsoIn: ["creatine"],
     price: 1053, tag: "Proteína + Creatina",
     desc: "Proteína vegetal con creatina. Por porción de 46 g:",
-    flavors: [{ name: "Choco Bronze", img: "assets/products/falcon-performance-choco-bronze.webp",
-      facts: ["30 g proteína", "5 g creatina", "5.5 g BCAAs"] },
-      { name: "Golden Vanilla", img: "assets/products/falcon-performance-golden-vanilla.webp",
-      facts: ["30 g proteína", "5 g creatina", "5.6 g BCAAs"] }] },
+    // Each pack size has its own price; flavor photos are keyed by pack.
+    packs: [{ name: "Lata 1140 g", price: 1053 }, { name: "Bolsa 1.9 kg", price: 1355 }],
+    flavors: [
+      { name: "Choco Bronze", facts: ["30 g proteína", "5 g creatina", "5.5 g BCAAs"],
+        img: { "Lata 1140 g": "assets/products/falcon-performance-choco-bronze.webp",
+               "Bolsa 1.9 kg": "assets/products/falcon-performance-1-9kg-choco-bronze.webp" } },
+      { name: "Golden Vanilla", facts: ["30 g proteína", "5 g creatina", "5.6 g BCAAs"],
+        img: { "Lata 1140 g": "assets/products/falcon-performance-golden-vanilla.webp",
+               "Bolsa 1.9 kg": "assets/products/falcon-performance-1-9kg-golden-vanilla.webp" } },
+    ] },
   { id: "birdman-falcon-vegetal", brand: "birdman", name: "Falcon Proteína Vegetal · 480 g", category: "protein",
     price: 480, tag: "Proteína vegetal",
     desc: "Proteína vegetal con 0 g de azúcar añadida. Por porción de 32 g:",
@@ -74,7 +80,8 @@ const GROUPS = { apparel: ["tees", "shorts", "socks"], supplements: ["protein", 
 const FREE_SHIP = 1000;
 const mxn = new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" });
 const money = (n) => mxn.format(n);
-const priceOf = (p, sel) => (p.flavors && flavorOf(p, sel).price) || p.price;
+const packOf = (p, sel) => p.packs && (p.packs.find((k) => k.name === sel.pack) || p.packs[0]);
+const priceOf = (p, sel) => (p.flavors && flavorOf(p, sel).price) || packOf(p, sel)?.price || p.price;
 
 // ---------- State ----------
 const selection = {}; // product id -> { color, size, flavor }
@@ -96,7 +103,9 @@ const grid = document.getElementById("productGrid");
 function media(p, sel) {
   if (!p.colors) {
     const f = flavorOf(p, sel);
-    return `<img class="media photo" src="${f.img}" alt="${p.name}, ${f.name}">`;
+    const pack = packOf(p, sel);
+    const src = pack ? f.img[pack.name] : f.img;
+    return `<img class="media photo" src="${src}" alt="${[p.name, pack?.name, f.name].filter(Boolean).join(", ")}">`;
   }
   return art[p.art](COLORS[sel.color].hex).replace("<svg", '<svg class="media"');
 }
@@ -130,12 +139,14 @@ function renderGrid(filter = "all") {
 
   grid.innerHTML = list.map((p, i) => {
     const sel = selection[p.id] ||= {
-      color: p.colors?.[0], size: p.sizes?.[Math.min(1, p.sizes.length - 1)], flavor: p.flavors?.[0].name,
+      color: p.colors?.[0], size: p.sizes?.[Math.min(1, p.sizes.length - 1)], flavor: p.flavors?.[0].name, pack: p.packs?.[0].name,
     };
     const colorRow = p.colors ? `<div class="option-row" aria-label="Color">${p.colors.map((c) =>
       `<button class="swatch ${c === sel.color ? "active" : ""}" style="background:${COLORS[c].hex}" data-color="${c}" title="${COLORS[c].name}" aria-label="${COLORS[c].name}"></button>`).join("")}</div>` : "";
     const sizeRow = p.sizes ? `<div class="option-row" aria-label="Talla">${p.sizes.map((s) =>
       `<button class="size ${s === sel.size ? "active" : ""}" data-size="${s}">${s}</button>`).join("")}</div>` : "";
+    const packRow = p.packs ? `<div class="option-row" aria-label="Tamaño">${p.packs.map((k) =>
+      `<button class="size ${k.name === sel.pack ? "active" : ""}" data-pack="${k.name}">${k.name}</button>`).join("")}</div>` : "";
     const flavorRow = p.flavors ? `<div class="option-row" aria-label="Sabor">${p.flavors.map((f) =>
       `<button class="size ${f.name === sel.flavor ? "active" : ""}${f.limited ? " limited" : ""}" data-flavor="${f.name}"${
         f.limited ? ' title="Edición limitada de otoño"' : ""}>${f.name}${f.limited ? '<span class="limited-dot" aria-label="edición limitada"></span>' : ""}</button>`).join("")}</div>` : "";
@@ -148,7 +159,7 @@ function renderGrid(filter = "all") {
           <div class="card-top"><h3 class="card-title">${p.name}</h3><span class="price">${money(priceOf(p, sel))}</span></div>
           <p class="card-desc">${p.desc}</p>
           ${factsHtml(p, sel)}
-          ${colorRow}${sizeRow}${flavorRow}
+          ${colorRow}${sizeRow}${packRow}${flavorRow}
           <button class="btn btn-primary add">Agregar al carrito</button>
         </div>
       </article>`;
@@ -163,8 +174,8 @@ grid.addEventListener("click", (e) => {
   const b = e.target.closest("button");
   if (!b) return;
 
-  if (b.dataset.color || b.dataset.size || b.dataset.flavor) {
-    const key = b.dataset.color ? "color" : b.dataset.size ? "size" : "flavor";
+  const key = ["color", "size", "pack", "flavor"].find((k) => b.dataset[k]);
+  if (key) {
     sel[key] = b.dataset[key];
     b.parentElement.querySelectorAll("button").forEach((x) => x.classList.toggle("active", x === b));
     card.querySelector(".card-media .media").outerHTML = media(p, sel);
@@ -196,12 +207,12 @@ const overlay = document.getElementById("overlay");
 const countEl = document.getElementById("cartCount");
 
 function variantLabel(item) {
-  return [item.color && COLORS[item.color].name, item.size, item.flavor].filter(Boolean).join(" · ");
+  return [item.color && COLORS[item.color].name, item.size, item.pack, item.flavor].filter(Boolean).join(" · ");
 }
 
 function addToCart(p, sel) {
-  const variant = { color: sel.color, size: sel.size, flavor: sel.flavor };
-  const key = [p.id, variant.color, variant.size, variant.flavor].join("|");
+  const variant = { color: sel.color, size: sel.size, pack: sel.pack, flavor: sel.flavor };
+  const key = [p.id, variant.color, variant.size, variant.pack, variant.flavor].join("|");
   const existing = cart.find((i) => i.key === key);
   if (existing) existing.qty++;
   else cart.push({ key, id: p.id, qty: 1, ...variant });
