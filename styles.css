@@ -118,6 +118,10 @@ h2 { font-size: clamp(2.2rem, 5vw, 3.6rem); }
 .card-desc { color: var(--muted); font-size: .88rem; margin: 0; }
 .card-facts { list-style: none; margin: -4px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
 .card-facts li { background: var(--surface-2); border-radius: 999px; padding: 4px 10px; font-size: .78rem; font-weight: 600; }
+.card-facts-wrap { display: grid; gap: 8px; }
+.card-limited { margin: 0; padding: 8px 12px; border-radius: 10px; background: rgba(255, 122, 51, .14); color: #ff9a5c; font-size: .8rem; font-weight: 600; }
+.size.limited { position: relative; }
+.limited-dot { position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; border-radius: 50%; background: #ff7a33; }
 .option-row { display: flex; gap: 6px; flex-wrap: wrap; }
 .swatch { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--line); padding: 0; outline-offset: 2px; }
 .swatch.active { outline: 2px solid var(--text); }

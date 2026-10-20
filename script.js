@@ -55,6 +55,10 @@ const products = [
     flavors: [
       { name: "Vainilla", img: "assets/products/falcon-vegetal-vainilla.webp", facts: ["24 g proteína", "119 calorías", "5 ingredientes"] },
       { name: "Natural", img: "assets/products/falcon-vegetal-natural.webp", facts: ["25 g proteína", "119 calorías", "3 ingredientes"] },
+      { name: "Chocolate", img: "assets/products/falcon-vegetal-chocolate.webp", facts: ["23 g proteína", "118 calorías", "6 ingredientes"] },
+      { name: "Fresa", img: "assets/products/falcon-vegetal-fresa.webp", facts: ["23 g proteína", "118 calorías", "5 ingredientes"] },
+      { name: "Pumpkin Spice", img: "assets/products/falcon-vegetal-pumpkin-spice.webp", facts: ["23 g proteína", "117 calorías", "4 ingredientes"],
+        limited: "Edición especial limitada: solo disponible en otoño." },
     ] },
   { id: "birdman-creatina", brand: "birdman", name: "Creatina Monohidratada · 450 g", category: "creatine",
     price: 29, tag: "Performance Series",
@@ -97,7 +101,10 @@ function flavorOf(p, sel) {
 }
 
 function factsHtml(p, sel) {
-  return p.flavors ? `<ul class="card-facts">${flavorOf(p, sel).facts.map((f) => `<li>${f}</li>`).join("")}</ul>` : "";
+  if (!p.flavors) return "";
+  const f = flavorOf(p, sel);
+  return `<div class="card-facts-wrap"><ul class="card-facts">${f.facts.map((x) => `<li>${x}</li>`).join("")}</ul>${
+    f.limited ? `<p class="card-limited">${f.limited}</p>` : ""}</div>`;
 }
 
 
@@ -125,7 +132,8 @@ function renderGrid(filter = "all") {
     const sizeRow = p.sizes ? `<div class="option-row" aria-label="Talla">${p.sizes.map((s) =>
       `<button class="size ${s === sel.size ? "active" : ""}" data-size="${s}">${s}</button>`).join("")}</div>` : "";
     const flavorRow = p.flavors ? `<div class="option-row" aria-label="Sabor">${p.flavors.map((f) =>
-      `<button class="size ${f.name === sel.flavor ? "active" : ""}" data-flavor="${f.name}">${f.name}</button>`).join("")}</div>` : "";
+      `<button class="size ${f.name === sel.flavor ? "active" : ""}${f.limited ? " limited" : ""}" data-flavor="${f.name}"${
+        f.limited ? ' title="Edición limitada de otoño"' : ""}>${f.name}${f.limited ? '<span class="limited-dot" aria-label="edición limitada"></span>' : ""}</button>`).join("")}</div>` : "";
 
     return `
       <article class="card" data-id="${p.id}" style="animation-delay:${i * 40}ms">
@@ -155,7 +163,7 @@ grid.addEventListener("click", (e) => {
     sel[key] = b.dataset[key];
     b.parentElement.querySelectorAll("button").forEach((x) => x.classList.toggle("active", x === b));
     card.querySelector(".card-media .media").outerHTML = media(p, sel);
-    if (p.flavors) card.querySelector(".card-facts").outerHTML = factsHtml(p, sel);
+    if (p.flavors) card.querySelector(".card-facts-wrap").outerHTML = factsHtml(p, sel);
   } else if (b.classList.contains("add")) {
     addToCart(p, sel);
   }
