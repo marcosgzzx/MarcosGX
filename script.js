@@ -118,7 +118,7 @@ const products = [
 ];
 
 const GROUPS = { apparel: ["tees", "shorts", "socks", "shoes"], supplements: ["protein", "creatine"] };
-const FREE_SHIP = 1000;
+const FREE_SHIP = 1200; // free shipping from this product subtotal (MXN)
 const MAX_ITEMS = 10; // most products allowed in one order
 const mxn = new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" });
 const money = (n) => mxn.format(n);
@@ -424,10 +424,22 @@ menuBtn.addEventListener("click", () => {
 nav.addEventListener("click", (e) => { if (e.target.tagName === "A") closeMenu(); });
 
 // ---------- Newsletter ----------
-document.getElementById("newsletterForm").addEventListener("submit", (e) => {
+document.getElementById("newsletterForm").addEventListener("submit", async (e) => {
   e.preventDefault();
-  document.getElementById("formMsg").textContent = "¡Listo! Tu código de 10% de descuento es BROS10. Úsalo al pagar.";
-  e.target.reset();
+  const form = e.target;
+  const msg = document.getElementById("formMsg");
+  const email = form.querySelector("#email").value;
+  const btn = form.querySelector("button");
+  btn.disabled = true;
+  try {
+    const res = await subscribeNewsletter(email);
+    msg.innerHTML = res.already
+      ? "Ese correo ya está suscrito y ya recibió su código de bienvenida."
+      : `¡Listo! Tu código de ${PROMO_PERCENT}% es ${promoChip(res.code)} Úsalo al pagar; funciona una sola vez.`;
+    form.reset();
+  } catch {
+    msg.textContent = "No pudimos generar tu código. Intenta de nuevo en un momento.";
+  } finally { btn.disabled = false; }
 });
 
 // ---------- Toast ----------

@@ -324,6 +324,7 @@ function renderAccount() {
     <div class="tabs" role="tablist">${tabs.map(([id, label]) =>
       `<button type="button" role="tab" class="tab ${id === accountView ? "active" : ""}" aria-selected="${id === accountView}" data-view="${id}">${label}</button>`).join("")}</div>
     <div class="tab-panel">${{ profile: profileHtml, payments: paymentsHtml, orders: ordersHtml, settings: settingsHtml }[accountView](user)}</div>`;
+  fillCodeStatus();
 }
 
 function storageNotice() {
@@ -331,6 +332,15 @@ function storageNotice() {
   if (mode === "remote") return `<p class="hint sync-ok">Tu cuenta se guarda en tu perfil de claude.ai y funciona en cualquier dispositivo.</p>`;
   if (mode === "local") return `<p class="hint">Demo: tu cuenta se guarda solo en este navegador.</p>`;
   return `<p class="notice warn">Este navegador no permite que la página guarde datos, así que tu cuenta solo durará mientras la página esté abierta.</p>`;
+}
+
+// Shows whether each of the viewer's codes is still available
+async function fillCodeStatus() {
+  for (const el of accountBody.querySelectorAll("[data-code-status]")) {
+    const res = await checkPromoCode(el.dataset.codeStatus).catch(() => null);
+    el.textContent = !res ? "Sin verificar" : res.ok ? "Disponible" : res.reason === "used" ? "Usado" : "No encontrado";
+    el.classList.toggle("used", !!res && !res.ok);
+  }
 }
 
 const loginHtml = () => `
@@ -354,14 +364,21 @@ const registerHtml = () => `
       <label class="field"><span>Confirmar contraseña</span><input name="confirm" id="regConfirm" type="password" autocomplete="new-password" required></label>
     </div>
     <p class="hint">Mínimo 8 caracteres.</p>
-    <label class="check"><input type="checkbox" name="newsletter" id="regNewsletter" checked> Quiero recibir novedades y mi 10% de descuento</label>
+    <label class="check"><input type="checkbox" name="newsletter" id="regNewsletter" checked> Quiero recibir novedades por correo</label>
+    <p class="hint">Al crear tu cuenta recibes un código único de 10% de descuento.</p>
     <div class="form-actions"><button class="btn btn-primary btn-block" type="submit">Crear cuenta</button></div>
     <p class="switch">¿Ya tienes cuenta? <button type="button" class="link-btn" data-view="login">Iniciar sesión</button></p>
   </form>`;
 
 function profileHtml(u) {
   const a = u.address || {};
+  const codes = u.codes || [];
   return `
+  ${codes.length ? `<div class="my-codes">
+    <h4>Tus códigos de descuento</h4>
+    <ul>${codes.map((c) => `<li>${promoChip(c.code)} <span class="muted">${PROMO_PERCENT}% · un solo uso</span>
+      <span class="pill code-status" data-code-status="${c.code}">Revisando…</span></li>`).join("")}</ul>
+  </div>` : ""}
   <form class="stack" id="profileForm" novalidate>
     <div class="form-grid">
       <label class="field span-2"><span>Nombre completo</span><input name="name" id="profName" value="${esc(u.name)}" autocomplete="name" required></label>
@@ -548,12 +565,14 @@ accountBody.addEventListener("submit", async (e) => {
       payments: [], defaultPayment: null, orders: [], createdAt: new Date().toISOString(), updatedAt: Date.now(),
     };
     delete store.deleted[email];
+    // Every new account gets its own single-use 10% code
+    try { user.codes = [{ code: await createPromoCode("cuenta"), createdAt: Date.now() }]; } catch { user.codes = []; }
     const users = getUsers();
     users[email] = user;
     writeJSON(USERS_KEY, users);
     writeJSON(SESSION_KEY, email);
     notifyAccountChange();
-    toast(`¡Bienvenido a GYM BRO'S, ${user.name.split(" ")[0]}!`);
+    toast(user.codes.length ? `¡Bienvenido! Tu código de ${PROMO_PERCENT}%: ${user.codes[0].code}` : `¡Bienvenido a GYM BRO'S, ${user.name.split(" ")[0]}!`);
     accountView = "profile";
     renderAccount();
   }

@@ -1,9 +1,11 @@
 // ---------- Checkout (demo: no payment is processed) ----------
-// Demo discount codes: edit or add codes here.
+// Reusable demo codes. Single-use 10% codes (BROS-XXXX-XXXX) come from promo.js.
 const DISCOUNTS = {
-  BROS10: { type: "percent", value: 10, label: "10% de descuento" },
   ENVIOGRATIS: { type: "shipping", label: "Envío gratis" },
 };
+// The applied code's rule: a reusable one above, or a single-use one checked in promo.js
+const discountOf = () => !co.code ? null : DISCOUNTS[co.code]
+  || (co.uniquePercent ? { type: "percent", value: co.uniquePercent, label: `${co.uniquePercent}% de descuento (un solo uso)`, unique: true } : null);
 const SHIPPING_FEE = 149; // MXN, charged below FREE_SHIP
 
 const CHECKOUT_TYPES = { ...PAY_TYPES, oxxo: { label: "Efectivo en OXXO", kind: "cash" } };
@@ -12,11 +14,11 @@ const NEW_METHOD_ORDER = ["credito", "debito", "amex", "paypal", "mercadopago", 
 const checkoutDialog = document.getElementById("checkoutDialog");
 const checkoutBody = document.getElementById("checkoutBody");
 const stepper = document.getElementById("stepper");
-const co = { step: "summary", code: null, shipping: null, method: null, order: null };
+const co = { step: "summary", code: null, uniquePercent: 0, shipping: null, method: null, order: null };
 
 function totals() {
   const subtotal = cartSubtotal();
-  const d = co.code && DISCOUNTS[co.code];
+  const d = discountOf();
   const discount = d?.type === "percent" ? Math.round(subtotal * d.value) / 100 : 0;
   const shipping = subtotal >= FREE_SHIP || d?.type === "shipping" ? 0 : SHIPPING_FEE;
   return { subtotal, discount, shipping, total: subtotal - discount + shipping };
@@ -55,7 +57,7 @@ function renderCheckout() {
 }
 
 function summaryHtml() {
-  const d = co.code && DISCOUNTS[co.code];
+  const d = discountOf();
   return `
     <ul class="co-items">${cart.map((i) => {
       const p = products.find((x) => x.id === i.id);
@@ -168,12 +170,27 @@ function doneHtml() {
     </div>`;
 }
 
-function placeOrder(paymentLabel, extra = {}) {
+async function placeOrder(paymentLabel, extra = {}) {
+  const id = `GB-${Date.now().toString(36).toUpperCase().slice(-6)}`;
+  // A single-use code is claimed right before the order goes through
+  if (discountOf()?.unique) {
+    const submit = document.querySelector("#paymentForm button[type=submit]");
+    if (submit) submit.disabled = true;
+    const ok = await redeemPromoCode(co.code, id).catch(() => false);
+    if (!ok) {
+      const code = co.code;
+      co.code = null;
+      co.uniquePercent = 0;
+      renderCheckout();
+      setFormError(document.getElementById("paymentForm"), `El código ${code} ya se usó, así que lo quitamos. Revisa el nuevo total y vuelve a pagar.`);
+      return;
+    }
+  }
   const user = getCurrentUser();
   const t = totals();
   const s = co.shipping;
   const order = {
-    id: `GB-${Date.now().toString(36).toUpperCase().slice(-6)}`,
+    id,
     date: new Date().toISOString(),
     customer: s.name,
     shipTo: `${s.street}, ${s.colonia}, ${s.cp} ${s.city}, ${s.state}`,
@@ -181,7 +198,7 @@ function placeOrder(paymentLabel, extra = {}) {
       const p = products.find((x) => x.id === i.id);
       return { name: p.name, variant: variantLabel(i), qty: i.qty, price: priceOf(p, i) };
     }),
-    subtotal: t.subtotal, discount: t.discount, code: t.discount || DISCOUNTS[co.code]?.type === "shipping" ? co.code : null,
+    subtotal: t.subtotal, discount: t.discount, code: co.code || null,
     shipping: t.shipping, total: t.total, payment: paymentLabel,
     status: extra.oxxoRef ? "Pendiente de pago" : "Confirmado", ...extra,
   };
@@ -192,6 +209,7 @@ function placeOrder(paymentLabel, extra = {}) {
   }
   co.order = order;
   co.code = null;
+  co.uniquePercent = 0;
   co.method = null;
   clearCart();
   co.step = "done";
@@ -204,7 +222,7 @@ document.getElementById("checkoutBtn").addEventListener("click", openCheckout);
 checkoutBody.addEventListener("click", (e) => {
   const act = e.target.closest("[data-co]")?.dataset.co;
   if (!act) return;
-  if (act === "remove-code") { co.code = null; renderCheckout(); }
+  if (act === "remove-code") { co.code = null; co.uniquePercent = 0; renderCheckout(); }
   if (act === "to-summary") { co.step = "summary"; renderCheckout(); }
   if (act === "to-shipping") { co.step = "shipping"; renderCheckout(); }
   if (act === "login") openAccount("login");
@@ -218,15 +236,26 @@ checkoutBody.addEventListener("change", (e) => {
   }
 });
 
-checkoutBody.addEventListener("submit", (e) => {
+checkoutBody.addEventListener("submit", async (e) => {
   e.preventDefault();
   const form = e.target;
   const data = formData(form);
 
   if (form.id === "discountForm") {
-    const code = (data.discount || "").trim().toUpperCase();
-    if (!code) return setFormError(form, "Escribe un código.");
-    if (!DISCOUNTS[code]) return setFormError(form, `El código "${code.replace(/[<>&"]/g, "")}" no existe o ya venció.`);
+    const typed = (data.discount || "").trim().toUpperCase();
+    if (!typed) return setFormError(form, "Escribe un código.");
+    let code = typed;
+    if (!DISCOUNTS[typed]) {
+      code = formatCode(typed);
+      const btn = form.querySelector("button[type=submit]");
+      if (btn) btn.disabled = true;
+      const res = await checkPromoCode(code).catch(() => ({ ok: false, reason: "missing" }));
+      if (btn) btn.disabled = false;
+      if (!res.ok) return setFormError(form, res.reason === "used"
+        ? `El código ${code} ya se usó. Cada código funciona una sola vez.`
+        : `El código "${typed.replace(/[<>&"]/g, "")}" no existe. Revisa que esté bien escrito.`);
+      co.uniquePercent = res.percent;
+    }
     co.code = code;
     toast(`Código ${code} aplicado`);
     renderCheckout();

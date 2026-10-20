@@ -20,7 +20,8 @@ python3 -m http.server 8000
 - `styles.css`: styling and responsive layout
 - `script.js`: brands, product catalog, filtering, sorting, search, variant selection and the cart (max 10 items), saved in `localStorage`
 - `account.js`: demo accounts: sign up, log in, profile and address, favorite size, saved payment methods (credit, debit, Amex, PayPal, Mercado Pago, gift card), order history and settings
-- `checkout.js`: three-step checkout (summary with discount code, shipping, payment) and the order confirmation. Demo discount codes live in `DISCOUNTS`
+- `checkout.js`: three-step checkout (summary with discount code, shipping, payment) and the order confirmation. Free shipping from a $1,200 product subtotal (`FREE_SHIP` in `script.js`); reusable demo codes live in `DISCOUNTS`
+- `promo.js`: single-use 10% codes (`BROS-XXXX-XXXX`), one per newsletter email and one per new account. Inside the claude.ai viewer they are kept in the artifact's shared database so each works only once anywhere; elsewhere they are kept in the browser
 
 ## Hero background clips
 
