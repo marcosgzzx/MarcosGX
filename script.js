@@ -7,55 +7,60 @@ const art = {
 
 // ---------- Catalog ----------
 const COLORS = {
-  black: { name: "Black", hex: "#1c1c1c" },
-  bone: { name: "Bone", hex: "#e9e3d5" },
-  lime: { name: "Volt", hex: "#d4ff3a" },
-  grey: { name: "Heather", hex: "#8d8d8d" },
-  navy: { name: "Navy", hex: "#22304f" },
-  olive: { name: "Olive", hex: "#5d6340" },
-  white: { name: "White", hex: "#f7f7f5" },
+  black: { name: "Negro", hex: "#1c1c1c" },
+  bone: { name: "Hueso", hex: "#e9e3d5" },
+  lime: { name: "Neón", hex: "#d4ff3a" },
+  grey: { name: "Gris jaspeado", hex: "#8d8d8d" },
+  navy: { name: "Azul marino", hex: "#22304f" },
+  olive: { name: "Olivo", hex: "#5d6340" },
+  white: { name: "Blanco", hex: "#f7f7f5" },
 };
 const APPAREL_SIZES = ["S", "M", "L", "XL", "XXL"];
 
 // Apparel brand names are placeholders: swap in the real brands GYM BRO'S stocks.
 const BRANDS = {
-  ironclad: { name: "Ironclad Athletics", kind: "Apparel", blurb: "Heavyweight cotton tees built for the weight room." },
-  northlift: { name: "Northlift", kind: "Apparel", blurb: "Stretch training shorts and performance tees." },
-  repsupply: { name: "Rep Supply Co.", kind: "Apparel", blurb: "Cushioned training socks that stay up." },
-  birdman: { name: "Birdman", kind: "Supplements", blurb: "Falcon plant-based protein, with or without added creatine." },
+  ironclad: { name: "Ironclad Athletics", kind: "Ropa", blurb: "Playeras de algodón grueso hechas para el gym." },
+  northlift: { name: "Northlift", kind: "Ropa", blurb: "Shorts elásticos y playeras de entrenamiento." },
+  repsupply: { name: "Rep Supply Co.", kind: "Ropa", blurb: "Calcetas acolchadas que no se bajan." },
+  birdman: { name: "Birdman", kind: "Suplementos", blurb: "Proteína vegetal Falcon y creatina monohidratada." },
 };
 
 const products = [
-  { id: "ironclad-essential-tee", brand: "ironclad", name: "Essential Tee", category: "tees", price: 32, art: "tee", tag: "Bestseller",
-    desc: "240gsm heavyweight cotton. Athletic fit, true to size.",
+  { id: "ironclad-essential-tee", brand: "ironclad", name: "Playera Essential", category: "tees", price: 32, art: "tee", tag: "Más vendido",
+    desc: "Algodón grueso de 240 g/m². Corte atlético, talla normal.",
     colors: ["black", "bone", "grey", "lime"], sizes: APPAREL_SIZES },
-  { id: "ironclad-pump-cover", brand: "ironclad", name: "Pump Cover Oversized Tee", category: "tees", price: 38, art: "tee",
-    desc: "Boxy, dropped-shoulder fit for warm-ups. Runs oversized.",
+  { id: "ironclad-pump-cover", brand: "ironclad", name: "Playera Oversized Pump Cover", category: "tees", price: 38, art: "tee",
+    desc: "Corte holgado con hombro caído para calentar. Talla grande.",
     colors: ["grey", "black", "olive"], sizes: APPAREL_SIZES },
-  { id: "northlift-dry-tee", brand: "northlift", name: "DryLift Training Tee", category: "tees", price: 34, art: "tee", tag: "New",
-    desc: "Lightweight sweat-wicking knit. Slim fit, true to size.",
+  { id: "northlift-dry-tee", brand: "northlift", name: "Playera de entrenamiento DryLift", category: "tees", price: 34, art: "tee", tag: "Nuevo",
+    desc: "Tejido ligero que absorbe el sudor. Corte slim, talla normal.",
     colors: ["navy", "black", "white"], sizes: APPAREL_SIZES },
-  { id: "northlift-short-5", brand: "northlift", name: '5" Training Short', category: "shorts", price: 42, art: "shorts",
-    desc: "4-way stretch with a built-in liner and zip phone pocket.",
+  { id: "northlift-short-5", brand: "northlift", name: 'Short de entrenamiento 5"', category: "shorts", price: 42, art: "shorts",
+    desc: "Elástico en 4 direcciones, con licra interior y bolsillo con cierre para el celular.",
     colors: ["black", "navy", "olive"], sizes: APPAREL_SIZES },
-  { id: "northlift-short-7", brand: "northlift", name: '7" Lift Short', category: "shorts", price: 45, art: "shorts",
-    desc: "Squat-proof gusset, sweat-wicking fabric, room for your quads.",
+  { id: "northlift-short-7", brand: "northlift", name: 'Short de pesas 7"', category: "shorts", price: 45, art: "shorts",
+    desc: "Entrepierna reforzada para sentadillas, tela que absorbe el sudor y espacio para las piernas.",
     colors: ["grey", "black", "lime"], sizes: APPAREL_SIZES },
-  { id: "repsupply-crew-3", brand: "repsupply", name: "Crew Sock 3-Pack", category: "socks", price: 18, art: "socks",
-    desc: "Cushioned sole, arch support and a cuff that stays up mid-set.",
+  { id: "repsupply-crew-3", brand: "repsupply", name: "Calcetas Crew, paquete de 3", category: "socks", price: 18, art: "socks",
+    desc: "Planta acolchada, soporte en el arco y puño que no se baja.",
     colors: ["white", "black", "lime"], sizes: ["S/M", "L/XL"] },
   { id: "birdman-falcon-performance", brand: "birdman", name: "Falcon Performance · 1140 g", category: "protein", alsoIn: ["creatine"],
-    price: 69, tag: "Protein + Creatine",
-    desc: "Plant-based protein with creatine. Per 46 g serving:",
+    price: 69, tag: "Proteína + Creatina",
+    desc: "Proteína vegetal con creatina. Por porción de 46 g:",
     flavors: [{ name: "Choco Bronze", img: "assets/products/falcon-performance-choco-bronze.webp",
-      facts: ["30 g protein", "5 g creatine", "5.5 g BCAAs"] }] },
+      facts: ["30 g proteína", "5 g creatina", "5.5 g BCAAs"] }] },
   { id: "birdman-falcon-vegetal", brand: "birdman", name: "Falcon Proteína Vegetal · 480 g", category: "protein",
-    price: 36, tag: "Plant protein",
-    desc: "Plant protein with 0 g added sugar. Per 32 g serving:",
+    price: 36, tag: "Proteína vegetal",
+    desc: "Proteína vegetal con 0 g de azúcar añadida. Por porción de 32 g:",
     flavors: [
-      { name: "Vainilla", img: "assets/products/falcon-vegetal-vainilla.webp", facts: ["24 g protein", "119 calories", "5 ingredients"] },
-      { name: "Natural", img: "assets/products/falcon-vegetal-natural.webp", facts: ["25 g protein", "119 calories", "3 ingredients"] },
+      { name: "Vainilla", img: "assets/products/falcon-vegetal-vainilla.webp", facts: ["24 g proteína", "119 calorías", "5 ingredientes"] },
+      { name: "Natural", img: "assets/products/falcon-vegetal-natural.webp", facts: ["25 g proteína", "119 calorías", "3 ingredientes"] },
     ] },
+  { id: "birdman-creatina", brand: "birdman", name: "Creatina Monohidratada · 450 g", category: "creatine",
+    price: 29, tag: "Performance Series",
+    desc: "Creatina monohidratada en polvo, micronizada y de alta pureza.",
+    flavors: [{ name: "Sin saborizantes", img: "assets/products/birdman-creatina-450g.webp",
+      facts: ["Micronizada", "Alta pureza", "CreaClean®"] }] },
 ];
 
 const GROUPS = { apparel: ["tees", "shorts", "socks"], supplements: ["protein", "creatine"] };
@@ -82,7 +87,7 @@ const grid = document.getElementById("productGrid");
 function media(p, sel) {
   if (!p.colors) {
     const f = flavorOf(p, sel);
-    return `<img class="media photo" src="${f.img}" alt="${p.name}, ${f.name}" loading="lazy">`;
+    return `<img class="media photo" src="${f.img}" alt="${p.name}, ${f.name}">`;
   }
   return art[p.art](COLORS[sel.color].hex).replace("<svg", '<svg class="media"');
 }
@@ -107,9 +112,9 @@ function renderGrid(filter = "all") {
   const list = products.filter((p) => matches(p, filter));
   const status = document.getElementById("shopStatus");
   status.textContent = filter.startsWith("brand:")
-    ? `Showing ${list.length} from ${BRANDS[filter.slice(6)].name} · `
-    : `${list.length} products`;
-  if (filter.startsWith("brand:")) status.insertAdjacentHTML("beforeend", `<button class="link-btn" data-filter="all">Show all</button>`);
+    ? `${list.length} de ${BRANDS[filter.slice(6)].name} · `
+    : `${list.length} productos`;
+  if (filter.startsWith("brand:")) status.insertAdjacentHTML("beforeend", `<button class="link-btn" data-filter="all">Ver todo</button>`);
 
   grid.innerHTML = list.map((p, i) => {
     const sel = selection[p.id] ||= {
@@ -117,9 +122,9 @@ function renderGrid(filter = "all") {
     };
     const colorRow = p.colors ? `<div class="option-row" aria-label="Color">${p.colors.map((c) =>
       `<button class="swatch ${c === sel.color ? "active" : ""}" style="background:${COLORS[c].hex}" data-color="${c}" title="${COLORS[c].name}" aria-label="${COLORS[c].name}"></button>`).join("")}</div>` : "";
-    const sizeRow = p.sizes ? `<div class="option-row" aria-label="Size">${p.sizes.map((s) =>
+    const sizeRow = p.sizes ? `<div class="option-row" aria-label="Talla">${p.sizes.map((s) =>
       `<button class="size ${s === sel.size ? "active" : ""}" data-size="${s}">${s}</button>`).join("")}</div>` : "";
-    const flavorRow = p.flavors ? `<div class="option-row" aria-label="Flavor">${p.flavors.map((f) =>
+    const flavorRow = p.flavors ? `<div class="option-row" aria-label="Sabor">${p.flavors.map((f) =>
       `<button class="size ${f.name === sel.flavor ? "active" : ""}" data-flavor="${f.name}">${f.name}</button>`).join("")}</div>` : "";
 
     return `
@@ -131,7 +136,7 @@ function renderGrid(filter = "all") {
           <p class="card-desc">${p.desc}</p>
           ${factsHtml(p, sel)}
           ${colorRow}${sizeRow}${flavorRow}
-          <button class="btn btn-primary add">Add to cart</button>
+          <button class="btn btn-primary add">Agregar al carrito</button>
         </div>
       </article>`;
   }).join("");
@@ -189,7 +194,7 @@ function addToCart(p, sel) {
   save();
   renderCart();
   countEl.classList.remove("bump"); void countEl.offsetWidth; countEl.classList.add("bump");
-  toast(`Added ${p.name}`);
+  toast(`Agregado: ${p.name}`);
 }
 
 function renderCart() {
@@ -207,17 +212,17 @@ function renderCart() {
           <h4>${p.name}</h4>
           <div class="meta">${BRANDS[p.brand].name}</div>
           <div class="meta">${variantLabel(i)}</div>
-          <div class="qty"><button data-act="dec" aria-label="Decrease">−</button><span>${i.qty}</span><button data-act="inc" aria-label="Increase">+</button></div>
+          <div class="qty"><button data-act="dec" aria-label="Quitar uno">−</button><span>${i.qty}</span><button data-act="inc" aria-label="Agregar uno">+</button></div>
         </div>
-        <div><div class="line-price">${money(p.price * i.qty)}</div><button class="remove" data-act="rm">Remove</button></div>
+        <div><div class="line-price">${money(p.price * i.qty)}</div><button class="remove" data-act="rm">Eliminar</button></div>
       </div>`;
-  }).join("") : `<p class="cart-empty">Your cart is empty.<br>Time to gear up.</p>`;
+  }).join("") : `<p class="cart-empty">Tu carrito está vacío.<br>Hora de equiparte.</p>`;
 
   document.getElementById("cartTotal").textContent = money(total);
   document.getElementById("shipBar").style.width = `${Math.min(100, (total / FREE_SHIP) * 100)}%`;
   document.getElementById("shipMsg").textContent = total >= FREE_SHIP
-    ? "You've unlocked free shipping 💪"
-    : `${money(FREE_SHIP - total)} away from free shipping`;
+    ? "¡Ya tienes envío gratis! 💪"
+    : `Te faltan ${money(FREE_SHIP - total)} para el envío gratis`;
   document.getElementById("checkoutBtn").disabled = !cart.length;
 }
 
@@ -252,7 +257,7 @@ document.getElementById("checkoutBtn").addEventListener("click", () => {
   save();
   renderCart();
   closeCart();
-  toast("Order placed — thanks, bro! (demo checkout)");
+  toast("¡Pedido realizado, gracias bro! (pago de prueba)");
 });
 
 // ---------- Mobile menu ----------
@@ -268,7 +273,7 @@ nav.addEventListener("click", (e) => { if (e.target.tagName === "A") closeMenu()
 // ---------- Newsletter ----------
 document.getElementById("newsletterForm").addEventListener("submit", (e) => {
   e.preventDefault();
-  document.getElementById("formMsg").textContent = "You're in. Check your inbox for 10% off.";
+  document.getElementById("formMsg").textContent = "¡Listo! Revisa tu correo para tu 10% de descuento.";
   e.target.reset();
 });
 
@@ -290,7 +295,7 @@ document.getElementById("brandList").innerHTML = brandIds.map((id) => {
     <span class="brand-kind">${BRANDS[id].kind}</span>
     <span class="brand-name">${BRANDS[id].name}</span>
     <span class="brand-blurb">${BRANDS[id].blurb}</span>
-    <span class="brand-link">Shop ${n} product${n === 1 ? "" : "s"} →</span>
+    <span class="brand-link">Ver ${n} producto${n === 1 ? "" : "s"} →</span>
   </button>`;
 }).join("");
 const tickerItems = brandIds.map((id) => `<span>${BRANDS[id].name.toUpperCase()}</span><span>★</span>`).join("");
@@ -298,7 +303,7 @@ document.getElementById("tickerTrack").innerHTML = tickerItems.repeat(4);
 document.getElementById("supplementBrand").textContent = BRANDS.birdman.name;
 document.querySelectorAll("[data-count]").forEach((el) => {
   const n = products.filter((p) => matches(p, el.dataset.count)).length;
-  el.textContent = `${n} product${n === 1 ? "" : "s"}`;
+  el.textContent = `${n} producto${n === 1 ? "" : "s"}`;
 });
 
 renderGrid();

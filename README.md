@@ -1,6 +1,6 @@
 # GYM BRO'S
 
-Static storefront prototype for GYM BRO'S, an online shop that sells gym clothes (tees, shorts, socks) from several brands and Birdman Falcon protein and creatine supplements.
+Static storefront prototype (in Spanish) for GYM BRO'S, an online shop that sells gym clothes (tees, shorts, socks) from several brands and Birdman supplements: Falcon protein and creatine monohydrate.
 
 The apparel brand names in `script.js` (`BRANDS`) are placeholders. Replace them with the real brands the shop stocks.
 

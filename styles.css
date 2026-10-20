@@ -70,7 +70,7 @@ h2 { font-size: clamp(2.2rem, 5vw, 3.6rem); }
 /* Hero */
 .hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
 .hero-inner { display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: center; padding: 80px 0 100px; }
-.hero h1 { font-size: clamp(3rem, 8vw, 6.4rem); }
+.hero h1 { font-size: clamp(2.8rem, 7vw, 5.6rem); }
 .hero h1 em { font-style: normal; color: var(--accent); }
 .lede { color: var(--muted); font-size: 1.1rem; max-width: 46ch; margin: 24px 0 32px; }
 .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
@@ -102,7 +102,7 @@ h2 { font-size: clamp(2.2rem, 5vw, 3.6rem); }
 .chip:hover { color: var(--text); border-color: var(--text); }
 .chip.active { background: var(--text); color: var(--bg); border-color: var(--text); }
 
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr)); gap: 20px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 20px; }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column; animation: fadeUp .4s both; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } }
 .card-media { position: relative; flex-shrink: 0; aspect-ratio: 1; display: grid; place-items: center; background: radial-gradient(circle at 50% 45%, #3a3a3a, var(--surface-2) 70%); }

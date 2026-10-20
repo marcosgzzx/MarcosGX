@@ -1,33 +1,33 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>GYM BRO'S — Gym Clothes &amp; Supplements</title>
-  <meta name="description" content="GYM BRO'S: gym clothes from top training brands, plus Birdman Falcon protein and creatine, all in one shop.">
+  <title>GYM BRO'S — Ropa de gym y suplementos</title>
+  <meta name="description" content="GYM BRO'S: ropa de gym de las mejores marcas, más proteína Falcon y creatina Birdman, todo en una sola tienda.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="announce">Free shipping on orders over $75 · 30-day returns</div>
+  <div class="announce">Envío gratis en pedidos de más de $75 · 30 días para devoluciones</div>
 
   <header class="site-header">
     <div class="container header-inner">
-      <a href="#" class="logo" aria-label="GYM BRO'S home"><img src="assets/logo-light.png" alt="GYM BRO'S"></a>
+      <a href="#" class="logo" aria-label="Inicio de GYM BRO'S"><img src="assets/logo-light.png" alt="GYM BRO'S"></a>
       <nav class="nav" id="nav">
-        <a href="#shop" data-filter="apparel">Apparel</a>
-        <a href="#shop" data-filter="supplements">Supplements</a>
-        <a href="#brands">Brands</a>
-        <a href="#faq">FAQ</a>
+        <a href="#shop" data-filter="apparel">Ropa</a>
+        <a href="#shop" data-filter="supplements">Suplementos</a>
+        <a href="#brands">Marcas</a>
+        <a href="#faq">Preguntas</a>
       </nav>
       <div class="header-actions">
-        <button class="cart-btn" id="cartBtn" aria-label="Open cart">
+        <button class="cart-btn" id="cartBtn" aria-label="Abrir carrito">
           <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 7h12l-1 13H7L6 7zm3 0V5a3 3 0 0 1 6 0v2"/></svg>
           <span class="cart-count" id="cartCount">0</span>
         </button>
-        <button class="menu-btn" id="menuBtn" aria-label="Toggle menu" aria-expanded="false">
+        <button class="menu-btn" id="menuBtn" aria-label="Abrir menú" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
       </div>
@@ -38,12 +38,12 @@
     <section class="hero">
       <div class="container hero-inner">
         <div class="hero-copy">
-          <p class="eyebrow">Gym clothes · Supplements</p>
-          <h1>The brands you<br><em>train in.</em><br>One shop.</h1>
-          <p class="lede">GYM BRO'S stocks tees, shorts and socks from the training brands lifters actually wear, plus Birdman Falcon plant protein and protein with creatine. One cart, one checkout.</p>
+          <p class="eyebrow">Ropa de gym · Suplementos</p>
+          <h1>Las marcas<br>con las que<br><em>entrenas.</em><br>Una tienda.</h1>
+          <p class="lede">En GYM BRO'S encuentras playeras, shorts y calcetas de las marcas que de verdad usan los que entrenan, más proteína Falcon y creatina Birdman. Un carrito, un solo pago.</p>
           <div class="hero-ctas">
-            <a href="#shop" class="btn btn-primary" data-filter="apparel">Shop apparel</a>
-            <a href="#shop" class="btn btn-ghost" data-filter="supplements">Shop supplements</a>
+            <a href="#shop" class="btn btn-primary" data-filter="apparel">Ver ropa</a>
+            <a href="#shop" class="btn btn-ghost" data-filter="supplements">Ver suplementos</a>
           </div>
         </div>
         <div class="hero-art">
@@ -55,27 +55,27 @@
       </div>
     </section>
 
-    <section class="categories container" aria-label="Shop by category">
-      <button class="cat-card" data-filter="tees"><span class="cat-count" data-count="tees"></span><span class="cat-name">Tees</span></button>
+    <section class="categories container" aria-label="Comprar por categoría">
+      <button class="cat-card" data-filter="tees"><span class="cat-count" data-count="tees"></span><span class="cat-name">Playeras</span></button>
       <button class="cat-card" data-filter="shorts"><span class="cat-count" data-count="shorts"></span><span class="cat-name">Shorts</span></button>
-      <button class="cat-card" data-filter="socks"><span class="cat-count" data-count="socks"></span><span class="cat-name">Socks</span></button>
-      <button class="cat-card" data-filter="protein"><span class="cat-count" data-count="protein"></span><span class="cat-name">Protein</span></button>
-      <button class="cat-card" data-filter="creatine"><span class="cat-count" data-count="creatine"></span><span class="cat-name">Creatine</span></button>
+      <button class="cat-card" data-filter="socks"><span class="cat-count" data-count="socks"></span><span class="cat-name">Calcetas</span></button>
+      <button class="cat-card" data-filter="protein"><span class="cat-count" data-count="protein"></span><span class="cat-name">Proteína</span></button>
+      <button class="cat-card" data-filter="creatine"><span class="cat-count" data-count="creatine"></span><span class="cat-name">Creatina</span></button>
     </section>
 
     <section class="shop container" id="shop">
       <div class="section-head">
         <div>
-          <h2>The Shop</h2>
+          <h2>La tienda</h2>
           <p class="shop-status" id="shopStatus" role="status"></p>
         </div>
-        <div class="filters" aria-label="Filter products" id="filters">
-          <button class="chip active" data-filter="all">All</button>
-          <button class="chip" data-filter="tees">Tees</button>
+        <div class="filters" aria-label="Filtrar productos" id="filters">
+          <button class="chip active" data-filter="all">Todo</button>
+          <button class="chip" data-filter="tees">Playeras</button>
           <button class="chip" data-filter="shorts">Shorts</button>
-          <button class="chip" data-filter="socks">Socks</button>
-          <button class="chip" data-filter="protein">Protein</button>
-          <button class="chip" data-filter="creatine">Creatine</button>
+          <button class="chip" data-filter="socks">Calcetas</button>
+          <button class="chip" data-filter="protein">Proteína</button>
+          <button class="chip" data-filter="creatine">Creatina</button>
         </div>
       </div>
       <div class="grid" id="productGrid"></div>
@@ -84,59 +84,59 @@
     <section class="fuel" id="fuel">
       <div class="container fuel-inner">
         <div>
-          <p class="eyebrow">Supplements</p>
-          <h2>Plant protein.<br>Added creatine.<br>Short labels.</h2>
-          <p class="fuel-note">Our supplements come from <strong id="supplementBrand"></strong>: the Falcon line of plant-based protein.</p>
+          <p class="eyebrow">Suplementos</p>
+          <h2>Proteína vegetal.<br>Creatina pura.<br>Etiquetas cortas.</h2>
+          <p class="fuel-note">Nuestros suplementos son de <strong id="supplementBrand"></strong>: proteína vegetal Falcon y creatina monohidratada.</p>
         </div>
         <ul class="fuel-points">
-          <li><strong>Protein + creatine in one scoop</strong> Falcon Performance has 30 g protein, 5 g creatine and 5.5 g BCAAs per 46 g serving.</li>
-          <li><strong>Plant-based protein</strong> Falcon Proteína Vegetal has 24–25 g protein, 119 calories and 0 g added sugar per 32 g serving.</li>
-          <li><strong>Few ingredients</strong> The Natural flavor has only 3 ingredients. Vainilla has 5.</li>
+          <li><strong>Proteína + creatina en un scoop</strong> Falcon Performance tiene 30 g de proteína, 5 g de creatina y 5.5 g de BCAAs por porción de 46 g.</li>
+          <li><strong>Proteína vegetal</strong> Falcon Proteína Vegetal tiene 24–25 g de proteína, 119 calorías y 0 g de azúcar añadida por porción de 32 g. El sabor Natural lleva solo 3 ingredientes.</li>
+          <li><strong>Creatina monohidratada</strong> Micronizada, de alta pureza y sin saborizantes. Se mezcla con agua, tu shake o tu café.</li>
         </ul>
       </div>
     </section>
 
     <section class="brands container" id="brands">
       <div class="brands-copy">
-        <p class="eyebrow">Brands we carry</p>
-        <h2>We don't make the gear.<br>We pick it.</h2>
-        <p>GYM BRO'S is a shop, not a label. We stock clothes from training brands we'd wear ourselves and supplements from one brand we trust, so you can get your tees, shorts, socks and protein in one order.</p>
+        <p class="eyebrow">Marcas que vendemos</p>
+        <h2>No fabricamos la ropa.<br>La elegimos.</h2>
+        <p>GYM BRO'S es una tienda, no una marca. Vendemos ropa de marcas de entrenamiento que nosotros mismos usaríamos y suplementos de una marca en la que confiamos, para que compres tus playeras, shorts, calcetas y proteína en un solo pedido.</p>
       </div>
       <div class="brand-list" id="brandList"></div>
     </section>
 
     <section class="faq container" id="faq">
-      <h2>FAQ</h2>
+      <h2>Preguntas frecuentes</h2>
       <details>
-        <summary>Does GYM BRO'S make its own clothes?</summary>
-        <p>No. We're a retailer. Every product is made by the brand shown on its listing, and we buy directly from those brands.</p>
+        <summary>¿GYM BRO'S fabrica su propia ropa?</summary>
+        <p>No. Somos una tienda. Cada producto lo fabrica la marca que aparece en su ficha, y se lo compramos directamente a esas marcas.</p>
       </details>
       <details>
-        <summary>How do the clothes fit?</summary>
-        <p>Fit depends on the brand. Each listing notes whether it runs true to size or oversized. When in doubt, size up on oversized cuts.</p>
+        <summary>¿Cómo quedan las tallas?</summary>
+        <p>Depende de la marca. Cada ficha indica si es talla normal u oversized. Si tienes duda con un corte oversized, pide una talla más chica.</p>
       </details>
       <details>
-        <summary>Is the protein plant-based?</summary>
-        <p>Yes. Both Birdman Falcon proteins we stock are made from plant protein.</p>
+        <summary>¿La proteína es vegetal?</summary>
+        <p>Sí. Las dos proteínas Falcon de Birdman que vendemos están hechas a base de proteína vegetal.</p>
       </details>
       <details>
-        <summary>Which product has creatine?</summary>
-        <p>Falcon Performance (Choco Bronze) has 5 g creatine per 46 g serving. Falcon Proteína Vegetal doesn't contain creatine. Check with your doctor before taking supplements if you have a medical condition.</p>
+        <summary>¿Qué productos tienen creatina?</summary>
+        <p>La Creatina Monohidratada Birdman de 450 g, sin saborizantes, y Falcon Performance (Choco Bronze), que tiene 5 g de creatina por porción de 46 g. Falcon Proteína Vegetal no contiene creatina. Si tienes alguna condición médica, consulta a tu médico antes de tomar suplementos.</p>
       </details>
       <details>
-        <summary>What's your return policy?</summary>
-        <p>Unworn apparel and unopened supplements can be returned within 30 days, whatever the brand.</p>
+        <summary>¿Cuál es la política de devoluciones?</summary>
+        <p>Tienes 30 días para devolver ropa sin usar y suplementos sin abrir, de cualquier marca.</p>
       </details>
     </section>
 
     <section class="newsletter">
       <div class="container newsletter-inner">
-        <h2>Join the bros.</h2>
-        <p>New arrivals, restocks and 10% off your first order.</p>
+        <h2>Únete a los bros.</h2>
+        <p>Novedades, reabastecimientos y 10% de descuento en tu primer pedido.</p>
         <form id="newsletterForm" class="newsletter-form">
-          <label for="email" class="sr-only">Email address</label>
-          <input id="email" type="email" placeholder="you@email.com" required>
-          <button class="btn btn-primary" type="submit">Sign up</button>
+          <label for="email" class="sr-only">Correo electrónico</label>
+          <input id="email" type="email" placeholder="tu@correo.com" required>
+          <button class="btn btn-primary" type="submit">Suscribirme</button>
         </form>
         <p class="form-msg" id="formMsg" role="status"></p>
       </div>
@@ -145,25 +145,25 @@
 
   <footer class="site-footer">
     <div class="container footer-inner">
-      <a href="#" class="logo" aria-label="GYM BRO'S home"><img src="assets/logo-light.png" alt="GYM BRO'S"></a>
-      <p class="fine">Brand names and trademarks belong to their respective owners. GYM BRO'S is an independent retailer.</p>
-      <p class="fine">These statements have not been evaluated by the Food and Drug Administration. Supplements are not intended to diagnose, treat, cure or prevent any disease.</p>
-      <p class="fine">© 2026 GYM BRO'S. All rights reserved.</p>
+      <a href="#" class="logo" aria-label="Inicio de GYM BRO'S"><img src="assets/logo-light.png" alt="GYM BRO'S"></a>
+      <p class="fine">Los nombres de marca y marcas registradas pertenecen a sus respectivos dueños. GYM BRO'S es una tienda independiente.</p>
+      <p class="fine">Los suplementos no son medicamentos. El consumo de estos productos es responsabilidad de quien los recomienda y de quien los usa.</p>
+      <p class="fine">© 2026 GYM BRO'S. Todos los derechos reservados.</p>
     </div>
   </footer>
 
   <div class="overlay" id="overlay" hidden></div>
-  <aside class="cart" id="cart" aria-label="Shopping cart" aria-hidden="true">
+  <aside class="cart" id="cart" aria-label="Carrito de compras" aria-hidden="true">
     <div class="cart-head">
-      <h3>Your cart</h3>
-      <button class="icon-btn" id="cartClose" aria-label="Close cart">✕</button>
+      <h3>Tu carrito</h3>
+      <button class="icon-btn" id="cartClose" aria-label="Cerrar carrito">✕</button>
     </div>
     <div class="cart-items" id="cartItems"></div>
     <div class="cart-foot">
       <div class="ship-meter"><div class="ship-bar" id="shipBar"></div></div>
       <p class="ship-msg" id="shipMsg"></p>
       <div class="cart-total"><span>Subtotal</span><span id="cartTotal">$0.00</span></div>
-      <button class="btn btn-primary btn-block" id="checkoutBtn">Checkout</button>
+      <button class="btn btn-primary btn-block" id="checkoutBtn">Pagar</button>
     </div>
   </aside>
 
