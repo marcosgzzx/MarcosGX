@@ -43,9 +43,18 @@
   </header>
 
   <main>
-    <section class="hero" id="hero">
-      <div class="hero-media" id="heroMedia" hidden aria-hidden="true">
-        <video id="heroVideo" muted playsinline preload="auto"></video>
+    <section class="hero has-media" id="hero">
+      <div class="hero-media" id="heroMedia" aria-hidden="true">
+        <!-- Background collage. Stock photos: confirm the license (or replace with your own) before launch. -->
+        <div class="hero-collage">
+          <img class="tile t1" src="assets/hero/peso-muerto-pie.webp" alt="">
+          <img class="tile t2" src="assets/hero/grupo-mancuernas.webp" alt="">
+          <img class="tile t3" src="assets/hero/press-banca.webp" alt="">
+          <img class="tile t4" src="assets/hero/peso-muerto.webp" alt="">
+          <img class="tile t5" src="assets/hero/peso-muerto-pie.webp" alt="">
+          <img class="tile t6" src="assets/hero/grupo-mancuernas.webp" alt="">
+        </div>
+        <video id="heroVideo" muted playsinline preload="auto" hidden></video>
         <div class="hero-shade"></div>
       </div>
       <div class="container hero-inner">

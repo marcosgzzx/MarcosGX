@@ -455,7 +455,7 @@ document.querySelectorAll("[data-count]").forEach((el) => {
 
 // ---------- Hero background clips ----------
 // Only use clips you have the right to use (your own, or free-license stock such as Pexels or Pixabay).
-// A credit is shown in the corner of the hero for each clip. With no clips the hero stays plain white.
+// A credit is shown in the corner of the hero for each clip. With no clips the photo collage shows instead.
 const HERO_CLIPS = [
   // { src: ["assets/hero/entrenamiento-1.webm", "assets/hero/entrenamiento-1.mp4"],
   //   author: "Nombre del autor", source: "Pexels", url: "https://www.pexels.com/video/..." },
@@ -465,7 +465,6 @@ function startHeroClips() {
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (!HERO_CLIPS.length || reduceMotion) return;
   const hero = document.getElementById("hero");
-  const box = document.getElementById("heroMedia");
   const video = document.getElementById("heroVideo");
   const credit = document.getElementById("heroCredit");
   const failed = new Set();
@@ -473,7 +472,7 @@ function startHeroClips() {
 
   const play = () => {
     if (failed.size === HERO_CLIPS.length) { // every clip failed: back to the plain hero
-      hero.classList.remove("has-video"); box.hidden = true; credit.hidden = true;
+      video.hidden = true; credit.hidden = true; // the photo collage stays behind
       return;
     }
     while (failed.has(i)) i = (i + 1) % HERO_CLIPS.length;
@@ -488,7 +487,7 @@ function startHeroClips() {
     video.play().catch(() => { /* autoplay blocked: the first frame still shows */ });
   };
   video.addEventListener("loadeddata", () => {
-    hero.classList.add("has-video"); box.hidden = false; credit.hidden = false;
+    video.hidden = false; credit.hidden = false;
   });
   video.addEventListener("ended", () => { i = (i + 1) % HERO_CLIPS.length; play(); });
   video.addEventListener("error", () => { failed.add(i); i = (i + 1) % HERO_CLIPS.length; play(); });
