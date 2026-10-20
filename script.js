@@ -28,6 +28,7 @@ const products = [
   { id: "gymshark-onyx-5", brand: "gymshark", gender: "hombre", name: "Onyx 5.0 Seamless Muscle Fit", category: "tees", price: 1450, tag: "Nuevo",
     desc: "Playera sin costuras de corte muscle fit, entallada al cuerpo.",
     colors: ["negro-azul", "negro-rojo", "negro-gris"], sizes: APPAREL_SIZES,
+    soldOut: ["XXL"], lowStock: ["S"], // demo stock
     packLabel: "Manga", defaultPack: "Manga corta",
     packs: [{ name: "Sin mangas", price: 1300 }, { name: "Manga corta", price: 1450 }, { name: "Manga larga", price: 1600 }],
     // Pack prices are for size M; each size below M costs $100 less, each size above $100 more
@@ -47,6 +48,7 @@ const products = [
   { id: "adidas-top-deportivo", brand: "adidas", gender: "mujer", name: "Top deportivo", category: "tops", price: 750, tag: "Nuevo",
     desc: "Top deportivo con tirantes cruzados en la espalda. Tallas de mujer.",
     colors: ["morado", "black"], sizes: WOMEN_SIZES,
+    soldOut: ["XS"], lowStock: ["XL"], // demo stock
     sizePricing: { base: "M", step: 100 }, // price is for M; $100 less per size below, $100 more per size above
     gallery: {
       morado: ["assets/products/adidas-top-morado.webp", { src: "assets/products/adidas-top-morado-puesto.webp", full: true }],
@@ -55,6 +57,7 @@ const products = [
   { id: "on-cloud-x5", brand: "on", gender: "hombre", name: "Cloud X 5", category: "shoes", price: 3300, tag: "Nuevo",
     desc: "Tenis de entrenamiento. Tallas mexicanas (cm), de US 7 a US 11.",
     colors: ["white", "black"], sizes: SHOE_SIZES, sizeLabel: "Talla MX (cm)",
+    soldOut: ["25"], lowStock: ["29"], // demo stock
     // Price is for US 8 (26 cm); each half size below is $100 less, each half size above $100 more
     sizePricing: { base: "26", step: 100 },
     // Photos per color; the size guide is always the last slide
@@ -68,6 +71,7 @@ const products = [
   { id: "on-cloud-6", brand: "on", gender: "hombre", name: "Cloud 6", category: "shoes", price: 2700, tag: "Nuevo",
     desc: "Tenis para el día a día y el gym. Tallas mexicanas (cm), de US 7 a US 11.",
     colors: ["negro-blanco", "azul-marino"], sizes: SHOE_SIZES, sizeLabel: "Talla MX (cm)",
+    lowStock: ["26.5"], // demo stock
     sizePricing: { base: "26", step: 100 }, // price is for US 8 (26 cm)
     gallery: {
       "negro-blanco": ["assets/products/on-cloud-6-negro-lado.webp"],
@@ -185,6 +189,16 @@ function media(p, sel) {
   return `<div class="media"></div>`;
 }
 
+// Stock (demo data): sizes in p.soldOut can't be picked; sizes in p.lowStock show a warning
+function stockHtml(p, sel) {
+  const low = (p.lowStock || []).includes(sel.size);
+  return `<p class="stock-note" data-stock${low ? "" : " hidden"}>¡Últimas piezas en talla ${sel.size}!</p>`;
+}
+function addButtonHtml(p, sel) {
+  const out = p.soldOut === true;
+  return `<button class="btn btn-primary add"${out ? " disabled" : ""}>${out ? "Agotado" : "Agregar al carrito"}</button>`;
+}
+
 function flavorOf(p, sel) {
   return p.flavors.find((f) => f.name === sel.flavor) || p.flavors[0];
 }
@@ -208,8 +222,10 @@ function matches(p, filter) {
 function defaultSize(p) {
   if (!p.sizes) return undefined;
   const fav = getCurrentUser()?.prefSize;
-  if (p.sizes.includes(fav)) return fav;
-  return p.sizePricing?.base || p.sizes[Math.min(1, p.sizes.length - 1)];
+  const available = p.sizes.filter((x) => !(p.soldOut || []).includes(x));
+  if (available.includes(fav)) return fav;
+  const base = p.sizePricing?.base || p.sizes[Math.min(1, p.sizes.length - 1)];
+  return available.includes(base) ? base : available[0];
 }
 
 const SORTS = {
@@ -237,7 +253,11 @@ function renderGrid(filter = currentFilter) {
     </div>`;
     return;
   }
-  grid.innerHTML = list.map((p, i) => {
+  grid.innerHTML = list.map((p, i) => cardHtml(p, i)).join("");
+}
+
+// One product card. The product page (pdp.js) reuses it with { pdp: true } and its own extra sections.
+function cardHtml(p, i = 0, opts = {}) {
     const sel = selection[p.id] ||= {
       color: p.colors?.[0], size: defaultSize(p), flavor: p.flavors?.[0].name, pack: p.defaultPack || p.packs?.[0].name,
     };
@@ -245,7 +265,9 @@ function renderGrid(filter = currentFilter) {
       `<button class="swatch ${c === sel.color ? "active" : ""}" style="background:${COLORS[c].hex}" data-color="${c}" title="${COLORS[c].name}" aria-label="${COLORS[c].name}"></button>`).join("")}</div>` : "";
     const sizeLabel = p.sizeLabel ? `<p class="option-label">${p.sizeLabel}${p.sizeGuide ? ` · <button type="button" class="link-btn" data-slide="guide">Guía de tallas</button>` : ""}</p>` : "";
     const sizeRow = p.sizes ? `${sizeLabel}<div class="option-row" aria-label="${p.sizeLabel || "Talla"}">${p.sizes.map((s) =>
-      `<button class="size ${s === sel.size ? "active" : ""}" data-size="${s}">${s}</button>`).join("")}</div>` : "";
+      (p.soldOut || []).includes(s)
+        ? `<button class="size soldout" disabled title="Agotado" aria-label="${s}, agotado">${s}</button>`
+        : `<button class="size ${s === sel.size ? "active" : ""}" data-size="${s}">${s}</button>`).join("")}</div>` : "";
     const packRow = p.packs ? `<div class="option-row" aria-label="${p.packLabel || "Tamaño"}">${p.packs.map((k) =>
       `<button class="size ${k.name === sel.pack ? "active" : ""}" data-pack="${k.name}">${k.name}</button>`).join("")}</div>` : "";
     const flavorRow = p.flavors ? `<div class="option-row" aria-label="Sabor">${p.flavors.map((f) =>
@@ -253,21 +275,23 @@ function renderGrid(filter = currentFilter) {
         f.limited ? ' title="Edición limitada de otoño"' : ""}>${f.name}${f.limited ? '<span class="limited-dot" aria-label="edición limitada"></span>' : ""}</button>`).join("")}</div>` : "";
 
     return `
-      <article class="card" data-id="${p.id}" style="animation-delay:${i * 40}ms">
+      <article class="card${opts.pdp ? " pdp" : ""}" data-id="${p.id}" style="animation-delay:${opts.pdp ? 0 : i * 40}ms">
+        ${typeof heartHtml === "function" ? heartHtml(p) : ""}
         <div class="card-media${p.sizeGuide && (sel.slide || 0) === slideCount(p, sel) - 1 ? " on-guide" : ""}">${p.tag ? `<span class="tag">${p.tag}</span>` : ""}${media(p, sel)}${p.gallery ? galleryControls(p, sel) : ""}</div>
         <div class="card-body">
           <p class="card-brand">${BRANDS[p.brand].name}${p.gender ? ` · ${GENDERS[p.gender]}` : ""}</p>
-          <div class="card-top"><h3 class="card-title">${p.name}</h3><span class="price">${money(priceOf(p, sel))}</span></div>
+          <div class="card-top"><h3 class="card-title">${opts.pdp ? p.name : `<button type="button" class="title-link" data-open="${p.id}">${p.name}</button>`}</h3><span class="price">${money(priceOf(p, sel))}</span></div>
           <p class="card-desc">${p.desc}</p>
           ${factsHtml(p, sel)}
-          ${colorRow}${sizeRow}${packRow}${flavorRow}
-          <button class="btn btn-primary add">Agregar al carrito</button>
+          ${colorRow}${sizeRow}${stockHtml(p, sel)}${packRow}${flavorRow}
+          ${addButtonHtml(p, sel)}
+          ${opts.pdp ? "" : `<button type="button" class="link-btn details-link" data-open="${p.id}">Ver detalles</button>`}
+          ${opts.extra || ""}
         </div>
       </article>`;
-  }).join("");
 }
 
-grid.addEventListener("click", (e) => {
+function onCardClick(e) {
   const card = e.target.closest(".card");
   if (!card) return;
   const p = products.find((x) => x.id === card.dataset.id);
@@ -298,10 +322,12 @@ grid.addEventListener("click", (e) => {
     } else card.querySelector(".card-media .media").outerHTML = media(p, sel);
     if (p.flavors) card.querySelector(".card-facts-wrap").outerHTML = factsHtml(p, sel);
     card.querySelector(".price").textContent = money(priceOf(p, sel));
+    card.querySelector("[data-stock]").outerHTML = stockHtml(p, sel);
   } else if (b.classList.contains("add")) {
     addToCart(p, sel);
   }
-});
+}
+grid.addEventListener("click", onCardClick);
 
 // ---------- Filters ----------
 document.getElementById("sortSelect").addEventListener("change", (e) => {

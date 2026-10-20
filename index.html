@@ -4,13 +4,24 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>GYM BRO'S — Ropa de gym y suplementos</title>
-  <meta name="description" content="GYM BRO'S: ropa de gym de las mejores marcas, más proteína Falcon y creatina Birdman, todo en una sola tienda.">
+  <meta name="description" content="GYM BRO'S: tienda en línea de demostración con ropa de gym, tenis y suplementos. Proyecto de muestra de diseño y desarrollo web.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="GYM BRO'S · Tienda de demostración">
+  <meta property="og:description" content="Tienda en línea completa: catálogo, búsqueda, carrito, cuentas, códigos de descuento y asistente con IA. Proyecto de muestra.">
+  <meta property="og:image" content="assets/og-image.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#d4ff3a">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <div class="demo-bar" role="note">
+    <strong>Proyecto de demostración.</strong> No es una tienda real: no se cobra ni se envía nada y no está afiliada a las marcas mostradas.
+    <button type="button" class="link-btn" data-info="about">Sobre este proyecto</button>
+  </div>
   <div class="announce">Precios en pesos mexicanos (MXN) · Envío gratis en pedidos desde $1,200 · 30 días para devoluciones</div>
 
   <header class="site-header">
@@ -26,6 +37,10 @@
       <div class="header-actions">
         <button class="icon-action" id="searchBtn" aria-label="Buscar productos" title="Buscar (/)">
           <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <button class="icon-action wish-btn" id="wishBtn" aria-label="Favoritos">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M12 20s-7-4.4-9.2-8.6C1.2 8.3 3 4.5 6.6 4.5c2 0 3.4 1.1 4.4 2.6 1-1.5 2.4-2.6 4.4-2.6 3.6 0 5.4 3.8 3.8 6.9C19 15.6 12 20 12 20z"/></svg>
+          <span class="cart-count wish-count" id="wishCount" hidden>0</span>
         </button>
         <button class="icon-action account-btn" id="accountBtn" aria-label="Mi cuenta">
           <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -268,6 +283,12 @@
             <a href="#about">Cómo comprar</a>
           </div>
           <div>
+            <h4>Legal</h4>
+            <button class="footer-link" data-info="privacy">Aviso de privacidad</button>
+            <button class="footer-link" data-info="terms">Términos y condiciones</button>
+            <button class="footer-link" data-info="returns">Cambios y devoluciones</button>
+          </div>
+          <div>
             <h4>Cuenta</h4>
             <button class="footer-link" data-account="profile">Mi perfil</button>
             <button class="footer-link" data-account="orders">Mis pedidos</button>
@@ -275,7 +296,7 @@
           </div>
         </div>
       </div>
-      <p class="fine">Los nombres de marca y marcas registradas pertenecen a sus respectivos dueños. GYM BRO'S es una tienda independiente.</p>
+      <p class="fine">Proyecto conceptual de demostración. GYM BRO'S no está afiliada a Gymshark, adidas, On ni Birdman; los nombres, marcas y fotos de producto pertenecen a sus respectivos dueños y se usan solo como ejemplo.</p>
       <p class="fine">Los suplementos no son medicamentos. El consumo de estos productos es responsabilidad de quien los recomienda y de quien los usa.</p>
       <p class="fine">Versión de demostración: las cuentas, los pagos y los pedidos se guardan en este navegador (o en tu perfil de claude.ai si abres la tienda ahí) y no se cobra nada. No ingreses datos reales de tarjetas.</p>
       <p class="fine">© 2026 GYM BRO'S. Todos los derechos reservados.</p>
@@ -337,11 +358,60 @@
     <div class="modal-body" id="checkoutBody"></div>
   </dialog>
 
+  <dialog class="modal pdp-modal" id="pdpDialog" aria-labelledby="pdpTitle">
+    <div class="modal-head">
+      <h3 id="pdpTitle">Producto</h3>
+      <button type="button" class="icon-btn" data-close aria-label="Cerrar">✕</button>
+    </div>
+    <div class="modal-body" id="pdpBody"></div>
+  </dialog>
+
+  <dialog class="modal" id="wishDialog" aria-labelledby="wishTitle">
+    <div class="modal-head">
+      <h3 id="wishTitle">Favoritos</h3>
+      <button type="button" class="icon-btn" data-close aria-label="Cerrar">✕</button>
+    </div>
+    <div class="modal-body" id="wishBody"></div>
+  </dialog>
+
+  <dialog class="modal info-modal" id="infoDialog" aria-labelledby="infoTitle">
+    <div class="modal-head">
+      <h3 id="infoTitle">Información</h3>
+      <button type="button" class="icon-btn" data-close aria-label="Cerrar">✕</button>
+    </div>
+    <div class="modal-body" id="infoBody"></div>
+  </dialog>
+
+  <button type="button" class="assistant-fab" id="assistantBtn" aria-controls="assistant" aria-expanded="false">
+    <img src="assets/favicon.png" alt=""> <span>Pregúntale a GymBro</span>
+  </button>
+  <section class="assistant" id="assistant" aria-label="GymBro, asistente de la tienda" hidden>
+    <header class="assistant-head">
+      <div><strong>GymBro AI</strong><span class="muted" id="assistantMode">Asistente de la tienda</span></div>
+      <button type="button" class="icon-btn" id="assistantClose" aria-label="Cerrar asistente">✕</button>
+    </header>
+    <div class="assistant-log" id="assistantLog" aria-live="polite"></div>
+    <div class="assistant-suggest" id="assistantSuggest">
+      <button type="button" class="chip" data-ask="¿Qué talla de tenis me queda si mido 27 cm?">Talla de tenis</button>
+      <button type="button" class="chip" data-ask="¿Qué proteína me recomiendas si quiero creatina también?">Proteína con creatina</button>
+      <button type="button" class="chip" data-ask="¿Cuánto cuesta el envío?">Envío</button>
+      <button type="button" class="chip" data-ask="¿Qué tienen para mujer?">Para mujer</button>
+    </div>
+    <form class="assistant-form" id="assistantForm">
+      <label for="assistantInput" class="sr-only">Escribe tu pregunta</label>
+      <input id="assistantInput" autocomplete="off" maxlength="500" placeholder="Pregunta sobre productos, tallas, envíos…">
+      <button class="btn btn-primary" type="submit" id="assistantSend">Enviar</button>
+    </form>
+  </section>
+
   <div class="toast" id="toast" role="status" aria-live="polite" popover="manual"></div>
 
   <script src="account.js"></script>
   <script src="promo.js"></script>
   <script src="script.js"></script>
   <script src="checkout.js"></script>
+  <script src="pdp.js"></script>
+  <script src="info.js"></script>
+  <script src="assistant.js"></script>
 </body>
 </html>

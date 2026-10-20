@@ -1,5 +1,7 @@
 # GYM BRO'S
 
+**Demo project:** a concept store built as a portfolio sample. It is not a real store and is not affiliated with Gymshark, adidas, On or Birdman; their names and product photos are used only as examples.
+
 Static storefront prototype (in Spanish) for GYM BRO'S, an online shop that sells Gymshark training tees, On sneakers and Birdman supplements (Falcon protein and creatine monohydrate).
 
 Prices are in Mexican pesos (MXN). Products and brands live in `products` and `BRANDS` in `script.js`; a category with no products shows "No hay productos disponibles".
@@ -21,6 +23,9 @@ python3 -m http.server 8000
 - `script.js`: brands, product catalog, filtering, sorting, search, variant selection and the cart (max 10 items), saved in `localStorage`
 - `account.js`: demo accounts: sign up, log in, profile and address, favorite size, saved payment methods (credit, debit, Amex, PayPal, Mercado Pago, gift card), order history and settings
 - `checkout.js`: three-step checkout (summary with discount code, shipping, payment) and the order confirmation. Free shipping from a $1,200 product subtotal (`FREE_SHIP` in `script.js`); reusable demo codes live in `DISCOUNTS`
+- `pdp.js`: product page (gallery, details, reviews, related products) and the wishlist
+- `info.js`: "Sobre este proyecto", legal page templates (privacy, terms, returns) and the pre-filled test card for the demo checkout
+- `assistant.js`: GymBro AI, the store assistant. Inside the claude.ai viewer it answers with Claude using the live catalog and store policies; elsewhere it falls back to quick answers built from the same data
 - `promo.js`: single-use 10% codes (`BROS-XXXX-XXXX`), one per newsletter email and one per new account. Inside the claude.ai viewer they are kept in the artifact's shared database so each works only once anywhere; elsewhere they are kept in the browser
 
 ## Hero background clips
