@@ -1,18 +1,6 @@
-// ---------- Product art (inline SVG for apparel; supplements use product photos) ----------
-const art = {
-  tee: (c) => `<svg viewBox="0 0 100 100"><path fill="${c}" stroke="rgba(0,0,0,.35)" stroke-width="1.5" stroke-linejoin="round" d="M36 14l-20 9-10 20 13 6 6-9v46h50V40l6 9 13-6-10-20-20-9c-2 6-8 10-14 10s-12-4-14-10z"/></svg>`,
-  shorts: (c) => `<svg viewBox="0 0 100 100"><path fill="${c}" stroke="rgba(0,0,0,.35)" stroke-width="1.5" stroke-linejoin="round" d="M18 18h64l8 62-32 4-8-34-8 34-32-4z"/><path d="M18 26h64" stroke="rgba(0,0,0,.35)" stroke-width="2"/><path d="M47 30l3 4 3-4" fill="none" stroke="rgba(0,0,0,.4)" stroke-width="1.5"/></svg>`,
-  socks: (c) => `<svg viewBox="0 0 100 100"><g stroke="rgba(0,0,0,.35)" stroke-width="1.5" stroke-linejoin="round"><path fill="${c}" opacity=".7" d="M44 10h22v44c0 10 2 14 10 18s8 18-4 20-30-6-34-14-2-14 6-20z"/><path fill="${c}" d="M30 14h22v44c0 10 2 14 10 18s8 18-4 20-30-6-34-14-2-14 6-20z"/><path fill="rgba(0,0,0,.25)" d="M30 14h22v8H30z"/></g></svg>`,
-};
-
 // ---------- Catalog ----------
 const COLORS = {
   black: { name: "Negro", hex: "#1c1c1c" },
-  bone: { name: "Hueso", hex: "#e9e3d5" },
-  lime: { name: "Neón", hex: "#d4ff3a" },
-  grey: { name: "Gris jaspeado", hex: "#8d8d8d" },
-  navy: { name: "Azul marino", hex: "#22304f" },
-  olive: { name: "Olivo", hex: "#5d6340" },
   white: { name: "Blanco", hex: "#f7f7f5" },
   "negro-azul": { name: "Negro/Azul", hex: "linear-gradient(135deg, #111 50%, #1d9c95 50%)" },
   "negro-rojo": { name: "Negro/Rojo", hex: "linear-gradient(135deg, #111 50%, #b3141e 50%)" },
@@ -24,14 +12,10 @@ const SHOE_SIZES = ["25", "25.5", "26", "26.5", "27", "27.5", "28", "28.5", "29"
 // Approximate US men's equivalents for the size guide
 const SHOE_US = { 25: "7", 25.5: "7.5", 26: "8", 26.5: "8.5", 27: "9", 27.5: "9.5", 28: "10", 28.5: "10.5", 29: "11" };
 
-// Apparel brand names and prices are placeholders: swap in the real brands GYM BRO'S stocks.
 // Prices are in Mexican pesos (MXN). A flavor can override its product's price.
 const BRANDS = {
   gymshark: { name: "Gymshark", kind: "Ropa", blurb: "Playeras de entrenamiento sin costuras, corte muscle fit." },
   on: { name: "On", kind: "Tenis", blurb: "Tenis de entrenamiento con suela CloudTec." },
-  ironclad: { name: "Ironclad Athletics", kind: "Ropa", blurb: "Playeras de algodón grueso hechas para el gym." },
-  northlift: { name: "Northlift", kind: "Ropa", blurb: "Shorts elásticos y playeras de entrenamiento." },
-  repsupply: { name: "Rep Supply Co.", kind: "Ropa", blurb: "Calcetas acolchadas que no se bajan." },
   birdman: { name: "Birdman", kind: "Suplementos", blurb: "Proteína vegetal Falcon y creatina monohidratada." },
 };
 
@@ -68,24 +52,6 @@ const products = [
               "assets/products/on-cloud-x5-negro-lado.webp"],
     },
     sizeGuide: true },
-  { id: "ironclad-essential-tee", brand: "ironclad", name: "Playera Essential", category: "tees", price: 599, art: "tee", tag: "Más vendido",
-    desc: "Algodón grueso de 240 g/m². Corte atlético, talla normal.",
-    colors: ["black", "bone", "grey", "lime"], sizes: APPAREL_SIZES },
-  { id: "ironclad-pump-cover", brand: "ironclad", name: "Playera Oversized Pump Cover", category: "tees", price: 699, art: "tee",
-    desc: "Corte holgado con hombro caído para calentar. Talla grande.",
-    colors: ["grey", "black", "olive"], sizes: APPAREL_SIZES },
-  { id: "northlift-dry-tee", brand: "northlift", name: "Playera de entrenamiento DryLift", category: "tees", price: 649, art: "tee", tag: "Nuevo",
-    desc: "Tejido ligero que absorbe el sudor. Corte slim, talla normal.",
-    colors: ["navy", "black", "white"], sizes: APPAREL_SIZES },
-  { id: "northlift-short-5", brand: "northlift", name: 'Short de entrenamiento 5"', category: "shorts", price: 799, art: "shorts",
-    desc: "Elástico en 4 direcciones, con licra interior y bolsillo con cierre para el celular.",
-    colors: ["black", "navy", "olive"], sizes: APPAREL_SIZES },
-  { id: "northlift-short-7", brand: "northlift", name: 'Short de pesas 7"', category: "shorts", price: 849, art: "shorts",
-    desc: "Entrepierna reforzada para sentadillas, tela que absorbe el sudor y espacio para las piernas.",
-    colors: ["grey", "black", "lime"], sizes: APPAREL_SIZES },
-  { id: "repsupply-crew-3", brand: "repsupply", name: "Calcetas Crew, paquete de 3", category: "socks", price: 349, art: "socks",
-    desc: "Planta acolchada, soporte en el arco y puño que no se baja.",
-    colors: ["white", "black", "lime"], sizes: ["S/M", "L/XL"] },
   { id: "birdman-falcon-performance", brand: "birdman", name: "Falcon Performance", category: "protein", alsoIn: ["creatine"],
     price: 1053, tag: "Proteína + Creatina",
     desc: "Proteína vegetal con creatina. Por porción de 46 g:",
@@ -192,7 +158,7 @@ function media(p, sel) {
     const src = pack ? f.img[pack.name] : f.img;
     return `<img class="media photo" src="${src}" alt="${[p.name, pack?.name, f.name].filter(Boolean).join(", ")}">`;
   }
-  return art[p.art](COLORS[sel.color].hex).replace("<svg", '<svg class="media"');
+  return `<div class="media"></div>`;
 }
 
 function flavorOf(p, sel) {
@@ -237,6 +203,14 @@ function renderGrid(filter = currentFilter) {
     : `${list.length} productos`;
   if (filter.startsWith("brand:")) status.insertAdjacentHTML("beforeend", `<button class="link-btn" data-filter="all">Ver todo</button>`);
 
+  if (!list.length) {
+    grid.innerHTML = `<div class="grid-empty">
+      <p><strong>No hay productos disponibles.</strong></p>
+      <p class="muted">Pronto tendremos productos en esta categoría.</p>
+      <button type="button" class="btn btn-ghost" data-filter="all">Ver todos los productos</button>
+    </div>`;
+    return;
+  }
   grid.innerHTML = list.map((p, i) => {
     const sel = selection[p.id] ||= {
       color: p.colors?.[0], size: defaultSize(p), flavor: p.flavors?.[0].name, pack: p.defaultPack || p.packs?.[0].name,
@@ -475,7 +449,8 @@ document.getElementById("tickerTrack").innerHTML = tickerItems.repeat(4);
 document.getElementById("supplementBrand").textContent = BRANDS.birdman.name;
 document.querySelectorAll("[data-count]").forEach((el) => {
   const n = products.filter((p) => matches(p, el.dataset.count)).length;
-  el.textContent = `${n} producto${n === 1 ? "" : "s"}`;
+  el.textContent = n ? `${n} producto${n === 1 ? "" : "s"}` : "Sin productos";
+  el.closest(".cat-card").classList.toggle("empty", !n);
 });
 
 // ---------- Hero background clips ----------
