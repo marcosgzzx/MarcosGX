@@ -1,10 +1,8 @@
-// ---------- Product art (inline SVG, no image assets needed) ----------
+// ---------- Product art (inline SVG for apparel; supplements use product photos) ----------
 const art = {
   tee: (c) => `<svg viewBox="0 0 100 100"><path fill="${c}" stroke="rgba(0,0,0,.35)" stroke-width="1.5" stroke-linejoin="round" d="M36 14l-20 9-10 20 13 6 6-9v46h50V40l6 9 13-6-10-20-20-9c-2 6-8 10-14 10s-12-4-14-10z"/></svg>`,
   shorts: (c) => `<svg viewBox="0 0 100 100"><path fill="${c}" stroke="rgba(0,0,0,.35)" stroke-width="1.5" stroke-linejoin="round" d="M18 18h64l8 62-32 4-8-34-8 34-32-4z"/><path d="M18 26h64" stroke="rgba(0,0,0,.35)" stroke-width="2"/><path d="M47 30l3 4 3-4" fill="none" stroke="rgba(0,0,0,.4)" stroke-width="1.5"/></svg>`,
   socks: (c) => `<svg viewBox="0 0 100 100"><g stroke="rgba(0,0,0,.35)" stroke-width="1.5" stroke-linejoin="round"><path fill="${c}" opacity=".7" d="M44 10h22v44c0 10 2 14 10 18s8 18-4 20-30-6-34-14-2-14 6-20z"/><path fill="${c}" d="M30 14h22v44c0 10 2 14 10 18s8 18-4 20-30-6-34-14-2-14 6-20z"/><path fill="rgba(0,0,0,.25)" d="M30 14h22v8H30z"/></g></svg>`,
-  tub: (c) => `<svg viewBox="0 0 100 100"><rect x="22" y="12" width="56" height="12" rx="3" fill="#111" stroke="rgba(255,255,255,.2)"/><path fill="${c}" stroke="rgba(0,0,0,.35)" stroke-width="1.5" d="M20 24h60l-3 64H23z"/><rect x="26" y="38" width="48" height="34" rx="3" fill="#f4f1ea"/><text x="50" y="52" text-anchor="middle" font-family="Anton,Impact,sans-serif" font-size="10" fill="#111">PROTEIN</text><text x="50" y="64" text-anchor="middle" font-family="Inter,sans-serif" font-weight="700" font-size="6" fill="#4a7a00">ORGANIC</text></svg>`,
-  jar: (c) => `<svg viewBox="0 0 100 100"><rect x="30" y="18" width="40" height="12" rx="3" fill="#111" stroke="rgba(255,255,255,.2)"/><rect x="26" y="30" width="48" height="58" rx="6" fill="${c}" stroke="rgba(0,0,0,.35)" stroke-width="1.5"/><rect x="30" y="44" width="40" height="28" rx="3" fill="#111"/><text x="50" y="57" text-anchor="middle" font-family="Anton,Impact,sans-serif" font-size="8" fill="#d4ff3a">CREATINE</text><text x="50" y="66" text-anchor="middle" font-family="Inter,sans-serif" font-weight="700" font-size="5" fill="#f4f1ea">MONOHYDRATE</text></svg>`,
 };
 
 // ---------- Catalog ----------
@@ -19,12 +17,12 @@ const COLORS = {
 };
 const APPAREL_SIZES = ["S", "M", "L", "XL", "XXL"];
 
-// Placeholder brand names: swap in the real brands GYM BRO'S stocks.
+// Apparel brand names are placeholders: swap in the real brands GYM BRO'S stocks.
 const BRANDS = {
   ironclad: { name: "Ironclad Athletics", kind: "Apparel", blurb: "Heavyweight cotton tees built for the weight room." },
   northlift: { name: "Northlift", kind: "Apparel", blurb: "Stretch training shorts and performance tees." },
   repsupply: { name: "Rep Supply Co.", kind: "Apparel", blurb: "Cushioned training socks that stay up." },
-  verdant: { name: "Verdant Labs", kind: "Supplements", blurb: "Organic protein and pure creatine, third-party tested." },
+  birdman: { name: "Birdman", kind: "Supplements", blurb: "Falcon plant-based protein, with or without added creatine." },
 };
 
 const products = [
@@ -46,15 +44,18 @@ const products = [
   { id: "repsupply-crew-3", brand: "repsupply", name: "Crew Sock 3-Pack", category: "socks", price: 18, art: "socks",
     desc: "Cushioned sole, arch support and a cuff that stays up mid-set.",
     colors: ["white", "black", "lime"], sizes: ["S/M", "L/XL"] },
-  { id: "verdant-whey", brand: "verdant", name: "Organic Whey Protein · 2lb", category: "protein", price: 54, art: "tub", tag: "Organic",
-    desc: "Grass-fed organic whey. 25g protein per scoop, no artificial sweeteners.",
-    flavors: [{ name: "Chocolate", hex: "#6b4226" }, { name: "Vanilla", hex: "#efe0b9" }, { name: "Unflavored", hex: "#cfcfcf" }] },
-  { id: "verdant-plant", brand: "verdant", name: "Organic Plant Protein · 2lb", category: "protein", price: 49, art: "tub", tag: "Vegan",
-    desc: "Organic pea and pumpkin seed blend. 22g protein, smooth texture.",
-    flavors: [{ name: "Chocolate", hex: "#6b4226" }, { name: "Vanilla", hex: "#efe0b9" }] },
-  { id: "verdant-creatine", brand: "verdant", name: "Creatine Monohydrate · 300g", category: "creatine", price: 29, art: "jar", tag: "Pure",
-    desc: "100% micronized creatine monohydrate. 60 servings, unflavored.",
-    flavors: [{ name: "Unflavored", hex: "#d4ff3a" }] },
+  { id: "birdman-falcon-performance", brand: "birdman", name: "Falcon Performance · 1140 g", category: "protein", alsoIn: ["creatine"],
+    price: 69, tag: "Protein + Creatine",
+    desc: "Plant-based protein with creatine. Per 46 g serving:",
+    flavors: [{ name: "Choco Bronze", img: "assets/products/falcon-performance-choco-bronze.webp",
+      facts: ["30 g protein", "5 g creatine", "5.5 g BCAAs"] }] },
+  { id: "birdman-falcon-vegetal", brand: "birdman", name: "Falcon Proteína Vegetal · 480 g", category: "protein",
+    price: 36, tag: "Plant protein",
+    desc: "Plant protein with 0 g added sugar. Per 32 g serving:",
+    flavors: [
+      { name: "Vainilla", img: "assets/products/falcon-vegetal-vainilla.webp", facts: ["24 g protein", "119 calories", "5 ingredients"] },
+      { name: "Natural", img: "assets/products/falcon-vegetal-natural.webp", facts: ["25 g protein", "119 calories", "3 ingredients"] },
+    ] },
 ];
 
 const GROUPS = { apparel: ["tees", "shorts", "socks"], supplements: ["protein", "creatine"] };
@@ -78,15 +79,28 @@ function save() {
 // ---------- Product grid ----------
 const grid = document.getElementById("productGrid");
 
-function variantHex(p, sel) {
-  if (p.colors) return COLORS[sel.color].hex;
-  return p.flavors.find((f) => f.name === sel.flavor).hex;
+function media(p, sel) {
+  if (!p.colors) {
+    const f = flavorOf(p, sel);
+    return `<img class="media photo" src="${f.img}" alt="${p.name}, ${f.name}" loading="lazy">`;
+  }
+  return art[p.art](COLORS[sel.color].hex).replace("<svg", '<svg class="media"');
 }
+
+function flavorOf(p, sel) {
+  return p.flavors.find((f) => f.name === sel.flavor) || p.flavors[0];
+}
+
+function factsHtml(p, sel) {
+  return p.flavors ? `<ul class="card-facts">${flavorOf(p, sel).facts.map((f) => `<li>${f}</li>`).join("")}</ul>` : "";
+}
+
 
 function matches(p, filter) {
   if (filter === "all") return true;
   if (filter.startsWith("brand:")) return p.brand === filter.slice(6);
-  return (GROUPS[filter] || [filter]).includes(p.category);
+  const cats = GROUPS[filter] || [filter];
+  return [p.category, ...(p.alsoIn || [])].some((c) => cats.includes(c));
 }
 
 function renderGrid(filter = "all") {
@@ -105,16 +119,17 @@ function renderGrid(filter = "all") {
       `<button class="swatch ${c === sel.color ? "active" : ""}" style="background:${COLORS[c].hex}" data-color="${c}" title="${COLORS[c].name}" aria-label="${COLORS[c].name}"></button>`).join("")}</div>` : "";
     const sizeRow = p.sizes ? `<div class="option-row" aria-label="Size">${p.sizes.map((s) =>
       `<button class="size ${s === sel.size ? "active" : ""}" data-size="${s}">${s}</button>`).join("")}</div>` : "";
-    const flavorRow = p.flavors && p.flavors.length > 1 ? `<div class="option-row" aria-label="Flavor">${p.flavors.map((f) =>
+    const flavorRow = p.flavors ? `<div class="option-row" aria-label="Flavor">${p.flavors.map((f) =>
       `<button class="size ${f.name === sel.flavor ? "active" : ""}" data-flavor="${f.name}">${f.name}</button>`).join("")}</div>` : "";
 
     return `
       <article class="card" data-id="${p.id}" style="animation-delay:${i * 40}ms">
-        <div class="card-media">${p.tag ? `<span class="tag">${p.tag}</span>` : ""}${art[p.art](variantHex(p, sel))}</div>
+        <div class="card-media">${p.tag ? `<span class="tag">${p.tag}</span>` : ""}${media(p, sel)}</div>
         <div class="card-body">
           <p class="card-brand">${BRANDS[p.brand].name}</p>
           <div class="card-top"><h3 class="card-title">${p.name}</h3><span class="price">${money(p.price)}</span></div>
           <p class="card-desc">${p.desc}</p>
+          ${factsHtml(p, sel)}
           ${colorRow}${sizeRow}${flavorRow}
           <button class="btn btn-primary add">Add to cart</button>
         </div>
@@ -134,7 +149,8 @@ grid.addEventListener("click", (e) => {
     const key = b.dataset.color ? "color" : b.dataset.size ? "size" : "flavor";
     sel[key] = b.dataset[key];
     b.parentElement.querySelectorAll("button").forEach((x) => x.classList.toggle("active", x === b));
-    card.querySelector(".card-media svg").outerHTML = art[p.art](variantHex(p, sel));
+    card.querySelector(".card-media .media").outerHTML = media(p, sel);
+    if (p.flavors) card.querySelector(".card-facts").outerHTML = factsHtml(p, sel);
   } else if (b.classList.contains("add")) {
     addToCart(p, sel);
   }
@@ -186,7 +202,7 @@ function renderCart() {
     const p = products.find((x) => x.id === i.id);
     return `
       <div class="cart-item" data-key="${i.key}">
-        <div class="cart-thumb">${art[p.art](variantHex(p, i))}</div>
+        <div class="cart-thumb">${media(p, i)}</div>
         <div>
           <h4>${p.name}</h4>
           <div class="meta">${BRANDS[p.brand].name}</div>
@@ -279,9 +295,9 @@ document.getElementById("brandList").innerHTML = brandIds.map((id) => {
 }).join("");
 const tickerItems = brandIds.map((id) => `<span>${BRANDS[id].name.toUpperCase()}</span><span>★</span>`).join("");
 document.getElementById("tickerTrack").innerHTML = tickerItems.repeat(4);
-document.getElementById("supplementBrand").textContent = BRANDS.verdant.name;
+document.getElementById("supplementBrand").textContent = BRANDS.birdman.name;
 document.querySelectorAll("[data-count]").forEach((el) => {
-  const n = products.filter((p) => p.category === el.dataset.count).length;
+  const n = products.filter((p) => matches(p, el.dataset.count)).length;
   el.textContent = `${n} product${n === 1 ? "" : "s"}`;
 });
 
