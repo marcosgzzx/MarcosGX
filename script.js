@@ -19,9 +19,10 @@ const COLORS = {
   "negro-gris": { name: "Negro/Gris", hex: "linear-gradient(135deg, #111 50%, #8a8a8a 50%)" },
 };
 const APPAREL_SIZES = ["S", "M", "L", "XL", "XXL"];
-const SHOE_SIZES = ["25", "25.5", "26", "26.5", "27", "27.5", "28", "28.5", "29", "29.5", "30"]; // cm
+// Shoe sizes in cm, US 7 to US 11. In Mexico the size is the foot length in cm, so MX = cm.
+const SHOE_SIZES = ["25", "25.5", "26", "26.5", "27", "27.5", "28", "28.5", "29"];
 // Approximate US men's equivalents for the size guide
-const SHOE_US = { 25: "7", 25.5: "7.5", 26: "8", 26.5: "8.5", 27: "9", 27.5: "9.5", 28: "10", 28.5: "10.5", 29: "11", 29.5: "11.5", 30: "12" };
+const SHOE_US = { 25: "7", 25.5: "7.5", 26: "8", 26.5: "8.5", 27: "9", 27.5: "9.5", 28: "10", 28.5: "10.5", 29: "11" };
 
 // Apparel brand names and prices are placeholders: swap in the real brands GYM BRO'S stocks.
 // Prices are in Mexican pesos (MXN). A flavor can override its product's price.
@@ -55,12 +56,17 @@ const products = [
                       "Manga larga": "assets/products/gymshark-onyx-negro-gris-larga.webp" },
     } },
   { id: "on-cloud-x5", brand: "on", name: "Cloud X 5", category: "shoes", price: 3300, tag: "Nuevo",
-    desc: "Tenis de entrenamiento en blanco con agujetas negras. Tallas en centímetros.",
-    colors: ["white"], sizes: SHOE_SIZES, sizeLabel: "Talla (cm)",
+    desc: "Tenis de entrenamiento. Tallas mexicanas (cm), de US 7 a US 11.",
+    colors: ["white", "black"], sizes: SHOE_SIZES, sizeLabel: "Talla MX (cm)",
     // Price is for 27.5 cm; each half size below is $100 less, each half size above $100 more
     sizePricing: { base: "27.5", step: 100 },
-    gallery: ["assets/products/on-cloud-x5-blanco-lado.webp", "assets/products/on-cloud-x5-blanco-par.webp",
+    // Photos per color; the size guide is always the last slide
+    gallery: {
+      white: ["assets/products/on-cloud-x5-blanco-lado.webp", "assets/products/on-cloud-x5-blanco-par.webp",
               "assets/products/on-cloud-x5-blanco-interior.webp"],
+      black: ["assets/products/on-cloud-x5-negro-interior.webp", "assets/products/on-cloud-x5-negro-par.webp",
+              "assets/products/on-cloud-x5-negro-lado.webp"],
+    },
     sizeGuide: true },
   { id: "ironclad-essential-tee", brand: "ironclad", name: "Playera Essential", category: "tees", price: 599, art: "tee", tag: "Más vendido",
     desc: "Algodón grueso de 240 g/m². Corte atlético, talla normal.",
@@ -142,23 +148,25 @@ function save() {
 // ---------- Product grid ----------
 const grid = document.getElementById("productGrid");
 
-const slideCount = (p) => p.gallery ? p.gallery.length + (p.sizeGuide ? 1 : 0) : 1;
+const photosOf = (p, sel) => Array.isArray(p.gallery) ? p.gallery : p.gallery[sel.color] || Object.values(p.gallery)[0];
+const slideCount = (p, sel = {}) => p.gallery ? photosOf(p, sel).length + (p.sizeGuide ? 1 : 0) : 1;
 
 function sizeGuideHtml() {
-  const rows = (list) => list.map((cm) => `<tr><td>${cm}</td><td>${SHOE_US[cm]}</td></tr>`).join("");
+  const rows = (list) => list.map((cm) => `<tr><td>${cm}</td><td>${cm}</td><td>${SHOE_US[cm]}</td></tr>`).join("");
+  const head = `<thead><tr><th>cm</th><th>MX</th><th>US</th></tr></thead>`;
   return `<div class="media size-guide">
     <strong>Guía de tallas</strong>
-    <p>Mide tu pie del talón a la punta del dedo más largo. Esa medida en centímetros es tu talla.</p>
+    <p>Mide tu pie del talón a la punta del dedo más largo. En México esa medida en cm es tu talla.</p>
     <div class="sg-tables">
-      <table><thead><tr><th>cm</th><th>US</th></tr></thead><tbody>${rows(SHOE_SIZES.slice(0, 6))}</tbody></table>
-      <table><thead><tr><th>cm</th><th>US</th></tr></thead><tbody>${rows(SHOE_SIZES.slice(6))}</tbody></table>
+      <table>${head}<tbody>${rows(SHOE_SIZES.slice(0, 5))}</tbody></table>
+      <table>${head}<tbody>${rows(SHOE_SIZES.slice(5))}</tbody></table>
     </div>
     <small>US hombre, aproximado. Si estás entre dos tallas, elige la mayor.</small>
   </div>`;
 }
 
 function galleryControls(p, sel) {
-  const n = slideCount(p), cur = sel.slide || 0;
+  const n = slideCount(p, sel), cur = sel.slide || 0;
   return `<button type="button" class="gal-btn prev" data-slide="prev" aria-label="Foto anterior">‹</button>
     <button type="button" class="gal-btn next" data-slide="next" aria-label="Foto siguiente">›</button>
     <div class="gal-dots">${Array.from({ length: n }, (_, k) => {
@@ -169,9 +177,10 @@ function galleryControls(p, sel) {
 
 function media(p, sel) {
   if (p.gallery) {
-    const k = sel.slide || 0;
-    if (k >= p.gallery.length) return sizeGuideHtml();
-    return `<img class="media photo" src="${p.gallery[k]}" alt="${p.name}, foto ${k + 1} de ${p.gallery.length}">`;
+    const photos = photosOf(p, sel), k = sel.slide || 0;
+    if (k >= photos.length) return sizeGuideHtml();
+    const color = sel.color && COLORS[sel.color] ? `, ${COLORS[sel.color].name}` : "";
+    return `<img class="media photo" src="${photos[k]}" alt="${p.name}${color}, foto ${k + 1} de ${photos.length}">`;
   }
   if (p.photos) {
     const pack = packOf(p, sel);
@@ -245,7 +254,7 @@ function renderGrid(filter = currentFilter) {
 
     return `
       <article class="card" data-id="${p.id}" style="animation-delay:${i * 40}ms">
-        <div class="card-media${p.sizeGuide && (sel.slide || 0) === slideCount(p) - 1 ? " on-guide" : ""}">${p.tag ? `<span class="tag">${p.tag}</span>` : ""}${media(p, sel)}${p.gallery ? galleryControls(p, sel) : ""}</div>
+        <div class="card-media${p.sizeGuide && (sel.slide || 0) === slideCount(p, sel) - 1 ? " on-guide" : ""}">${p.tag ? `<span class="tag">${p.tag}</span>` : ""}${media(p, sel)}${p.gallery ? galleryControls(p, sel) : ""}</div>
         <div class="card-body">
           <p class="card-brand">${BRANDS[p.brand].name}</p>
           <div class="card-top"><h3 class="card-title">${p.name}</h3><span class="price">${money(priceOf(p, sel))}</span></div>
@@ -267,7 +276,7 @@ grid.addEventListener("click", (e) => {
   if (!b) return;
 
   if (b.dataset.slide) {
-    const n = slideCount(p), cur = sel.slide || 0, v = b.dataset.slide;
+    const n = slideCount(p, sel), cur = sel.slide || 0, v = b.dataset.slide;
     sel.slide = v === "prev" ? (cur - 1 + n) % n : v === "next" ? (cur + 1) % n : v === "guide" ? n - 1 : +v;
     card.querySelector(".card-media .media").outerHTML = media(p, sel);
     card.querySelectorAll(".gal-dot").forEach((d, k) => d.classList.toggle("active", k === sel.slide));
