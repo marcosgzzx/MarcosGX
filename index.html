@@ -43,7 +43,11 @@
   </header>
 
   <main>
-    <section class="hero">
+    <section class="hero" id="hero">
+      <div class="hero-media" id="heroMedia" hidden aria-hidden="true">
+        <video id="heroVideo" muted playsinline preload="auto"></video>
+        <div class="hero-shade"></div>
+      </div>
       <div class="container hero-inner">
         <div class="hero-copy">
           <p class="eyebrow">Ropa de gym · Suplementos</p>
@@ -58,6 +62,7 @@
           <img src="assets/logo-dark.png" alt="" class="hero-logo">
         </div>
       </div>
+      <p class="hero-credit" id="heroCredit" hidden></p>
       <div class="ticker" aria-hidden="true">
         <div class="ticker-track" id="tickerTrack"></div>
       </div>

@@ -390,6 +390,49 @@ document.querySelectorAll("[data-count]").forEach((el) => {
   el.textContent = `${n} producto${n === 1 ? "" : "s"}`;
 });
 
+// ---------- Hero background clips ----------
+// Only use clips you have the right to use (your own, or free-license stock such as Pexels or Pixabay).
+// A credit is shown in the corner of the hero for each clip. With no clips the hero stays plain white.
+const HERO_CLIPS = [
+  // { src: ["assets/hero/entrenamiento-1.webm", "assets/hero/entrenamiento-1.mp4"],
+  //   author: "Nombre del autor", source: "Pexels", url: "https://www.pexels.com/video/..." },
+];
+
+function startHeroClips() {
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!HERO_CLIPS.length || reduceMotion) return;
+  const hero = document.getElementById("hero");
+  const box = document.getElementById("heroMedia");
+  const video = document.getElementById("heroVideo");
+  const credit = document.getElementById("heroCredit");
+  const failed = new Set();
+  let i = 0;
+
+  const play = () => {
+    if (failed.size === HERO_CLIPS.length) { // every clip failed: back to the plain hero
+      hero.classList.remove("has-video"); box.hidden = true; credit.hidden = true;
+      return;
+    }
+    while (failed.has(i)) i = (i + 1) % HERO_CLIPS.length;
+    const clip = HERO_CLIPS[i];
+    // Use the first file this browser can play (e.g. WebM for Chromium, MP4 for Safari)
+    const types = { webm: 'video/webm; codecs="vp9"', mp4: 'video/mp4; codecs="avc1.42E01E"' };
+    const src = [clip.src].flat().find((f) => video.canPlayType(types[f.split(".").pop()] || "")) ;
+    if (!src) { failed.add(i); i = (i + 1) % HERO_CLIPS.length; return play(); }
+    video.src = src;
+    video.loop = HERO_CLIPS.length === 1;
+    credit.innerHTML = `Video: ${clip.url ? `<a href="${clip.url}" target="_blank" rel="noopener">${clip.author}</a>` : clip.author}${clip.source ? ` · ${clip.source}` : ""}`;
+    video.play().catch(() => { /* autoplay blocked: the first frame still shows */ });
+  };
+  video.addEventListener("loadeddata", () => {
+    hero.classList.add("has-video"); box.hidden = false; credit.hidden = false;
+  });
+  video.addEventListener("ended", () => { i = (i + 1) % HERO_CLIPS.length; play(); });
+  video.addEventListener("error", () => { failed.add(i); i = (i + 1) % HERO_CLIPS.length; play(); });
+  play();
+}
+startHeroClips();
+
 // ---------- Search ----------
 const searchDialog = document.getElementById("searchDialog");
 const searchInput = document.getElementById("searchInput");
