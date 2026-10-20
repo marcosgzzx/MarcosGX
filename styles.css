@@ -60,7 +60,7 @@ h2 { font-size: clamp(2.2rem, 5vw, 3.6rem); }
 
 /* Header */
 .announce { background: var(--accent); color: var(--accent-ink); text-align: center; font-size: .78rem; font-weight: 600; padding: 8px 16px; letter-spacing: .04em; }
-.site-header { position: sticky; top: 0; z-index: 40; background: rgba(255, 255, 255, .9); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.site-header { position: sticky; top: 0; z-index: 40; background: var(--bg); border-bottom: 1px solid var(--line); }
 .header-inner { display: flex; align-items: center; justify-content: space-between; height: 80px; }
 .logo { display: block; }
 .logo img { height: 62px; width: auto; }
@@ -95,6 +95,11 @@ h2 { font-size: clamp(2.2rem, 5vw, 3.6rem); }
 .hero-logo { width: 100%; max-width: 460px; margin-left: auto; }
 /* Hero background: photo collage (or clips when configured); a dark shade keeps the text readable */
 .hero-media { position: absolute; inset: 0 0 auto; height: calc(100% - 56px); overflow: hidden; background: #0e0e0e; }
+/* Parallax: the collage stays fixed to the screen while the headline scrolls over it. The hero clips it
+   (clip-path also clips fixed children), so once the brand ticker passes, the collage is left behind. */
+.hero.has-media { clip-path: inset(0); background: #0e0e0e; }
+.hero.parallax .hero-media { position: fixed; top: var(--hero-media-top, 80px); bottom: auto; height: var(--hero-media-h, 70vh); }
+@media (prefers-reduced-motion: reduce) { .hero.parallax .hero-media { position: absolute; top: 0; height: calc(100% - 56px); } }
 .hero-media video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .hero-collage { position: absolute; inset: 0; display: grid; gap: 4px; }
 /* Each photo sits absolutely inside its cell, so every browser (Safari included) crops it the same way */

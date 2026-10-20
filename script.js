@@ -486,6 +486,19 @@ function layoutCollage() {
   }
   box.innerHTML = html;
 }
+// Parallax sizing: the fixed collage starts under the sticky header and reaches down to the ticker
+function sizeParallax() {
+  const hero = document.getElementById("hero");
+  const headerH = document.querySelector(".site-header").offsetHeight;
+  const tickerH = hero.querySelector(".ticker").offsetHeight;
+  const announceH = document.querySelector(".announce").offsetHeight;
+  hero.style.setProperty("--hero-media-top", `${headerH}px`);
+  // At the top of the page the hero starts below the announcement bar, so cover that extra strip too
+  hero.style.setProperty("--hero-media-h", `${hero.offsetHeight - tickerH + announceH}px`);
+  hero.classList.add("parallax");
+}
+sizeParallax();
+window.addEventListener("resize", sizeParallax);
 layoutCollage();
 if (window.ResizeObserver) new ResizeObserver(layoutCollage).observe(document.getElementById("heroCollage"));
 else window.addEventListener("resize", layoutCollage);
