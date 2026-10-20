@@ -4,11 +4,13 @@ const COLORS = {
   white: { name: "Blanco", hex: "#f7f7f5" },
   "negro-blanco": { name: "Negro/Blanco", hex: "linear-gradient(135deg, #111 50%, #f7f7f5 50%)" },
   "azul-marino": { name: "Azul marino", hex: "#262a63" },
+  morado: { name: "Morado", hex: "#4e3a6b" },
   "negro-azul": { name: "Negro/Azul", hex: "linear-gradient(135deg, #111 50%, #1d9c95 50%)" },
   "negro-rojo": { name: "Negro/Rojo", hex: "linear-gradient(135deg, #111 50%, #b3141e 50%)" },
   "negro-gris": { name: "Negro/Gris", hex: "linear-gradient(135deg, #111 50%, #8a8a8a 50%)" },
 };
 const APPAREL_SIZES = ["S", "M", "L", "XL", "XXL"];
+const WOMEN_SIZES = ["XS", "S", "M", "L", "XL"];
 // Shoe sizes in cm, US 7 to US 11. In Mexico the size is the foot length in cm, so MX = cm.
 const SHOE_SIZES = ["25", "25.5", "26", "26.5", "27", "27.5", "28", "28.5", "29"];
 // Approximate US men's equivalents for the size guide
@@ -17,6 +19,7 @@ const SHOE_US = { 25: "7", 25.5: "7.5", 26: "8", 26.5: "8.5", 27: "9", 27.5: "9.
 // Prices are in Mexican pesos (MXN). A flavor can override its product's price.
 const BRANDS = {
   gymshark: { name: "Gymshark", kind: "Ropa", blurb: "Playeras de entrenamiento sin costuras, corte muscle fit." },
+  adidas: { name: "adidas", kind: "Ropa", blurb: "Tops deportivos de mujer para entrenar." },
   on: { name: "On", kind: "Tenis", blurb: "Tenis de entrenamiento con suela CloudTec." },
   birdman: { name: "Birdman", kind: "Suplementos", blurb: "Proteína vegetal Falcon y creatina monohidratada." },
 };
@@ -40,6 +43,14 @@ const products = [
       "negro-gris": { "Sin mangas": "assets/products/gymshark-onyx-negro-gris-sinmangas.webp",
                       "Manga corta": "assets/products/gymshark-onyx-negro-gris-corta.webp",
                       "Manga larga": "assets/products/gymshark-onyx-negro-gris-larga.webp" },
+    } },
+  { id: "adidas-top-deportivo", brand: "adidas", gender: "mujer", name: "Top deportivo", category: "tops", price: 750, tag: "Nuevo",
+    desc: "Top deportivo con tirantes cruzados en la espalda. Tallas de mujer.",
+    colors: ["morado", "black"], sizes: WOMEN_SIZES,
+    sizePricing: { base: "M", step: 100 }, // price is for M; $100 less per size below, $100 more per size above
+    gallery: {
+      morado: ["assets/products/adidas-top-morado.webp", { src: "assets/products/adidas-top-morado-puesto.webp", full: true }],
+      black: ["assets/products/adidas-top-negro.webp", { src: "assets/products/adidas-top-negro-puesto.webp", full: true }],
     } },
   { id: "on-cloud-x5", brand: "on", gender: "hombre", name: "Cloud X 5", category: "shoes", price: 3300, tag: "Nuevo",
     desc: "Tenis de entrenamiento. Tallas mexicanas (cm), de US 7 a US 11.",
@@ -95,7 +106,7 @@ const products = [
 ];
 
 const GENDERS = { hombre: "Hombre", mujer: "Mujer" };
-const GROUPS = { apparel: ["tees", "shorts", "socks", "shoes"], supplements: ["protein", "creatine"] };
+const GROUPS = { apparel: ["tees", "tops", "shorts", "socks", "shoes"], supplements: ["protein", "creatine"] };
 const FREE_SHIP = 1200; // free shipping from this product subtotal (MXN)
 const MAX_ITEMS = 10; // most products allowed in one order
 const mxn = new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" });
@@ -572,7 +583,7 @@ startHeroClips();
 const searchDialog = document.getElementById("searchDialog");
 const searchInput = document.getElementById("searchInput");
 const searchResults = document.getElementById("searchResults");
-const CATEGORY_WORDS = { tees: "playera playeras camiseta", shorts: "short shorts", socks: "calcetas calcetines",
+const CATEGORY_WORDS = { tees: "playera playeras camiseta", tops: "top tops bra brasier sosten sostén deportivo", shorts: "short shorts", socks: "calcetas calcetines",
   shoes: "tenis zapatos zapatillas calzado sneakers",
   hombre: "hombre caballero", mujer: "mujer dama",
   protein: "proteína proteina", creatine: "creatina" };
