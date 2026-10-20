@@ -16,7 +16,7 @@ python3 -m http.server 8000
 
 - `index.html`: page structure (hero, categories, shop, brands, about, FAQ, newsletter, cart drawer, search/account/checkout dialogs)
 - `assets/products/`: Birdman Falcon product photos with the background removed
-- `assets/logo-light.png`: the GYM BRO'S logo, recolored for the dark background
+- `assets/logo-dark.png`: the GYM BRO'S logo in black on a transparent background
 - `styles.css`: styling and responsive layout
 - `script.js`: brands, product catalog, filtering, sorting, search, variant selection and the cart (max 10 items), saved in `localStorage`
 - `account.js`: demo accounts: sign up, log in, profile and address, favorite size, saved payment methods (credit, debit, Amex, PayPal, Mercado Pago, gift card), order history and settings
