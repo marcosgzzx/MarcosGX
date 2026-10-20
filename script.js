@@ -453,6 +453,43 @@ document.querySelectorAll("[data-count]").forEach((el) => {
   el.closest(".cat-card").classList.toggle("empty", !n);
 });
 
+// ---------- Hero photo collage ----------
+// Stock photos: confirm the license (or replace with your own) before launch.
+const HERO_PHOTOS = ["peso-muerto-pie", "press-banca", "grupo-mancuernas", "sentadilla", "prensa-piernas", "peso-muerto"];
+const PHOTO_RATIO = 1.5; // the photos are 3:2
+
+// Picks the grid whose cells are closest to the photos' shape for the hero's current size,
+// so the photos are cropped as little as possible on any screen.
+function layoutCollage() {
+  const box = document.getElementById("heroCollage");
+  const { width: W, height: H } = box.getBoundingClientRect();
+  if (!W || !H) return;
+  let best = null;
+  for (let rows = 1; rows <= 4; rows++) {
+    for (let cols = 1; cols <= 5; cols++) {
+      const n = rows * cols;
+      if (n < (W >= 700 ? 6 : 4) || n > 15 || W / cols < 150) continue; // at least 6 photos on larger screens
+      const fit = Math.abs(Math.log((W / cols) / (H / rows) / PHOTO_RATIO));
+      const score = fit + n * 0.01; // prefer fewer, bigger photos when the fit is similar
+      if (!best || score < best.score) best = { rows, cols, score };
+    }
+  }
+  const { rows, cols } = best;
+  if (box.dataset.grid === `${cols}x${rows}`) return;
+  box.dataset.grid = `${cols}x${rows}`;
+  box.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+  box.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+  // Shifting each row by 3 keeps a repeated photo away from its neighbours, diagonals included
+  let html = "";
+  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+    html += `<div class="cell"><img src="assets/hero/${HERO_PHOTOS[(c + r * 3) % HERO_PHOTOS.length]}.webp" alt=""></div>`;
+  }
+  box.innerHTML = html;
+}
+layoutCollage();
+if (window.ResizeObserver) new ResizeObserver(layoutCollage).observe(document.getElementById("heroCollage"));
+else window.addEventListener("resize", layoutCollage);
+
 // ---------- Hero background clips ----------
 // Only use clips you have the right to use (your own, or free-license stock such as Pexels or Pixabay).
 // A credit is shown in the corner of the hero for each clip. With no clips the photo collage shows instead.

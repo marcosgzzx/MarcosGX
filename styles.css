@@ -96,12 +96,10 @@ h2 { font-size: clamp(2.2rem, 5vw, 3.6rem); }
 /* Hero background: photo collage (or clips when configured); a dark shade keeps the text readable */
 .hero-media { position: absolute; inset: 0 0 auto; height: calc(100% - 56px); overflow: hidden; background: #0e0e0e; }
 .hero-media video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.hero-collage {
-  position: absolute; inset: 0; display: grid; gap: 4px;
-  grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr);
-}
-/* Tiles are close to the photos' own 3:2 shape, so each photo shows whole instead of a cropped close-up */
-.hero-collage .tile { width: 100%; height: 100%; min-height: 0; object-fit: cover; object-position: 50% 45%; }
+.hero-collage { position: absolute; inset: 0; display: grid; gap: 4px; }
+/* Each photo sits absolutely inside its cell, so every browser (Safari included) crops it the same way */
+.hero-collage .cell { position: relative; overflow: hidden; min-width: 0; min-height: 0; }
+.hero-collage .cell img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; }
 .hero-shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(0,0,0,.78) 0%, rgba(0,0,0,.55) 45%, rgba(0,0,0,.15) 100%); }
 .hero-inner { position: relative; }
 .hero.has-media .hero-copy { color: #fff; }
@@ -495,8 +493,6 @@ p.muted { margin: 0; }
   .hero-inner { padding: 56px 0 64px; }
   .hero-art { max-width: 320px; margin: 0 auto; }
   .hero.has-media .hero-art { display: none; }
-  .hero-collage { grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, 1fr); }
-  .hero-collage .rep { display: none; }
   .hero-shade { background: linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.75)); }
   .categories { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
