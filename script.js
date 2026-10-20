@@ -17,7 +17,8 @@ const COLORS = {
 };
 const APPAREL_SIZES = ["S", "M", "L", "XL", "XXL"];
 
-// Apparel brand names are placeholders: swap in the real brands GYM BRO'S stocks.
+// Apparel brand names and prices are placeholders: swap in the real brands GYM BRO'S stocks.
+// Prices are in Mexican pesos (MXN). A flavor can override its product's price.
 const BRANDS = {
   ironclad: { name: "Ironclad Athletics", kind: "Ropa", blurb: "Playeras de algodón grueso hechas para el gym." },
   northlift: { name: "Northlift", kind: "Ropa", blurb: "Shorts elásticos y playeras de entrenamiento." },
@@ -26,50 +27,54 @@ const BRANDS = {
 };
 
 const products = [
-  { id: "ironclad-essential-tee", brand: "ironclad", name: "Playera Essential", category: "tees", price: 32, art: "tee", tag: "Más vendido",
+  { id: "ironclad-essential-tee", brand: "ironclad", name: "Playera Essential", category: "tees", price: 599, art: "tee", tag: "Más vendido",
     desc: "Algodón grueso de 240 g/m². Corte atlético, talla normal.",
     colors: ["black", "bone", "grey", "lime"], sizes: APPAREL_SIZES },
-  { id: "ironclad-pump-cover", brand: "ironclad", name: "Playera Oversized Pump Cover", category: "tees", price: 38, art: "tee",
+  { id: "ironclad-pump-cover", brand: "ironclad", name: "Playera Oversized Pump Cover", category: "tees", price: 699, art: "tee",
     desc: "Corte holgado con hombro caído para calentar. Talla grande.",
     colors: ["grey", "black", "olive"], sizes: APPAREL_SIZES },
-  { id: "northlift-dry-tee", brand: "northlift", name: "Playera de entrenamiento DryLift", category: "tees", price: 34, art: "tee", tag: "Nuevo",
+  { id: "northlift-dry-tee", brand: "northlift", name: "Playera de entrenamiento DryLift", category: "tees", price: 649, art: "tee", tag: "Nuevo",
     desc: "Tejido ligero que absorbe el sudor. Corte slim, talla normal.",
     colors: ["navy", "black", "white"], sizes: APPAREL_SIZES },
-  { id: "northlift-short-5", brand: "northlift", name: 'Short de entrenamiento 5"', category: "shorts", price: 42, art: "shorts",
+  { id: "northlift-short-5", brand: "northlift", name: 'Short de entrenamiento 5"', category: "shorts", price: 799, art: "shorts",
     desc: "Elástico en 4 direcciones, con licra interior y bolsillo con cierre para el celular.",
     colors: ["black", "navy", "olive"], sizes: APPAREL_SIZES },
-  { id: "northlift-short-7", brand: "northlift", name: 'Short de pesas 7"', category: "shorts", price: 45, art: "shorts",
+  { id: "northlift-short-7", brand: "northlift", name: 'Short de pesas 7"', category: "shorts", price: 849, art: "shorts",
     desc: "Entrepierna reforzada para sentadillas, tela que absorbe el sudor y espacio para las piernas.",
     colors: ["grey", "black", "lime"], sizes: APPAREL_SIZES },
-  { id: "repsupply-crew-3", brand: "repsupply", name: "Calcetas Crew, paquete de 3", category: "socks", price: 18, art: "socks",
+  { id: "repsupply-crew-3", brand: "repsupply", name: "Calcetas Crew, paquete de 3", category: "socks", price: 349, art: "socks",
     desc: "Planta acolchada, soporte en el arco y puño que no se baja.",
     colors: ["white", "black", "lime"], sizes: ["S/M", "L/XL"] },
   { id: "birdman-falcon-performance", brand: "birdman", name: "Falcon Performance · 1140 g", category: "protein", alsoIn: ["creatine"],
-    price: 69, tag: "Proteína + Creatina",
+    price: 1053, tag: "Proteína + Creatina",
     desc: "Proteína vegetal con creatina. Por porción de 46 g:",
     flavors: [{ name: "Choco Bronze", img: "assets/products/falcon-performance-choco-bronze.webp",
-      facts: ["30 g proteína", "5 g creatina", "5.5 g BCAAs"] }] },
+      facts: ["30 g proteína", "5 g creatina", "5.5 g BCAAs"] },
+      { name: "Golden Vanilla", img: "assets/products/falcon-performance-golden-vanilla.webp",
+      facts: ["30 g proteína", "5 g creatina", "5.6 g BCAAs"] }] },
   { id: "birdman-falcon-vegetal", brand: "birdman", name: "Falcon Proteína Vegetal · 480 g", category: "protein",
-    price: 36, tag: "Proteína vegetal",
+    price: 480, tag: "Proteína vegetal",
     desc: "Proteína vegetal con 0 g de azúcar añadida. Por porción de 32 g:",
     flavors: [
       { name: "Vainilla", img: "assets/products/falcon-vegetal-vainilla.webp", facts: ["24 g proteína", "119 calorías", "5 ingredientes"] },
       { name: "Natural", img: "assets/products/falcon-vegetal-natural.webp", facts: ["25 g proteína", "119 calorías", "3 ingredientes"] },
       { name: "Chocolate", img: "assets/products/falcon-vegetal-chocolate.webp", facts: ["23 g proteína", "118 calorías", "6 ingredientes"] },
       { name: "Fresa", img: "assets/products/falcon-vegetal-fresa.webp", facts: ["23 g proteína", "118 calorías", "5 ingredientes"] },
-      { name: "Pumpkin Spice", img: "assets/products/falcon-vegetal-pumpkin-spice.webp", facts: ["23 g proteína", "117 calorías", "4 ingredientes"],
+      { name: "Pumpkin Spice", img: "assets/products/falcon-vegetal-pumpkin-spice.webp", facts: ["23 g proteína", "117 calorías", "4 ingredientes"], price: 600,
         limited: "Edición especial limitada: solo disponible en otoño." },
     ] },
   { id: "birdman-creatina", brand: "birdman", name: "Creatina Monohidratada · 450 g", category: "creatine",
-    price: 29, tag: "Performance Series",
+    price: 450, tag: "Performance Series",
     desc: "Creatina monohidratada en polvo, micronizada y de alta pureza.",
     flavors: [{ name: "Sin saborizantes", img: "assets/products/birdman-creatina-450g.webp",
       facts: ["Micronizada", "Alta pureza", "CreaClean®"] }] },
 ];
 
 const GROUPS = { apparel: ["tees", "shorts", "socks"], supplements: ["protein", "creatine"] };
-const FREE_SHIP = 75;
-const money = (n) => `$${n.toFixed(2)}`;
+const FREE_SHIP = 1000;
+const mxn = new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" });
+const money = (n) => mxn.format(n);
+const priceOf = (p, sel) => (p.flavors && flavorOf(p, sel).price) || p.price;
 
 // ---------- State ----------
 const selection = {}; // product id -> { color, size, flavor }
@@ -140,7 +145,7 @@ function renderGrid(filter = "all") {
         <div class="card-media">${p.tag ? `<span class="tag">${p.tag}</span>` : ""}${media(p, sel)}</div>
         <div class="card-body">
           <p class="card-brand">${BRANDS[p.brand].name}</p>
-          <div class="card-top"><h3 class="card-title">${p.name}</h3><span class="price">${money(p.price)}</span></div>
+          <div class="card-top"><h3 class="card-title">${p.name}</h3><span class="price">${money(priceOf(p, sel))}</span></div>
           <p class="card-desc">${p.desc}</p>
           ${factsHtml(p, sel)}
           ${colorRow}${sizeRow}${flavorRow}
@@ -164,6 +169,7 @@ grid.addEventListener("click", (e) => {
     b.parentElement.querySelectorAll("button").forEach((x) => x.classList.toggle("active", x === b));
     card.querySelector(".card-media .media").outerHTML = media(p, sel);
     if (p.flavors) card.querySelector(".card-facts-wrap").outerHTML = factsHtml(p, sel);
+    card.querySelector(".price").textContent = money(priceOf(p, sel));
   } else if (b.classList.contains("add")) {
     addToCart(p, sel);
   }
@@ -208,7 +214,7 @@ function addToCart(p, sel) {
 function renderCart() {
   const items = document.getElementById("cartItems");
   const count = cart.reduce((n, i) => n + i.qty, 0);
-  const total = cart.reduce((s, i) => s + i.qty * products.find((p) => p.id === i.id).price, 0);
+  const total = cart.reduce((s, i) => s + i.qty * priceOf(products.find((p) => p.id === i.id), i), 0);
   countEl.textContent = count;
 
   items.innerHTML = cart.length ? cart.map((i) => {
@@ -222,7 +228,7 @@ function renderCart() {
           <div class="meta">${variantLabel(i)}</div>
           <div class="qty"><button data-act="dec" aria-label="Quitar uno">−</button><span>${i.qty}</span><button data-act="inc" aria-label="Agregar uno">+</button></div>
         </div>
-        <div><div class="line-price">${money(p.price * i.qty)}</div><button class="remove" data-act="rm">Eliminar</button></div>
+        <div><div class="line-price">${money(priceOf(p, i) * i.qty)}</div><button class="remove" data-act="rm">Eliminar</button></div>
       </div>`;
   }).join("") : `<p class="cart-empty">Tu carrito está vacío.<br>Hora de equiparte.</p>`;
 

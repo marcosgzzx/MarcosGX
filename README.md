@@ -2,7 +2,7 @@
 
 Static storefront prototype (in Spanish) for GYM BRO'S, an online shop that sells gym clothes (tees, shorts, socks) from several brands and Birdman supplements: Falcon protein and creatine monohydrate.
 
-The apparel brand names in `script.js` (`BRANDS`) are placeholders. Replace them with the real brands the shop stocks.
+Prices are in Mexican pesos (MXN). The apparel brand names and prices in `script.js` are placeholders. Replace them with the real brands and prices the shop stocks.
 
 ## Run
 
