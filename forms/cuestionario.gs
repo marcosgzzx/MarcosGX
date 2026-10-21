@@ -217,12 +217,15 @@ function recomendar(r) {
   const establecido = ["1 a 3 años", "Más de 3 años"].includes(r[P.antiguedad]) && ["100 a 500", "Más de 500"].includes(pedidos);
   const quiereAdmin = r[P.mantenimiento] === OPC.mantenimiento[0] || String(r[P.mantenimiento] || "").startsWith("Sí, el Activo");
 
+  // Un negocio que apenas empieza recibe como máximo la Tienda en línea
+  const empezando = r[P.antiguedad] === "Estoy empezando";
+
   let clave;
-  if (avanzada) {
+  if (avanzada && !empezando) {
     clave = establecido && quiereAdmin ? "pro" : "medida";
   } else if (
     objetivo === OPC.objetivo[1] ||
-    (vendeProductos && (pagoCompleto || tiene(FUNCIONES_TIENDA) || (r[P.envios] || "") === "A todo México"))
+    (vendeProductos && (avanzada || pagoCompleto || tiene(FUNCIONES_TIENDA) || (r[P.envios] || "") === "A todo México"))
   ) {
     clave = "tienda";
   } else {
@@ -230,6 +233,7 @@ function recomendar(r) {
   }
 
   const notas = [];
+  if (empezando && avanzada) notas.push("Negocio empezando: se le recomendó máximo Tienda en línea; ofrecer tienda a la medida cuando crezca.");
   const tope = { "Menos de $6,000": 6000, "$6,000 a $12,000": 12000, "$12,000 a $16,000": 16000, "$16,000 a $25,000": 25000 }[r[P.presupuesto]];
   const precio = { servicios: 5850, tienda: 11200, medida: 15350, pro: 22670 }[clave];
   if (tope && precio > tope) notas.push("Presupuesto menor al paquete: ofrecer empezar con uno más sencillo o pago en partes.");

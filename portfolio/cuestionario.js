@@ -124,15 +124,19 @@ function recommend(a) {
   const established = ["1 a 3 años", "Más de 3 años"].includes(a.antiguedad) && ["100 a 500", "Más de 500"].includes(a.pedidos);
   const wantsManagement = a.mantenimiento === "Que tú te encargues de todo" || a.mantenimiento?.startsWith("Sí, el Activo");
 
+  // Un negocio que apenas empieza recibe como máximo la Tienda en línea
+  const starting = a.antiguedad === "Estoy empezando";
+
   let key = "servicios";
-  if (advanced) {
+  if (advanced && !starting) {
     key = established && wantsManagement ? "pro" : "medida";
-  } else if (a.objetivo === "Vender mis productos en línea" || (sellsProducts && (paysOnline || has(STORE_FEATURES) || a.envios === "A todo México"))) {
+  } else if (a.objetivo === "Vender mis productos en línea" || (sellsProducts && (advanced || paysOnline || has(STORE_FEATURES) || a.envios === "A todo México"))) {
     key = "tienda";
   }
 
   // Notas para el cliente sobre lo que hará falta
   const notes = [];
+  if (starting && advanced) notes.push("Como tu negocio está empezando, lo mejor es arrancar con este paquete y crecer a una tienda a la medida cuando tus ventas lo pidan.");
   const budgetCap = { "Menos de $6,000": 6000, "$6,000 a $12,000": 12000, "$12,000 a $16,000": 16000, "$16,000 a $25,000": 25000 }[a.presupuesto];
   if (budgetCap && PACKAGES[key].price > budgetCap) notes.push("Este paquete está arriba de tu presupuesto. Podemos empezar con algo más sencillo y crecerlo después, o ver pagos en partes.");
   if (key === "tienda" && a.productos === "31 a 100") notes.push("Tienes más de 30 productos: los adicionales se cotizan aparte ($50 c/u).");
