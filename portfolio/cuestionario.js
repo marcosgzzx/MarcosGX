@@ -19,11 +19,18 @@ const PACKAGES = {
     includes: ["Tienda en Tiendanube o Shopify con tu diseño", "Hasta 30 productos cargados", "Pagos con tarjeta, OXXO y Mercado Pago", "Configuración de envíos", "Páginas legales", "Dominio propio y publicación"],
     weeks: "3–5 semanas",
   },
+  medida: {
+    name: "Tienda a la medida",
+    price: 15350,
+    why: "Tu negocio maneja varios productos, variantes o pedidos y necesita su propia tienda con funciones avanzadas, que tú puedas administrar desde tu panel.",
+    includes: ["Tienda propia desarrollada a la medida", "Variantes, precios por talla e inventario", "Pagos en línea y códigos de descuento", "Cuentas de cliente con inicio de sesión con Google", "Panel para que administres productos y pedidos", "Dominio propio y publicación"],
+    weeks: "5–8 semanas",
+  },
   pro: {
-    name: "Tienda Pro a la medida",
+    name: "Tienda Pro",
     price: 22670,
-    why: "Tu negocio maneja muchos productos, variantes o pedidos, o necesita funciones avanzadas que una tienda estándar no cubre bien.",
-    includes: ["Tienda propia desarrollada a la medida", "Variantes, precios por talla e inventario", "Pagos en línea y códigos de descuento", "Cuentas de cliente con inicio de sesión con Google", "Asistente con inteligencia artificial", "Panel de administración"],
+    why: "Tu negocio ya está establecido y vende constantemente. Con la Tienda Pro tienes una tienda completa y yo me encargo de hacer los cambios para que tú solo te enfoques en vender.",
+    includes: ["Todo lo de Tienda a la medida", "Asistente con inteligencia artificial", "Administración incluida: yo hago los cambios en tu sitio", "Productos nuevos, precios y fotos", "Promociones de temporada"],
     weeks: "5–8 semanas",
   },
 };
@@ -47,6 +54,8 @@ const STEPS = [
       { id: "giro", label: "¿A qué se dedica tu negocio?", type: "choice", required: true, other: true,
         options: ["Ropa y accesorios", "Comida y repostería", "Eventos y decoración", "Belleza y cuidado personal", "Servicios profesionales", "Salud y deporte"] },
       { id: "descripcion", label: "Cuéntame en pocas palabras qué vendes y a quién", type: "textarea", required: true },
+      { id: "antiguedad", label: "¿Cuánto tiempo lleva tu negocio?", type: "choice", required: true,
+        options: ["Estoy empezando", "Menos de 1 año", "1 a 3 años", "Más de 3 años"] },
       { id: "ventaHoy", label: "¿Cómo vendes hoy?", type: "multi", required: true,
         options: ["WhatsApp", "Instagram o Facebook", "Local o tienda física", "Mercado Libre o Amazon", "Ya tengo página web", "Todavía no vendo"] },
       { id: "redes", label: "Links de tus redes o página actual", type: "text", hint: "Opcional" },
@@ -87,10 +96,10 @@ const STEPS = [
     title: "Presupuesto y tiempos",
     questions: [
       { id: "presupuesto", label: "¿Cuánto tienes pensado invertir en la creación del sitio?", type: "choice", required: true,
-        options: ["Menos de $6,000", "$6,000 a $12,000", "$12,000 a $25,000", "Más de $25,000", "No sé todavía"] },
+        options: ["Menos de $6,000", "$6,000 a $12,000", "$12,000 a $16,000", "$16,000 a $25,000", "Más de $25,000", "No sé todavía"] },
       { id: "fecha", label: "¿Para cuándo lo necesitas?", type: "choice", required: true, options: ["Lo antes posible", "En un mes", "En 2 o 3 meses", "Sin prisa"] },
-      { id: "mantenimiento", label: "¿Te interesa que mantenga y actualice tu sitio cada mes?", type: "choice", required: true,
-        options: ["Sí, el Básico ($500 al mes)", "Sí, el Activo ($1,000 al mes)", "No, yo lo actualizo", "No sé todavía"] },
+      { id: "mantenimiento", label: "¿Quién quieres que haga los cambios de tu sitio (productos, precios, promociones)?", type: "choice", required: true,
+        options: ["Que tú te encargues de todo", "Sí, el Básico ($500 al mes)", "Sí, el Activo ($1,000 al mes)", "Yo lo actualizo", "No sé todavía"] },
       { id: "referencias", label: "Sitios web que te gusten (links)", type: "textarea", hint: "Opcional" },
       { id: "comentarios", label: "¿Algo más que deba saber?", type: "textarea", hint: "Opcional" },
     ],
@@ -108,27 +117,36 @@ function recommend(a) {
   const sellsProducts = a.productos !== "No vendo productos" || a.tipoVenta === "Productos con existencias";
   const paysOnline = (a.pagos || "").startsWith("Pago completo");
 
+  // Necesita tienda propia con funciones avanzadas
+  const advanced = a.objetivo?.startsWith("Una tienda completa") || has(PRO_FEATURES) || a.productos === "Más de 100" || a.pedidos === "Más de 500" ||
+    (a.productos === "31 a 100" && a.pedidos === "100 a 500");
+  // La Pro es solo para negocios establecidos que quieren que Marcos administre el sitio
+  const established = ["1 a 3 años", "Más de 3 años"].includes(a.antiguedad) && ["100 a 500", "Más de 500"].includes(a.pedidos);
+  const wantsManagement = a.mantenimiento === "Que tú te encargues de todo" || a.mantenimiento?.startsWith("Sí, el Activo");
+
   let key = "servicios";
-  if (a.objetivo?.startsWith("Una tienda completa") || has(PRO_FEATURES) || a.productos === "Más de 100" || a.pedidos === "Más de 500" ||
-      (a.productos === "31 a 100" && a.pedidos === "100 a 500")) {
-    key = "pro";
+  if (advanced) {
+    key = established && wantsManagement ? "pro" : "medida";
   } else if (a.objetivo === "Vender mis productos en línea" || (sellsProducts && (paysOnline || has(STORE_FEATURES) || a.envios === "A todo México"))) {
     key = "tienda";
   }
 
   // Notas para el cliente sobre lo que hará falta
   const notes = [];
-  const budgetCap = { "Menos de $6,000": 6000, "$6,000 a $12,000": 12000, "$12,000 a $25,000": 25000 }[a.presupuesto];
+  const budgetCap = { "Menos de $6,000": 6000, "$6,000 a $12,000": 12000, "$12,000 a $16,000": 16000, "$16,000 a $25,000": 25000 }[a.presupuesto];
   if (budgetCap && PACKAGES[key].price > budgetCap) notes.push("Este paquete está arriba de tu presupuesto. Podemos empezar con algo más sencillo y crecerlo después, o ver pagos en partes.");
   if (key === "tienda" && a.productos === "31 a 100") notes.push("Tienes más de 30 productos: los adicionales se cotizan aparte ($50 c/u).");
   if (a.dominio !== "Sí") notes.push("Hará falta comprar un dominio (aprox. $250–$500 al año). Te ayudo a elegirlo.");
   if (key !== "servicios" && a.cobros !== "Sí") notes.push("Para cobrar en línea necesitarás abrir una cuenta de Mercado Pago, Stripe o PayPal a nombre de tu negocio.");
+  if (key === "medida" || key === "pro") notes.push("El servidor y la base de datos de tu tienda empiezan gratis y después cuestan aprox. $200–$1,000 al mes según tus ventas y visitas.");
   if (key === "tienda") notes.push("La plataforma de la tienda (Tiendanube o Shopify) tiene un plan gratis o desde aprox. $500 al mes.");
   if (a.fotos === "No tengo") notes.push("Unas buenas fotos hacen la diferencia: te doy tips para tomarlas con el celular.");
   if (features.includes("Agenda de citas o reservaciones")) notes.push("La agenda de citas se cotiza como extra.");
 
-  const maintenance = a.mantenimiento?.startsWith("Sí") ? a.mantenimiento.replace(/^Sí, el /, "").replace(/ \(.*/, "")
+  const maintenance = key === "pro" ? "Incluido"
+    : a.mantenimiento?.startsWith("Sí, el ") ? a.mantenimiento.replace(/^Sí, el /, "").replace(/ \(.*/, "")
     : (key !== "servicios" || a.pedidos === "100 a 500" || a.pedidos === "Más de 500") ? "Activo" : "Básico";
+  if (key === "medida" && advanced && !established && wantsManagement) notes.push("Quieres que yo administre tu sitio: con la Tienda a la medida + mantenimiento Activo lo cubrimos. La Tienda Pro es para negocios ya establecidos.");
 
   return { key, pkg: PACKAGES[key], notes, maintenance };
 }
@@ -249,7 +267,7 @@ function renderResult() {
       </div>
       <dl class="result-meta">
         <div><dt>Tiempo de entrega</dt><dd>${r.pkg.weeks}</dd></div>
-        <div><dt>Mantenimiento sugerido</dt><dd>${esc(r.maintenance)} · ${r.maintenance === "Activo" ? "$1,000" : "$500"} al mes</dd></div>
+        <div><dt>${r.key === "pro" ? "Administración" : "Mantenimiento sugerido"}</dt><dd>${r.key === "pro" ? "Incluida: yo hago los cambios" : `${esc(r.maintenance)} · ${r.maintenance === "Activo" ? "$1,000" : "$500"} al mes`}</dd></div>
         <div><dt>Forma de pago</dt><dd>50% para empezar, 50% al entregar</dd></div>
       </dl>
     </article>

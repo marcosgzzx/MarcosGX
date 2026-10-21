@@ -36,11 +36,17 @@ const PAQUETES = {
     porque: "Vendes productos y quieres que tus clientes compren y paguen en línea sin tener que escribirte uno por uno.",
     incluye: ["Tienda en Tiendanube o Shopify con tu diseño", "Hasta 30 productos cargados", "Pagos con tarjeta, OXXO y Mercado Pago", "Configuración de envíos", "Páginas legales", "Dominio propio y publicación"],
   },
+  medida: {
+    nombre: "Tienda a la medida",
+    precio: "$15,350 MXN",
+    porque: "Tu negocio maneja varios productos, variantes o pedidos y necesita su propia tienda con funciones avanzadas, que tú puedas administrar desde tu panel.",
+    incluye: ["Tienda propia desarrollada a la medida", "Variantes, precios por talla e inventario", "Pagos en línea y códigos de descuento", "Cuentas de cliente con inicio de sesión con Google", "Panel para que administres productos y pedidos", "Dominio propio y publicación"],
+  },
   pro: {
-    nombre: "Tienda Pro a la medida",
+    nombre: "Tienda Pro",
     precio: "$22,670 MXN",
-    porque: "Tu negocio maneja muchos productos, variantes o pedidos, o necesita funciones avanzadas que una tienda estándar no cubre bien.",
-    incluye: ["Tienda propia desarrollada a la medida", "Variantes, precios por talla e inventario", "Pagos en línea y códigos de descuento", "Cuentas de cliente con inicio de sesión con Google", "Asistente con inteligencia artificial", "Panel de administración"],
+    porque: "Tu negocio ya está establecido y vende constantemente. Con la Tienda Pro tienes una tienda completa y yo me encargo de hacer los cambios para que tú solo te enfoques en vender.",
+    incluye: ["Todo lo de Tienda a la medida", "Asistente con inteligencia artificial", "Administración incluida: yo hago los cambios en tu sitio", "Productos nuevos, precios y fotos", "Promociones de temporada"],
   },
 };
 
@@ -53,6 +59,7 @@ const P = {
   ciudad: "Ciudad",
   giro: "¿A qué se dedica tu negocio?",
   descripcion: "Cuéntame en pocas palabras qué vendes y a quién",
+  antiguedad: "¿Cuánto tiempo lleva tu negocio?",
   ventaHoy: "¿Cómo vendes hoy?",
   redes: "Links de tus redes sociales o página actual (si tienes)",
   objetivo: "¿Qué quieres lograr con tu sitio web?",
@@ -70,7 +77,7 @@ const P = {
   cobros: "¿Tienes RFC o cuenta para cobrar en línea (Mercado Pago, Stripe, PayPal)?",
   presupuesto: "¿Cuánto tienes pensado invertir en la creación del sitio?",
   fecha: "¿Para cuándo lo necesitas?",
-  mantenimiento: "¿Te interesa que yo mantenga y actualice tu sitio cada mes?",
+  mantenimiento: "¿Quién quieres que haga los cambios de tu sitio (productos, precios, promociones)?",
   referencias: "Sitios web que te gusten (links), si tienes",
   comentarios: "¿Algo más que deba saber?",
 };
@@ -101,7 +108,8 @@ const OPC = {
     "Panel para administrar productos y pedidos",
     "Blog o noticias",
   ],
-  presupuesto: ["Menos de $6,000", "$6,000 a $12,000", "$12,000 a $25,000", "Más de $25,000", "No sé todavía"],
+  presupuesto: ["Menos de $6,000", "$6,000 a $12,000", "$12,000 a $16,000", "$16,000 a $25,000", "Más de $25,000", "No sé todavía"],
+  mantenimiento: ["Que tú te encargues de todo", "Sí, el Básico ($500 al mes)", "Sí, el Activo ($1,000 al mes)", "Yo lo actualizo", "No sé todavía"],
 };
 
 // Funciones que solo cubre bien la Tienda Pro
@@ -135,6 +143,7 @@ function crearCuestionario() {
     .setChoiceValues(["Ropa y accesorios", "Comida y repostería", "Eventos y decoración", "Belleza y cuidado personal", "Servicios profesionales", "Salud y deporte"])
     .showOtherOption(true));
   req(form.addParagraphTextItem().setTitle(P.descripcion));
+  req(form.addMultipleChoiceItem().setTitle(P.antiguedad).setChoiceValues(["Estoy empezando", "Menos de 1 año", "1 a 3 años", "Más de 3 años"]));
   req(form.addCheckboxItem().setTitle(P.ventaHoy)
     .setChoiceValues(["WhatsApp", "Instagram o Facebook", "Local o tienda física", "Mercado Libre o Amazon", "Ya tengo página web", "Todavía no vendo"]));
   form.addTextItem().setTitle(P.redes);
@@ -167,12 +176,7 @@ function crearCuestionario() {
   form.addPageBreakItem().setTitle("Presupuesto y tiempos");
   req(form.addMultipleChoiceItem().setTitle(P.presupuesto).setChoiceValues(OPC.presupuesto));
   req(form.addMultipleChoiceItem().setTitle(P.fecha).setChoiceValues(["Lo antes posible", "En un mes", "En 2 o 3 meses", "Sin prisa"]));
-  req(form.addMultipleChoiceItem().setTitle(P.mantenimiento).setChoiceValues([
-    "Sí, el Básico ($500 al mes)",
-    "Sí, el Activo ($1,000 al mes)",
-    "No, yo lo actualizo",
-    "No sé todavía",
-  ]));
+  req(form.addMultipleChoiceItem().setTitle(P.mantenimiento).setChoiceValues(OPC.mantenimiento));
   form.addParagraphTextItem().setTitle(P.referencias);
   form.addParagraphTextItem().setTitle(P.comentarios);
 
@@ -203,15 +207,19 @@ function recomendar(r) {
   const vendeProductos = productos !== OPC.productos[0] || (r[P.tipoVenta] || "").startsWith("Productos");
   const pagoCompleto = (r[P.pagos] || "").startsWith("Pago completo");
 
-  let clave;
-  if (
+  const avanzada =
     objetivo === OPC.objetivo[2] ||
     tiene(FUNCIONES_PRO) ||
     productos === "Más de 100" ||
     pedidos === "Más de 500" ||
-    (productos === "31 a 100" && pedidos === "100 a 500")
-  ) {
-    clave = "pro";
+    (productos === "31 a 100" && pedidos === "100 a 500");
+  // La Pro es solo para negocios establecidos que quieren que tú administres el sitio
+  const establecido = ["1 a 3 años", "Más de 3 años"].includes(r[P.antiguedad]) && ["100 a 500", "Más de 500"].includes(pedidos);
+  const quiereAdmin = r[P.mantenimiento] === OPC.mantenimiento[0] || String(r[P.mantenimiento] || "").startsWith("Sí, el Activo");
+
+  let clave;
+  if (avanzada) {
+    clave = establecido && quiereAdmin ? "pro" : "medida";
   } else if (
     objetivo === OPC.objetivo[1] ||
     (vendeProductos && (pagoCompleto || tiene(FUNCIONES_TIENDA) || (r[P.envios] || "") === "A todo México"))
@@ -222,8 +230,8 @@ function recomendar(r) {
   }
 
   const notas = [];
-  const tope = { "Menos de $6,000": 6000, "$6,000 a $12,000": 12000, "$12,000 a $25,000": 25000 }[r[P.presupuesto]];
-  const precio = { servicios: 5850, tienda: 11200, pro: 22670 }[clave];
+  const tope = { "Menos de $6,000": 6000, "$6,000 a $12,000": 12000, "$12,000 a $16,000": 16000, "$16,000 a $25,000": 25000 }[r[P.presupuesto]];
+  const precio = { servicios: 5850, tienda: 11200, medida: 15350, pro: 22670 }[clave];
   if (tope && precio > tope) notas.push("Presupuesto menor al paquete: ofrecer empezar con uno más sencillo o pago en partes.");
   if (clave === "tienda" && productos === "31 a 100") notas.push("Más de 30 productos: cotizar productos extra.");
   if ((r[P.cobros] || "") !== "Sí" && clave !== "servicios") notas.push("Necesita abrir cuenta de cobro en línea (RFC/ID, CLABE).");
@@ -231,7 +239,8 @@ function recomendar(r) {
   if ((r[P.dominio] || "") !== "Sí") notas.push("Hay que comprar dominio.");
   if (tiene(["Agenda de citas o reservaciones"])) notas.push("Pidió agenda de citas: cotizar como extra.");
 
-  const mant = (r[P.mantenimiento] || "").startsWith("Sí") ? r[P.mantenimiento]
+  const mant = clave === "pro" ? "Administración incluida en la Tienda Pro"
+    : String(r[P.mantenimiento] || "").startsWith("Sí, el ") ? r[P.mantenimiento]
     : (clave !== "servicios" || pedidos === "100 a 500" || pedidos === "Más de 500") ? "Sugerir mantenimiento Activo" : "Sugerir mantenimiento Básico";
   notas.push(mant);
 
