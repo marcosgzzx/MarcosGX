@@ -22,6 +22,7 @@ const PACKAGES = {
   medida: {
     name: "Tienda a la medida",
     price: 15350,
+    soon: true,
     why: "Tu negocio maneja varios productos, variantes o pedidos y necesita su propia tienda con funciones avanzadas, que tú puedas administrar desde tu panel.",
     includes: ["Tienda propia desarrollada a la medida", "Variantes, precios por talla e inventario", "Pagos en línea y códigos de descuento", "Cuentas de cliente con inicio de sesión con Google", "Panel para que administres productos y pedidos", "Dominio propio y publicación"],
     weeks: "5–8 semanas",
@@ -29,6 +30,7 @@ const PACKAGES = {
   pro: {
     name: "Tienda Pro",
     price: 22670,
+    soon: true,
     why: "Tu negocio ya está establecido y vende constantemente. Con la Tienda Pro tienes una tienda completa y yo me encargo de hacer los cambios para que tú solo te enfoques en vender.",
     includes: ["Todo lo de Tienda a la medida", "Asistente con inteligencia artificial", "Administración básica incluida: yo hago los cambios en tu sitio", "Productos nuevos, precios, fotos y promociones de temporada", "Administración activa por $1,500 más (pago único)"],
     weeks: "5–8 semanas",
@@ -134,9 +136,13 @@ function recommend(a) {
     key = "tienda";
   }
   if (starting && (key === "medida" || key === "pro")) key = sellsProducts ? "tienda" : "servicios";
+  // Los paquetes marcados como "próximamente" todavía no se ofrecen
+  const comingSoon = PACKAGES[key].soon ? PACKAGES[key].name : null;
+  if (comingSoon) key = sellsProducts ? "tienda" : "servicios";
 
   // Notas para el cliente sobre lo que hará falta
   const notes = [];
+  if (comingSoon) notes.push(`Por el tamaño de tu negocio, más adelante te convendría la ${comingSoon}, que estará disponible pronto. Mientras, arrancamos con este paquete.`);
   if (starting && advanced) notes.push("Como tu negocio va empezando, lo mejor es arrancar con este paquete y crecer a una tienda a la medida cuando tus ventas lo pidan.");
   const budgetCap = { "Menos de $6,000": 6000, "$6,000 a $12,000": 12000, "$12,000 a $16,000": 16000, "$16,000 a $25,000": 25000 }[a.presupuesto];
   if (budgetCap && PACKAGES[key].price > budgetCap) notes.push("Este paquete está arriba de tu presupuesto. Podemos empezar con algo más sencillo y crecerlo después, o ver pagos en partes.");
@@ -259,7 +265,8 @@ function summaryText(r) {
 function renderResult() {
   const r = recommend(answers);
   const first = (answers.nombre || "").split(" ")[0];
-  const others = Object.entries(PACKAGES).filter(([k]) => k !== r.key);
+  const others = Object.entries(PACKAGES).filter(([k, p]) => k !== r.key && !p.soon);
+  const soon = Object.values(PACKAGES).filter((p) => p.soon).map((p) => p.name);
   const wa = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(summaryText(r))}`;
   resultEl.innerHTML = `
     <p class="kicker">Tu recomendación</p>
@@ -284,7 +291,7 @@ function renderResult() {
       </div>
       <a class="btn btn-dark" href="${wa}" target="_blank" rel="noopener" id="sendWa">Enviar por WhatsApp</a>
     </div>
-    <p class="result-others">Otras opciones: ${others.map(([, p]) => `${esc(p.name)} (${money(p.price)})`).join(" · ")}. <a href="${PRICES_DOC}" target="_blank" rel="noopener">Ver todos los detalles</a></p>
+    <p class="result-others">Otras opciones: ${others.map(([, p]) => `${esc(p.name)} (${money(p.price)})`).join(" · ")}.${soon.length ? ` Próximamente: ${soon.map(esc).join(" y ")}.` : ""} <a href="${PRICES_DOC}" target="_blank" rel="noopener">Ver todos los detalles</a></p>
     <div class="quiz-nav">
       <button type="button" class="btn btn-ghost" id="editBtn">Cambiar respuestas</button>
       <button type="button" class="link-back" id="copyBtn">Copiar mis respuestas</button>

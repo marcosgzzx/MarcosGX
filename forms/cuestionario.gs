@@ -232,8 +232,12 @@ function recomendar(r) {
     clave = "servicios";
   }
   if (empezando && (clave === "medida" || clave === "pro")) clave = vendeProductos ? "tienda" : "servicios";
+  // Tienda a la medida y Tienda Pro están en "próximamente": todavía no se recomiendan
+  const proximamente = clave === "medida" || clave === "pro" ? PAQUETES[clave].nombre : null;
+  if (proximamente) clave = vendeProductos ? "tienda" : "servicios";
 
   const notas = [];
+  if (proximamente) notas.push(`Le convendría ${proximamente} (próximamente); se le recomendó ${PAQUETES[clave].nombre} mientras.`);
   if (empezando && avanzada) notas.push("Negocio empezando o con menos de 1 año: se le recomendó máximo Tienda en línea; ofrecer tienda a la medida cuando crezca.");
   const tope = { "Menos de $6,000": 6000, "$6,000 a $12,000": 12000, "$12,000 a $16,000": 16000, "$16,000 a $25,000": 25000 }[r[P.presupuesto]];
   const precio = { servicios: 5850, tienda: 11200, medida: 15350, pro: 22670 }[clave];
