@@ -21,7 +21,7 @@ const PACKAGES = {
   },
   medida: {
     name: "Tienda a la medida",
-    price: 33750,
+    price: 55750,
     soon: true,
     why: "Tu negocio maneja varios productos, variantes o pedidos y necesita su propia tienda con funciones avanzadas, que tú puedas administrar desde tu panel.",
     includes: ["Tienda propia desarrollada a la medida", "Variantes, precios por talla e inventario", "Pagos en línea y códigos de descuento", "Cuentas de cliente con inicio de sesión con Google", "Panel para que administres productos y pedidos", "Dominio propio y publicación"],
