@@ -214,6 +214,8 @@ h3 { font-size: 1.1rem; font-weight: 600; letter-spacing: -.005em; }
 .result-others a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
 .cta-quiz { display: flex; justify-content: space-between; align-items: center; gap: 24px; margin-top: 40px; padding: 28px 32px; border-radius: var(--radius); background: var(--ink); color: #fff; }
 .cta-quiz + .link-arrow { margin-top: 28px; }
+.nowrap { white-space: nowrap; }
+.fine-print { margin-top: 28px; font-size: .78rem; color: var(--muted); max-width: 46em; }
 .cta-quiz p { color: rgba(255, 255, 255, .7); font-size: .93rem; margin-top: 4px; }
 .cta-quiz .btn-dark { background: #fff; color: var(--ink); }
 .contact .btn-light { background: #fff; color: var(--ink); margin-top: 32px; }
