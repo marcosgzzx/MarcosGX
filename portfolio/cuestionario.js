@@ -21,7 +21,7 @@ const PACKAGES = {
   },
   medida: {
     name: "Tienda a la medida",
-    price: 15350,
+    price: 33750,
     soon: true,
     why: "Tu negocio maneja varios productos, variantes o pedidos y necesita su propia tienda con funciones avanzadas, que tú puedas administrar desde tu panel.",
     includes: ["Tienda propia desarrollada a la medida", "Variantes, precios por talla e inventario", "Pagos en línea y códigos de descuento", "Cuentas de cliente con inicio de sesión con Google", "Panel para que administres productos y pedidos", "Dominio propio y publicación"],
@@ -29,7 +29,7 @@ const PACKAGES = {
   },
   pro: {
     name: "Tienda Pro",
-    price: 22670,
+    price: 143500,
     soon: true,
     why: "Tu negocio ya está establecido y vende constantemente. Con la Tienda Pro tienes una tienda completa y yo me encargo de hacer los cambios para que tú solo te enfoques en vender.",
     includes: ["Todo lo de Tienda a la medida", "Asistente con inteligencia artificial", "Administración básica incluida: yo hago los cambios en tu sitio", "Productos nuevos, precios, fotos y promociones de temporada", "Administración activa por $1,500 más (pago único)"],

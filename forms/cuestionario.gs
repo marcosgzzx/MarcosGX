@@ -38,13 +38,13 @@ const PAQUETES = {
   },
   medida: {
     nombre: "Tienda a la medida",
-    precio: "$15,350 MXN",
+    precio: "$33,750 MXN",
     porque: "Tu negocio maneja varios productos, variantes o pedidos y necesita su propia tienda con funciones avanzadas, que tú puedas administrar desde tu panel.",
     incluye: ["Tienda propia desarrollada a la medida", "Variantes, precios por talla e inventario", "Pagos en línea y códigos de descuento", "Cuentas de cliente con inicio de sesión con Google", "Panel para que administres productos y pedidos", "Dominio propio y publicación"],
   },
   pro: {
     nombre: "Tienda Pro",
-    precio: "$22,670 MXN",
+    precio: "$143,500 MXN",
     porque: "Tu negocio ya está establecido y vende constantemente. Con la Tienda Pro tienes una tienda completa y yo me encargo de hacer los cambios para que tú solo te enfoques en vender.",
     incluye: ["Todo lo de Tienda a la medida", "Asistente con inteligencia artificial", "Administración básica incluida: yo hago los cambios en tu sitio", "Productos nuevos, precios, fotos y promociones de temporada", "Administración activa por $1,500 más (pago único)"],
   },
@@ -240,7 +240,7 @@ function recomendar(r) {
   if (proximamente) notas.push(`Le convendría ${proximamente} (próximamente); se le recomendó ${PAQUETES[clave].nombre} mientras.`);
   if (empezando && avanzada) notas.push("Negocio empezando o con menos de 1 año: se le recomendó máximo Tienda en línea; ofrecer tienda a la medida cuando crezca.");
   const tope = { "Menos de $6,000": 6000, "$6,000 a $12,000": 12000, "$12,000 a $16,000": 16000, "$16,000 a $25,000": 25000 }[r[P.presupuesto]];
-  const precio = { servicios: 5850, tienda: 11200, medida: 15350, pro: 22670 }[clave];
+  const precio = { servicios: 5850, tienda: 11200, medida: 33750, pro: 143500 }[clave];
   if (tope && precio > tope) notas.push("Presupuesto menor al paquete: ofrecer empezar con uno más sencillo o pago en partes.");
   if (clave === "tienda" && productos === "31 a 100") notas.push("Más de 30 productos: cotizar productos extra.");
   if ((r[P.cobros] || "") !== "Sí" && clave !== "servicios") notas.push("Necesita abrir cuenta de cobro en línea (RFC/ID, CLABE).");
