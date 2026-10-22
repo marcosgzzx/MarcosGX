@@ -117,7 +117,8 @@ h3 { font-size: 1.1rem; font-weight: 600; letter-spacing: -.005em; }
 .contact-links a + a { padding-left: 32px; border-left: 1px solid rgba(255, 255, 255, .18); }
 .contact-links span { font-family: var(--sans); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: rgba(255, 255, 255, .55); }
 
-.footer { background: var(--ink); color: rgba(255, 255, 255, .5); font-size: .85rem; padding: 24px 0 max(24px, env(safe-area-inset-bottom, 0px)); border-top: 1px solid rgba(255, 255, 255, .1); }
+.footer { background: var(--ink); color: rgba(255, 255, 255, .5); font-size: .85rem; padding: 24px 0 16px; border-top: 1px solid rgba(255, 255, 255, .1); }
+.signature { margin: 0; padding: 8px 16px max(8px, env(safe-area-inset-bottom, 0px)); text-align: center; font-size: 11px; line-height: 1.4; background: var(--ink); color: rgba(255, 255, 255, .35); }
 .footer-inner { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 
 /* Responsive */

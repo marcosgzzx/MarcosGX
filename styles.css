@@ -294,6 +294,7 @@ h2 { font-size: clamp(2.2rem, 5vw, 3.6rem); }
 
 /* Footer */
 .site-footer { border-top: 1px solid var(--line); padding: 48px 0; }
+.signature { margin: 0; padding: 8px 16px max(8px, env(safe-area-inset-bottom, 0px)); text-align: center; font-size: 11px; line-height: 1.4; color: var(--muted); opacity: .7; }
 .footer-inner { display: grid; gap: 14px; }
 .footer-top { display: flex; justify-content: space-between; gap: 32px; flex-wrap: wrap; margin-bottom: 18px; }
 .footer-cols { display: grid; grid-template-columns: repeat(5, minmax(120px, auto)); gap: 28px; }
