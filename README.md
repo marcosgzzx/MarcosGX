@@ -8,7 +8,7 @@ Prices are in Mexican pesos (MXN). Products and brands live in `products` and `B
 
 ## Live demo
 
-https://marcosgzzx.github.io/WebsitePrototype/ (GitHub Pages, served from the repository root; `.nojekyll` turns off Jekyll processing). Outside the claude.ai viewer, GymBro answers with quick built-in replies and accounts, reviews and discount codes are kept in each visitor's browser.
+https://marcosgzzx.github.io/MarcosGX/ (GitHub Pages, served from the repository root; `.nojekyll` turns off Jekyll processing). Outside the claude.ai viewer, GymBro answers with quick built-in replies and accounts, reviews and discount codes are kept in each visitor's browser.
 
 ## Run
 

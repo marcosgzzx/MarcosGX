@@ -20,7 +20,7 @@ const MARCA = "Marcos GX";
 const LEMA = "Website Creation and Management";
 const WHATSAPP = "https://wa.me/528125980531";
 const INSTAGRAM = "https://www.instagram.com/marcossgzz__/";
-const PORTAFOLIO = "https://marcosgzzx.github.io/WebsitePrototype/portfolio/";
+const PORTAFOLIO = "https://marcosgzzx.github.io/MarcosGX/portfolio/";
 const PRECIOS = "https://claude.ai/artifact/53iAYFUTSxSc1n7oF1EkW6";
 
 const PAQUETES = {
