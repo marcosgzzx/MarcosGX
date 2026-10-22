@@ -288,6 +288,7 @@ function renderResult() {
       <div>
         <h3>Último paso: mándame tus respuestas</h3>
         <p>Se abre WhatsApp con tus respuestas ya escritas. Solo dale enviar y te contesto con tu cotización final.</p>
+        <p class="privacy-note">Tus respuestas solo se guardan en este navegador y me llegan únicamente si tú las mandas. Las uso solo para preparar tu cotización y no las comparto con nadie.</p>
       </div>
       <a class="btn btn-dark" href="${wa}" target="_blank" rel="noopener" id="sendWa">Enviar por WhatsApp</a>
     </div>

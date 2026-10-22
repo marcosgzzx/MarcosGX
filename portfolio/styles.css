@@ -170,7 +170,9 @@ h3 { font-size: 1.1rem; font-weight: 600; letter-spacing: -.005em; }
 .link-back:hover { color: var(--ink); }
 .quiz { max-width: 760px; padding-top: 64px; padding-bottom: 104px; }
 .quiz h1 { font-size: clamp(2.6rem, 7vw, 4.4rem); margin: 16px 0 20px; }
-.quiz .lead { margin-bottom: 40px; }
+.quiz .lead { margin-bottom: 16px; }
+.privacy-note { font-size: .8rem; color: var(--muted); margin-bottom: 40px; }
+.result-send .privacy-note { margin: 10px 0 0; color: rgba(255, 255, 255, .5); }
 .progress { height: 4px; border-radius: 2px; background: var(--line); overflow: hidden; }
 .progress span { display: block; height: 100%; width: 0; background: var(--accent); transition: width .3s; }
 .progress-label { margin: 12px 0 40px; font-size: .85rem; color: var(--muted); }

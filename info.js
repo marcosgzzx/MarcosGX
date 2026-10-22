@@ -28,10 +28,11 @@ const INFO_PAGES = {
         <li>Fotos, textos y páginas legales propias del negocio.</li>
       </ul>
       <h4>¿Quieres un sitio así para tu negocio?</h4>
-      <p>Diseño y desarrollo web por <strong>@marcossgzz__</strong>. Escríbeme y platicamos tu proyecto:</p>
+      <p>Diseño y desarrollo web por <strong>Marcos GX</strong> · Website Creation and Management. Contesta el cuestionario de 5 minutos y te recomiendo el paquete ideal para tu negocio, o escríbeme directo:</p>
       <div class="contact-row">
-        <a class="btn btn-primary" href="https://wa.me/528125980531?text=Hola%2C%20vi%20la%20tienda%20de%20demostraci%C3%B3n%20GYM%20BRO%27S%20y%20me%20interesa%20un%20sitio%20web." target="_blank" rel="noopener">WhatsApp</a>
-        <a class="btn btn-ghost" href="https://www.instagram.com/marcossgzz__/" target="_blank" rel="noopener">Instagram</a>
+        <a class="btn btn-primary" href="https://marcosgzzx.github.io/MarcosGX/portfolio/cuestionario.html" target="_blank" rel="noopener">Cotiza tu proyecto</a>
+        <a class="btn btn-ghost" href="https://marcosgzzx.github.io/MarcosGX/portfolio/" target="_blank" rel="noopener">Ver portafolio</a>
+        <a class="btn btn-ghost" href="https://wa.me/528125980531?text=Hola%2C%20vi%20la%20tienda%20de%20demostraci%C3%B3n%20GYM%20BRO%27S%20y%20me%20interesa%20un%20sitio%20web." target="_blank" rel="noopener">WhatsApp</a>
       </div>
       <p class="hint">WhatsApp: <span class="selectable">+52 81 2598 0531</span> · Instagram: <span class="selectable">@marcossgzz__</span></p>`,
   },
