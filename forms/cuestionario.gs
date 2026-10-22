@@ -46,7 +46,7 @@ const PAQUETES = {
     nombre: "Tienda Pro",
     precio: "$22,670 MXN",
     porque: "Tu negocio ya está establecido y vende constantemente. Con la Tienda Pro tienes una tienda completa y yo me encargo de hacer los cambios para que tú solo te enfoques en vender.",
-    incluye: ["Todo lo de Tienda a la medida", "Asistente con inteligencia artificial", "Administración incluida: yo hago los cambios en tu sitio", "Productos nuevos, precios y fotos", "Promociones de temporada"],
+    incluye: ["Todo lo de Tienda a la medida", "Asistente con inteligencia artificial", "Administración básica incluida: yo hago los cambios en tu sitio", "Productos nuevos, precios, fotos y promociones de temporada", "Por $1,500 más, administración activa"],
   },
 };
 
@@ -244,7 +244,7 @@ function recomendar(r) {
   if ((r[P.dominio] || "") !== "Sí") notas.push("Hay que comprar dominio.");
   if (tiene(["Agenda de citas o reservaciones"])) notas.push("Pidió agenda de citas: cotizar como extra.");
 
-  const mant = clave === "pro" ? "Administración incluida en la Tienda Pro"
+  const mant = clave === "pro" ? "Administración básica incluida en la Tienda Pro (activa por $1,500 más)"
     : String(r[P.mantenimiento] || "").startsWith("Sí, el ") ? r[P.mantenimiento]
     : (clave !== "servicios" || pedidos === "100 a 500" || pedidos === "Más de 500") ? "Sugerir mantenimiento Activo" : "Sugerir mantenimiento Básico";
   notas.push(mant);
