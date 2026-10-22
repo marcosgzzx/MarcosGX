@@ -32,7 +32,7 @@ const PACKAGES = {
     price: 143500,
     soon: true,
     why: "Tu negocio ya está establecido y vende constantemente. Con la Tienda Pro tienes una tienda completa y yo me encargo de hacer los cambios para que tú solo te enfoques en vender.",
-    includes: ["Todo lo de Tienda a la medida", "Asistente con inteligencia artificial", "Administración básica incluida: yo hago los cambios en tu sitio", "Productos nuevos, precios, fotos y promociones de temporada", "Administración activa por $1,500 más (pago único)"],
+    includes: ["Todo lo de Tienda a la medida", "Asistente con inteligencia artificial", "12 meses de administración básica incluidos: yo hago los cambios en tu sitio", "Productos nuevos, precios, fotos y promociones de temporada", "Administración activa los 12 meses por $1,500 más (pago único)", "Después, plan mensual Básico o Activo"],
     weeks: "5–8 semanas",
   },
 };
@@ -279,7 +279,7 @@ function renderResult() {
       </div>
       <dl class="result-meta">
         <div><dt>Tiempo de entrega</dt><dd>${r.pkg.weeks}</dd></div>
-        <div><dt>${r.key === "pro" ? "Administración" : "Mantenimiento sugerido"}</dt><dd>${r.key === "pro" ? "Básica incluida · activa por $1,500 más (pago único)" : `${esc(r.maintenance)} · ${r.maintenance === "Activo" ? "$1,000" : "$500"} al mes`}</dd></div>
+        <div><dt>${r.key === "pro" ? "Administración" : "Mantenimiento sugerido"}</dt><dd>${r.key === "pro" ? "12 meses de básica incluidos · activa por $1,500 más (pago único)" : `${esc(r.maintenance)} · ${r.maintenance === "Activo" ? "$1,000" : "$500"} al mes`}</dd></div>
         <div><dt>Forma de pago</dt><dd>50% para empezar, 50% al entregar</dd></div>
       </dl>
     </article>
